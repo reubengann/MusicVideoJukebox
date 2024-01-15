@@ -8,7 +8,7 @@ namespace MusicVideoJukebox
         void Stop();
         void Pause();
         double LengthSeconds { get; }
-        double CurrentTime { get; }
+        double CurrentTimeSeconds { get; set; }
         void SetSource(Uri source);
     }
 }

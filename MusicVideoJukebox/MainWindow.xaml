@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="750" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
@@ -29,6 +29,10 @@
 
             <Slider Grid.Column="4" VerticalAlignment="Center" Maximum="1" Minimum="0" SmallChange="0.01"  LargeChange="0.1"/>
         </Grid>
-        <Slider VerticalAlignment="Center" Grid.Row="2" Maximum="{Binding VideoLengthSeconds}" Value="{Binding VideoPositionTime}"/>
+        <Slider VerticalAlignment="Center" Grid.Row="2" Maximum="{Binding VideoLengthSeconds}" Value="{Binding VideoPositionTime}"
+                PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
+                PreviewMouseLeftButtonUp="Slider_PreviewMouseLeftButtonUp"
+                IsMoveToPointEnabled="True"
+                />
     </Grid>
 </Window>

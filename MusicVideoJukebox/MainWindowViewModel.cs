@@ -19,18 +19,29 @@ namespace MusicVideoJukebox
     public class MainWindowViewModel : BaseViewModel
     {
         private readonly IMediaPlayer mediaPlayer;
-        DispatcherTimer timer;
+        DispatcherTimer progressUpdateTimer;
+        DispatcherTimer scrubDebouceTimer;
+        bool isScrubbing = false;
+        bool scrubbedRecently = false;
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer)
         {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.SetSource(new System.Uri("E:\\Videos\\Music Videos\\On Media Center\\10,000 Maniacs - Because The Night [Unplugged].mp4"));
-            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            timer.Tick += Timer_Tick;
+            progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            progressUpdateTimer.Tick += Timer_Tick;
+            scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
+        }
+
+        private void ScrubDebouceTimer_Tick(object? sender, EventArgs e)
+        {
+            scrubbedRecently = false;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
+            if (isScrubbing) return;
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(VideoLengthSeconds));
         }
@@ -39,32 +50,47 @@ namespace MusicVideoJukebox
         public ICommand PauseCommand => new DelegateCommand(PauseVideo);
         public ICommand StopCommand => new DelegateCommand(StopVideo);
 
+        public void StopScrubbing()
+        {
+            scrubDebouceTimer.Stop();
+            scrubbedRecently = false;
+            isScrubbing = false;
+        }
+
+        public void StartScrubbing()
+        {
+            scrubDebouceTimer.Start();
+            isScrubbing = true;
+        }
+
         private void PlayVideo()
         {
             mediaPlayer.Play();
-            timer.Start();
+            progressUpdateTimer.Start();
             OnPropertyChanged(nameof(VideoLengthSeconds));
             OnPropertyChanged(nameof(VideoPositionTime));
         }
         private void PauseVideo()
         {
             mediaPlayer.Pause();
-            timer.Stop();
+            progressUpdateTimer.Stop();
         }
 
         private void StopVideo()
         {
             mediaPlayer.Stop();
-            timer.Stop();
+            progressUpdateTimer.Stop();
         }
         public double VideoLengthSeconds => mediaPlayer.LengthSeconds;
         public double VideoPositionTime
         {
-            get
+            get => mediaPlayer.CurrentTimeSeconds;
+            set
             {
-                return mediaPlayer.CurrentTime;
+                if (scrubbedRecently) return;
+                scrubbedRecently = true;
+                mediaPlayer.CurrentTimeSeconds = value;
             }
-            set { }
         }
     }
 }
