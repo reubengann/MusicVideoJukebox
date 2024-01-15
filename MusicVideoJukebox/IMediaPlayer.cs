@@ -10,6 +10,9 @@ namespace MusicVideoJukebox
         double LengthSeconds { get; }
         double CurrentTimeSeconds { get; set; }
         void SetSource(Uri source);
+        void SetWindowed();
+        void SetFullScreen();
+
         double Volume { get; set; }
     }
 }

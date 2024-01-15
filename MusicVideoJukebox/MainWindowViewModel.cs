@@ -23,6 +23,7 @@ namespace MusicVideoJukebox
         DispatcherTimer scrubDebouceTimer;
         bool isScrubbing = false;
         bool scrubbedRecently = false;
+        bool isFullScreen = false;
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer)
         {
@@ -52,14 +53,8 @@ namespace MusicVideoJukebox
         public ICommand StopCommand => new DelegateCommand(StopVideo);
         public double Volume
         {
-            get
-            {
-                return mediaPlayer.Volume;
-            }
-            set
-            {
-                mediaPlayer.Volume = value;
-            }
+            get => mediaPlayer.Volume;
+            set => mediaPlayer.Volume = value;
         }
 
         public void StopScrubbing()
@@ -93,6 +88,21 @@ namespace MusicVideoJukebox
             mediaPlayer.Stop();
             progressUpdateTimer.Stop();
         }
+
+        public void ChangeToFullScreenToggled()
+        {
+            if (isFullScreen)
+            {
+                mediaPlayer.SetWindowed();
+                isFullScreen = false;
+            }
+            else
+            {
+                mediaPlayer.SetFullScreen();
+                isFullScreen = true;
+            }
+        }
+
         public double VideoLengthSeconds => mediaPlayer.LengthSeconds;
         public double VideoPositionTime
         {

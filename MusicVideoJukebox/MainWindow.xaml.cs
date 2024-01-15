@@ -1,15 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Media;
 
 namespace MusicVideoJukebox
 {
     public partial class MainWindow : Window, IMediaPlayer
     {
         MainWindowViewModel vm;
+        private readonly List<UIElement> triggerElements = new List<UIElement>();
+
 
         public MainWindow()
         {
             InitializeComponent();
+
+            triggerElements.Add(player);
+
             vm = new MainWindowViewModel(this);
             DataContext = vm;
         }
@@ -50,6 +57,35 @@ namespace MusicVideoJukebox
         {
             get => player.Volume;
             set => player.Volume = value;
+        }
+
+        private bool IsTriggerElement(DependencyObject dep)
+        {
+            return dep != null && dep is UIElement && triggerElements.Contains(dep as UIElement);
+        }
+
+        private void Window_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyObject dep = (DependencyObject)e.OriginalSource;
+
+            if (IsTriggerElement(dep) || IsTriggerElement(VisualTreeHelper.GetParent(dep)))
+            {
+                vm.ChangeToFullScreenToggled();
+            }
+        }
+
+        public void SetWindowed()
+        {
+            ResizeMode = ResizeMode.CanResize;
+            WindowState = WindowState.Normal;
+            WindowStyle = WindowStyle.SingleBorderWindow;
+        }
+
+        public void SetFullScreen()
+        {
+            ResizeMode = ResizeMode.NoResize;
+            WindowState = WindowState.Maximized;
+            WindowStyle = WindowStyle.None;
         }
     }
 }
