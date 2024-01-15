@@ -27,6 +27,7 @@ namespace MusicVideoJukebox
         public MainWindowViewModel(IMediaPlayer mediaPlayer)
         {
             this.mediaPlayer = mediaPlayer;
+            mediaPlayer.Volume = 1;
             mediaPlayer.SetSource(new System.Uri("E:\\Videos\\Music Videos\\On Media Center\\10,000 Maniacs - Because The Night [Unplugged].mp4"));
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -49,6 +50,17 @@ namespace MusicVideoJukebox
         public ICommand PlayCommand => new DelegateCommand(PlayVideo);
         public ICommand PauseCommand => new DelegateCommand(PauseVideo);
         public ICommand StopCommand => new DelegateCommand(StopVideo);
+        public double Volume
+        {
+            get
+            {
+                return mediaPlayer.Volume;
+            }
+            set
+            {
+                mediaPlayer.Volume = value;
+            }
+        }
 
         public void StopScrubbing()
         {

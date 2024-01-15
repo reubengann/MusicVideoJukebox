@@ -10,5 +10,6 @@ namespace MusicVideoJukebox
         double LengthSeconds { get; }
         double CurrentTimeSeconds { get; set; }
         void SetSource(Uri source);
+        double Volume { get; set; }
     }
 }

@@ -45,5 +45,11 @@ namespace MusicVideoJukebox
         {
             vm.StopScrubbing();
         }
+
+        public double Volume
+        {
+            get => player.Volume;
+            set => player.Volume = value;
+        }
     }
 }
