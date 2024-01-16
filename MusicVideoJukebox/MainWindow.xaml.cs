@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace MusicVideoJukebox
 {
@@ -9,7 +11,8 @@ namespace MusicVideoJukebox
     {
         MainWindowViewModel vm;
         private readonly List<UIElement> triggerElements = new List<UIElement>();
-
+        private bool fadingOut = false;
+        private bool fadingIn = false;
 
         public MainWindow()
         {
@@ -86,6 +89,40 @@ namespace MusicVideoJukebox
             ResizeMode = ResizeMode.NoResize;
             WindowState = WindowState.Maximized;
             WindowStyle = WindowStyle.None;
+        }
+
+        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            vm.UserInteracted();
+        }
+
+        public void FadeButtonsOut()
+        {
+            if (fadingOut) return;
+            DoubleAnimation fadeOutAnimation = new DoubleAnimation
+            {
+                To = 0,
+                Duration = TimeSpan.FromSeconds(0.5) // Adjust the duration as needed
+            };
+
+            fadeOutAnimation.Completed += (s, e) => fadingOut = false;
+            fadingOut = true;
+            VideoControls.BeginAnimation(Button.OpacityProperty, fadeOutAnimation);
+        }
+
+        public void MaybeFadeButtonsIn()
+        {
+            if (fadingOut) fadingOut = false;
+            if (fadingIn) return;
+
+            DoubleAnimation fadeInAnimation = new DoubleAnimation
+            {
+                To = 1,
+                Duration = TimeSpan.FromSeconds(0.25) // Adjust the duration as needed
+            };
+            fadeInAnimation.Completed += (s, e) => fadingIn = false;
+            fadingIn = true;
+            VideoControls.BeginAnimation(Button.OpacityProperty, fadeInAnimation);
         }
     }
 }

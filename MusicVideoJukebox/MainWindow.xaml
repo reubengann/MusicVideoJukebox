@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:MusicVideoJukebox"
         mc:Ignorable="d"
         Title="MainWindow" Height="750" Width="1000"
-        MouseDoubleClick="Window_MouseDoubleClick">
+        MouseDoubleClick="Window_MouseDoubleClick" MouseMove="Window_MouseMove">
     <Grid Background="Black">
         <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual">
             
         </MediaElement>
         
-        <Grid VerticalAlignment="Bottom">
+        <Grid VerticalAlignment="Bottom" x:Name="VideoControls">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>

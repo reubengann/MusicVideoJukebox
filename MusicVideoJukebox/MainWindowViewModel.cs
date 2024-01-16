@@ -21,6 +21,7 @@ namespace MusicVideoJukebox
         private readonly IMediaPlayer mediaPlayer;
         DispatcherTimer progressUpdateTimer;
         DispatcherTimer scrubDebouceTimer;
+        DispatcherTimer fadeTimer;
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
@@ -34,6 +35,14 @@ namespace MusicVideoJukebox
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             progressUpdateTimer.Tick += Timer_Tick;
             scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
+            fadeTimer = new DispatcherTimer();
+            fadeTimer.Interval = TimeSpan.FromSeconds(2); // Adjust the interval as needed
+            fadeTimer.Tick += FadeTimer_Tick;
+        }
+
+        private void FadeTimer_Tick(object? sender, EventArgs e)
+        {
+            mediaPlayer.FadeButtonsOut();
         }
 
         private void ScrubDebouceTimer_Tick(object? sender, EventArgs e)
@@ -101,6 +110,13 @@ namespace MusicVideoJukebox
                 mediaPlayer.SetFullScreen();
                 isFullScreen = true;
             }
+        }
+
+        public void UserInteracted()
+        {
+            fadeTimer.Stop();
+            fadeTimer.Start();
+            mediaPlayer.MaybeFadeButtonsIn();
         }
 
         public double VideoLengthSeconds => mediaPlayer.LengthSeconds;
