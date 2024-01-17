@@ -25,8 +25,9 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0" Grid.Column="3" ItemsSource="{Binding VideoFiles}" Margin="0 0 0 10" Background="Black" MaxWidth="400" Foreground="White" HorizontalAlignment="Right"
-                      Grid.ColumnSpan="2"
+            <ListView Grid.Row="0" Grid.Column="3" ItemsSource="{Binding VideoFiles}" SelectedItem="{Binding CurrentVideo}"
+                      Margin="0 0 0 10" Background="Black" MaxWidth="400" Foreground="White" HorizontalAlignment="Right"
+                      Grid.ColumnSpan="2" SelectionMode="Single"
                       />
             <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Grid.Column="2" Width="50" Content="Prev" Command="{Binding PrevCommand}"/>

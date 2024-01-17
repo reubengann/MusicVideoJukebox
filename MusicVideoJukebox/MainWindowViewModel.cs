@@ -57,6 +57,20 @@ namespace MusicVideoJukebox
             fadeTimer.Tick += FadeTimer_Tick;
         }
 
+        public string CurrentVideo
+        {
+            get
+            {
+                return VideoFiles[currentVideoIndex];
+            }
+            set
+            {
+                int selectedIndex = VideoFiles.IndexOf(value);
+                if (selectedIndex < 0) return;
+                currentVideoIndex = selectedIndex;
+                PlayVideoAtCurrentIndex();
+            }
+        }
 
         private void FadeTimer_Tick(object? sender, EventArgs e)
         {
@@ -85,17 +99,18 @@ namespace MusicVideoJukebox
         {
             currentVideoIndex--;
             if (currentVideoIndex < 0) currentVideoIndex = videoPaths.Count - 1;
-            mediaPlayer.SetSource(new System.Uri(videoPaths[currentVideoIndex]));
-            // show first frame
-            mediaPlayer.Play();
-            if (!isPlaying)
-                mediaPlayer.Pause();
+            PlayVideoAtCurrentIndex();
         }
 
         private void NextTrack()
         {
             currentVideoIndex++;
             if (currentVideoIndex > videoPaths.Count - 1) currentVideoIndex = 0;
+            PlayVideoAtCurrentIndex();
+        }
+
+        private void PlayVideoAtCurrentIndex()
+        {
             mediaPlayer.SetSource(new System.Uri(videoPaths[currentVideoIndex]));
             // show first frame
             mediaPlayer.Play();
