@@ -1,6 +1,10 @@
 ﻿using Prism.Commands;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -25,12 +29,19 @@ namespace MusicVideoJukebox
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
+        readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
+        List<string> videoPaths = new List<string>();
+        public ObservableCollection<string> VideoFiles { get; set; }
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer)
         {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.Volume = 1;
             mediaPlayer.SetSource(new System.Uri("E:\\Videos\\Music Videos\\On Media Center\\10,000 Maniacs - Because The Night [Unplugged].mp4"));
+            // show first frame
+            mediaPlayer.Play();
+            mediaPlayer.Pause();
+
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             progressUpdateTimer.Tick += Timer_Tick;
@@ -38,7 +49,10 @@ namespace MusicVideoJukebox
             fadeTimer = new DispatcherTimer();
             fadeTimer.Interval = TimeSpan.FromSeconds(2); // Adjust the interval as needed
             fadeTimer.Tick += FadeTimer_Tick;
+            videoPaths = new List<string>(Directory.EnumerateFiles(videoFolder));
+            VideoFiles = new ObservableCollection<string>(videoPaths.Select(x => Path.GetFileNameWithoutExtension(x)));
         }
+
 
         private void FadeTimer_Tick(object? sender, EventArgs e)
         {
