@@ -55,6 +55,7 @@ namespace MusicVideoJukebox
             fadeTimer = new DispatcherTimer();
             fadeTimer.Interval = TimeSpan.FromSeconds(2); // Adjust the interval as needed
             fadeTimer.Tick += FadeTimer_Tick;
+            fadeTimer.Start();
         }
 
         public string CurrentVideo

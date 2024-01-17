@@ -9,10 +9,11 @@
         MouseDoubleClick="Window_MouseDoubleClick" MouseMove="Window_MouseMove"
         d:DataContext="{d:DesignInstance local:MainWindowDesignTimeViewModel, IsDesignTimeCreatable=True}">
     <Grid Background="Black">
+        
         <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True">
 
         </MediaElement>
-        <Grid VerticalAlignment="Bottom" x:Name="VideoControls">
+        <Grid x:Name="VideoControls">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -21,15 +22,19 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0" Grid.Column="3" ItemsSource="{Binding VideoFiles}" SelectedItem="{Binding CurrentVideo}"
-                      Margin="0 0 0 10" Background="Black" MaxWidth="400" Foreground="White" HorizontalAlignment="Right"
-                      Grid.ColumnSpan="2" SelectionMode="Single"
+            <Button Grid.Row="0" Grid.Column="4" Margin="0 25 0 0" Height="50" Width="50">Settings</Button>
+            
+            <ListView Grid.Row="2" Grid.Column="3" ItemsSource="{Binding VideoFiles}" SelectedItem="{Binding CurrentVideo}"
+                      Margin="0 0 0 10" Background="Black" Width="300" Foreground="White" HorizontalAlignment="Right"
+                      Grid.ColumnSpan="2" SelectionMode="Single" MaxHeight="400"
                       />
-            <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Grid.Column="2" Width="50" Content="Prev" Command="{Binding PrevCommand}"/>
                 <Button Width="50" Content="Play" Command="{Binding PlayCommand}"/>
                 <Button Grid.Column="1" Width="50" Content="Pause" Command="{Binding PauseCommand}"/>
@@ -37,8 +42,8 @@
                 <Button Grid.Column="2" Width="50" Content="Next" Command="{Binding NextCommand}"/>
             </StackPanel>
 
-            <Slider Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Value="{Binding Volume}"/>
-            <Slider VerticalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="5" Maximum="{Binding VideoLengthSeconds}" Value="{Binding VideoPositionTime}"
+            <Slider Grid.Row="3" Grid.Column="4" VerticalAlignment="Center" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Value="{Binding Volume}"/>
+            <Slider VerticalAlignment="Center" Grid.Row="4" Grid.ColumnSpan="5" Maximum="{Binding VideoLengthSeconds}" Value="{Binding VideoPositionTime}"
         PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
         PreviewMouseLeftButtonUp="Slider_PreviewMouseLeftButtonUp"
         IsMoveToPointEnabled="True"
