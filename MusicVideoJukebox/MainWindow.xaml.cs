@@ -17,9 +17,7 @@ namespace MusicVideoJukebox
         public MainWindow()
         {
             InitializeComponent();
-
             triggerElements.Add(player);
-
             vm = new MainWindowViewModel(this);
             DataContext = vm;
         }
