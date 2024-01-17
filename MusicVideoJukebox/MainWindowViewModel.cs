@@ -37,7 +37,10 @@ namespace MusicVideoJukebox
         {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.Volume = 1;
-            mediaPlayer.SetSource(new System.Uri("E:\\Videos\\Music Videos\\On Media Center\\10,000 Maniacs - Because The Night [Unplugged].mp4"));
+            videoPaths = new List<string>(Directory.EnumerateFiles(videoFolder));
+            VideoFiles = new ObservableCollection<string>(videoPaths.Select(x => Path.GetFileNameWithoutExtension(x)));
+
+            mediaPlayer.SetSource(new System.Uri(videoPaths.First()));
             // show first frame
             mediaPlayer.Play();
             mediaPlayer.Pause();
@@ -49,8 +52,6 @@ namespace MusicVideoJukebox
             fadeTimer = new DispatcherTimer();
             fadeTimer.Interval = TimeSpan.FromSeconds(2); // Adjust the interval as needed
             fadeTimer.Tick += FadeTimer_Tick;
-            videoPaths = new List<string>(Directory.EnumerateFiles(videoFolder));
-            VideoFiles = new ObservableCollection<string>(videoPaths.Select(x => Path.GetFileNameWithoutExtension(x)));
         }
 
 
