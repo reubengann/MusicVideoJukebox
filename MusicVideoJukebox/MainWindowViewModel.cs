@@ -14,7 +14,7 @@ namespace MusicVideoJukebox
     public class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -23,16 +23,16 @@ namespace MusicVideoJukebox
     public class MainWindowViewModel : BaseViewModel
     {
         private readonly IMediaPlayer mediaPlayer;
-        DispatcherTimer progressUpdateTimer;
-        DispatcherTimer scrubDebouceTimer;
-        DispatcherTimer fadeTimer;
+        readonly DispatcherTimer progressUpdateTimer;
+        readonly DispatcherTimer scrubDebouceTimer;
+        readonly DispatcherTimer fadeTimer;
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
         bool isPlaying = false;
         int currentVideoIndex = 0;
         readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
-        List<string> videoPaths = new List<string>();
+        readonly List<string> videoPaths = new();
         public ObservableCollection<string> VideoFiles { get; set; }
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer)
@@ -52,8 +52,10 @@ namespace MusicVideoJukebox
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             progressUpdateTimer.Tick += Timer_Tick;
             scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
-            fadeTimer = new DispatcherTimer();
-            fadeTimer.Interval = TimeSpan.FromSeconds(2); // Adjust the interval as needed
+            fadeTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2)
+            };
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
         }

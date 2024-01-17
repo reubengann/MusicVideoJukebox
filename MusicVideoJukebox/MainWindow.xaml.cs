@@ -9,8 +9,8 @@ namespace MusicVideoJukebox
 {
     public partial class MainWindow : Window, IMediaPlayer
     {
-        MainWindowViewModel vm;
-        private readonly List<UIElement> triggerElements = new List<UIElement>();
+        readonly MainWindowViewModel vm;
+        private readonly List<UIElement> triggerElements = new();
         private bool fadingOut = false;
         private bool fadingIn = false;
 
@@ -64,7 +64,7 @@ namespace MusicVideoJukebox
 
         private bool IsTriggerElement(DependencyObject dep)
         {
-            return dep != null && dep is UIElement && triggerElements.Contains(dep as UIElement);
+            return dep != null && dep is UIElement && triggerElements.Contains((dep as UIElement) ?? throw new Exception());
         }
 
         private void Window_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -99,7 +99,7 @@ namespace MusicVideoJukebox
         public void FadeButtonsOut()
         {
             if (fadingOut) return;
-            DoubleAnimation fadeOutAnimation = new DoubleAnimation
+            var fadeOutAnimation = new DoubleAnimation
             {
                 To = 0,
                 Duration = TimeSpan.FromSeconds(0.5) // Adjust the duration as needed
@@ -115,7 +115,7 @@ namespace MusicVideoJukebox
             if (fadingOut) fadingOut = false;
             if (fadingIn) return;
 
-            DoubleAnimation fadeInAnimation = new DoubleAnimation
+            var fadeInAnimation = new DoubleAnimation
             {
                 To = 1,
                 Duration = TimeSpan.FromSeconds(0.25) // Adjust the duration as needed
