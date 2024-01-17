@@ -59,7 +59,18 @@ namespace MusicVideoJukebox
 
         private static IEnumerable<string> GetNiceNames(VideoLibrary library)
         {
-            return library.FilePaths.Select(x => Path.GetFileNameWithoutExtension(x));
+            var niceStrings = new List<string>();
+            foreach (var path in library.FilePaths)
+            {
+                var vid = library.InfoMap[path];
+                if (vid.Artist == null)
+                    niceStrings.Add(vid.Title);
+                else
+                {
+                    niceStrings.Add($"{vid.Artist} - {vid.Title}");
+                }
+            }
+            return niceStrings;
         }
 
         public string CurrentVideo
@@ -150,6 +161,7 @@ namespace MusicVideoJukebox
             OnPropertyChanged(nameof(VideoLengthSeconds));
             OnPropertyChanged(nameof(VideoPositionTime));
         }
+
         private void PauseVideo()
         {
             isPlaying = false;
