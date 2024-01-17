@@ -29,6 +29,8 @@ namespace MusicVideoJukebox
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
+        bool isPlaying = false;
+        int currentVideoIndex = 0;
         readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
         List<string> videoPaths = new List<string>();
         public ObservableCollection<string> VideoFiles { get; set; }
@@ -40,10 +42,11 @@ namespace MusicVideoJukebox
             videoPaths = new List<string>(Directory.EnumerateFiles(videoFolder));
             VideoFiles = new ObservableCollection<string>(videoPaths.Select(x => Path.GetFileNameWithoutExtension(x)));
 
-            mediaPlayer.SetSource(new System.Uri(videoPaths.First()));
+            mediaPlayer.SetSource(new System.Uri(videoPaths[currentVideoIndex]));
             // show first frame
             mediaPlayer.Play();
-            mediaPlayer.Pause();
+            isPlaying = true;
+            //mediaPlayer.Pause();
 
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -75,6 +78,31 @@ namespace MusicVideoJukebox
         public ICommand PlayCommand => new DelegateCommand(PlayVideo);
         public ICommand PauseCommand => new DelegateCommand(PauseVideo);
         public ICommand StopCommand => new DelegateCommand(StopVideo);
+        public ICommand NextCommand => new DelegateCommand(NextTrack);
+        public ICommand PrevCommand => new DelegateCommand(PrevTrack);
+
+        private void PrevTrack()
+        {
+            currentVideoIndex--;
+            if (currentVideoIndex < 0) currentVideoIndex = videoPaths.Count - 1;
+            mediaPlayer.SetSource(new System.Uri(videoPaths[currentVideoIndex]));
+            // show first frame
+            mediaPlayer.Play();
+            if (!isPlaying)
+                mediaPlayer.Pause();
+        }
+
+        private void NextTrack()
+        {
+            currentVideoIndex++;
+            if (currentVideoIndex > videoPaths.Count - 1) currentVideoIndex = 0;
+            mediaPlayer.SetSource(new System.Uri(videoPaths[currentVideoIndex]));
+            // show first frame
+            mediaPlayer.Play();
+            if (!isPlaying)
+                mediaPlayer.Pause();
+        }
+
         public double Volume
         {
             get => mediaPlayer.Volume;
@@ -96,6 +124,7 @@ namespace MusicVideoJukebox
 
         private void PlayVideo()
         {
+            isPlaying = true;
             mediaPlayer.Play();
             progressUpdateTimer.Start();
             OnPropertyChanged(nameof(VideoLengthSeconds));
@@ -103,12 +132,14 @@ namespace MusicVideoJukebox
         }
         private void PauseVideo()
         {
+            isPlaying = false;
             mediaPlayer.Pause();
             progressUpdateTimer.Stop();
         }
 
         private void StopVideo()
         {
+            isPlaying = false;
             mediaPlayer.Stop();
             progressUpdateTimer.Stop();
         }
