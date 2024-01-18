@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using MusicVideoJukebox.Core;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,9 +67,7 @@ namespace MusicVideoJukebox
                 if (vid.Artist == null)
                     niceStrings.Add(vid.Title);
                 else
-                {
                     niceStrings.Add($"{vid.Artist} - {vid.Title}");
-                }
             }
             return niceStrings;
         }
