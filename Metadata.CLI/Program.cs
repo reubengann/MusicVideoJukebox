@@ -6,5 +6,5 @@ using (SQLiteConnection connection = new SQLiteConnection(@"Data Source=C:\Users
     connection.Open();
     var library = VideoLibrary.FromFileList(Directory.EnumerateFiles("E:\\Videos\\Music Videos\\On Media Center").ToList());
     var agent = new MetadataAgent(connection, library);
-    agent.GetMetadata();
+    await agent.GetMetadata();
 }

@@ -40,12 +40,14 @@
             return new VideoLibrary(filePaths, infoMap);
         }
 
-        public class VideoInfo
-        {
-            public string? Artist { get; set; }
-            public string Title { get; set; } = null!;
-            public string? Album { get; set; }
-            public int? Year { get; set; }
-        }
+
+    }
+
+    public class VideoInfo
+    {
+        public string? Artist { get; set; }
+        public string Title { get; set; } = null!;
+        public string? Album { get; set; }
+        public int? Year { get; set; }
     }
 }

@@ -2,6 +2,9 @@
 using FuzzySharp;
 using FuzzySharp.PreProcess;
 using System.Data;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Web;
 
 namespace MusicVideoJukebox.Core
 {
@@ -16,19 +19,33 @@ namespace MusicVideoJukebox.Core
             this.library = library;
         }
 
-        public void GetMetadata()
+        public async Task GetMetadata()
         {
-            var rows = dbConnection.Query<MetadataRow>("SELECT track_id, year, artist, album, track from songs;");
+            var httpClient = new HttpClient();
+            var rows = await dbConnection.QueryAsync<MetadataRow>("SELECT track_id, year, artist, album, track from songs;");
             var metadataRowMap = rows.ToDictionary(x => $"{x.artist} - {x.track}");
-            foreach (var row in library.InfoMap.Values)
+            foreach (var videoInfo in library.InfoMap.Values)
             {
-                string target = $"{row.Artist} - {row.Title}";
+                string target = $"{videoInfo.Artist} - {videoInfo.Title}";
                 Console.WriteLine(target);
                 var candidates = metadataRowMap.Keys.ToList();
                 var searchResult = FuzzySearch.FuzzySearchStrings(target.ToLower(), candidates, 90);
                 if (searchResult.Count == 0)
                 {
                     Console.WriteLine($"Could not find metadata for {target} in database. Trying Deezer");
+                    var deezerResult = await GetFromDeezer(httpClient, videoInfo);
+                    if (deezerResult.Success)
+                    {
+                        videoInfo.Year = deezerResult.Year;
+                        videoInfo.Album = deezerResult.AlbumTitle;
+                        await dbConnection.ExecuteAsync("INSERT INTO songs (year, track, album, artist) values (@Year, @Track, @Album, @Artist)",
+                            new
+                            { Year = videoInfo.Year, Track = videoInfo.Title, Album = videoInfo.Album, Artist = videoInfo.Artist });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Deezer failed to produce a result");
+                    }
                     continue;
                 }
                 if (searchResult.Count > 1)
@@ -36,29 +53,54 @@ namespace MusicVideoJukebox.Core
 
                 var md = metadataRowMap[searchResult[0].Item1];
                 Console.WriteLine($"Likely album for {target} is {md.album}");
-                row.Album = md.album;
-                row.Year = md.year;
+                videoInfo.Album = md.album;
+                videoInfo.Year = md.year;
             }
         }
 
-        void GetFromDeezer()
+        async Task<DeezerResult> GetFromDeezer(HttpClient client, VideoInfo info)
         {
-            /*
-            response = requests.get(f"https://api.deezer.com/search?q={clean_query}")
-            data = response.json()
-            for album_id, album_title in [(r['album']['id'], r['album']['title']) for r in data['data']]:
-                response = requests.get(f"https://api.deezer.com/album/{album_id}")
-                album_data = response.json()
-                if album_data['record_type'] == 'album':
-                    if is_nuisance(album_title):
-                        continue
-                    print(f"Probable album for {i[1].Artist} {i[1].Track} is {album_title}")
-                    df.loc[i[0], 'Album'] = album_title
-                    break
-                time.sleep(1)
-             */
+            var cleanQuery = HttpUtility.UrlEncode($"{info.Artist} {info.Title}");
+            var response = await client.GetAsync($"https://api.deezer.com/search?q={cleanQuery}");
+            if (!response.IsSuccessStatusCode) throw new Exception();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var jsonAsObject = JsonSerializer.Deserialize<JsonObject>(responseString) ?? throw new Exception();
+            var searchResults = jsonAsObject["data"]?.AsArray() ?? throw new Exception();
+            foreach (var item in searchResults)
+            {
+                await Task.Delay(1000);
+                var itemAsObj = item?.AsObject() ?? throw new Exception();
+                var album = itemAsObj["album"]?.AsObject() ?? throw new Exception();
+                var albumTitle = album["title"]?.GetValue<string>() ?? throw new Exception();
+                if (new[] { "hit", "best", "party", "karaoke" }.Any(c => albumTitle.ToLower().Contains(c))) continue;
+                var albumId = album["id"]?.GetValue<int>() ?? throw new Exception();
+                response = await client.GetAsync($"https://api.deezer.com/album/{albumId}");
+                responseString = await response.Content.ReadAsStringAsync();
+                var albumResponseAsObj = JsonSerializer.Deserialize<JsonObject>(responseString) ?? throw new Exception();
+                var albumType = albumResponseAsObj["record_type"]?.AsValue().ToString() ?? throw new Exception();
+                if (albumType != "album") continue;
+                var releaseDate = albumResponseAsObj["release_date"]?.GetValue<string>() ?? throw new Exception();
+                var year = int.Parse(releaseDate.Split("-").First());
+                return new DeezerResult(true, year, albumTitle);
+            }
+            return new DeezerResult(false);
         }
     }
+
+    class DeezerResult
+    {
+        public DeezerResult(bool success, int? year = null, string? albumTitle = null)
+        {
+            Success = success;
+            Year = year;
+            AlbumTitle = albumTitle;
+        }
+
+        public bool Success { get; set; }
+        public int? Year { get; set; }
+        public string? AlbumTitle { get; set; }
+    }
+
 
     class MetadataRow
     {
