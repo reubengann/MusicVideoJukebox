@@ -45,7 +45,7 @@
             public string? Artist { get; set; }
             public string Title { get; set; } = null!;
             public string? Album { get; set; }
-            public string? Year { get; set; }
+            public int? Year { get; set; }
         }
     }
 }

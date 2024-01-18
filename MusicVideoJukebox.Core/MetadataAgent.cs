@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FuzzySharp;
+using FuzzySharp.PreProcess;
 using System.Data;
 
 namespace MusicVideoJukebox.Core
@@ -23,13 +24,39 @@ namespace MusicVideoJukebox.Core
             {
                 string target = $"{row.Artist} - {row.Title}";
                 Console.WriteLine(target);
-                var searchResult = FuzzySearch.FuzzySearchStrings(target, metadataRowMap.Keys.ToList(), 90);
-                if (searchResult.Count != 1)
-                    throw new NotImplementedException();
+                var candidates = metadataRowMap.Keys.ToList();
+                var searchResult = FuzzySearch.FuzzySearchStrings(target.ToLower(), candidates, 90);
+                if (searchResult.Count == 0)
+                {
+                    Console.WriteLine($"Could not find metadata for {target} in database. Trying Deezer");
+                    continue;
+                }
+                if (searchResult.Count > 1)
+                    throw new NotImplementedException("Multiple matches");
+
                 var md = metadataRowMap[searchResult[0].Item1];
                 Console.WriteLine($"Likely album for {target} is {md.album}");
-                break;
+                row.Album = md.album;
+                row.Year = md.year;
             }
+        }
+
+        void GetFromDeezer()
+        {
+            /*
+            response = requests.get(f"https://api.deezer.com/search?q={clean_query}")
+            data = response.json()
+            for album_id, album_title in [(r['album']['id'], r['album']['title']) for r in data['data']]:
+                response = requests.get(f"https://api.deezer.com/album/{album_id}")
+                album_data = response.json()
+                if album_data['record_type'] == 'album':
+                    if is_nuisance(album_title):
+                        continue
+                    print(f"Probable album for {i[1].Artist} {i[1].Track} is {album_title}")
+                    df.loc[i[0], 'Album'] = album_title
+                    break
+                time.sleep(1)
+             */
         }
     }
 
@@ -49,9 +76,10 @@ namespace MusicVideoJukebox.Core
         {
             List<Tuple<string, int>> results = new List<Tuple<string, int>>();
 
+
             foreach (string item in collection)
             {
-                int similarity = Fuzz.WeightedRatio(target, item);
+                int similarity = Fuzz.WeightedRatio(target, item, PreprocessMode.Full);
 
                 if (similarity >= threshold)
                     results.Add(new Tuple<string, int>(item, similarity));
