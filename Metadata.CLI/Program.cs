@@ -23,7 +23,7 @@ artist text NOT NULL
     var toRemove = filesInDb.Except(fileNames);
     var toAdd = fileNames.Except(filesInDb);
     // TODO: Remove items.
-    var agent = new FuzzyMatchDatabaseMetadataProvider(refConnection);
+    var agent = new LibraryFillInMetadataProvider(refConnection);
     foreach (var row in toAdd)
     {
         var (artist, title) = FileNameHelpers.ParseFileNameIntoArtistTitle(row);
