@@ -17,6 +17,7 @@
             int ct = 0;
             foreach (string file in filePaths)
             {
+                if (!file.EndsWith(".mp4")) continue;
                 ct++;
                 var nameOnly = Path.GetFileNameWithoutExtension(file);
                 if (nameOnly.Contains(" - "))
@@ -45,9 +46,30 @@
 
     public class VideoInfo
     {
-        public string? Artist { get; set; }
+        public string Artist { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string? Album { get; set; }
         public int? Year { get; set; }
+    }
+
+    public static class FileNameHelpers
+    {
+        public static (string, string) ParseFileNameIntoArtistTitle(string filename)
+        {
+            var nameOnly = Path.GetFileNameWithoutExtension(filename);
+            if (nameOnly.Contains(" - "))
+            {
+                var parts = nameOnly.Split(" - ");
+                if (parts.Length > 2)
+                {
+                    string.Join(" - ", parts.Skip(1));
+                }
+                return (parts[0], parts[1]);
+            }
+            else
+            {
+                return ("Unknown", nameOnly);
+            }
+        }
     }
 }

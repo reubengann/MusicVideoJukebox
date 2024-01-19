@@ -10,52 +10,66 @@ namespace MusicVideoJukebox.Core
 {
     public class MetadataAgent
     {
-        private readonly IDbConnection dbConnection;
-        private readonly VideoLibrary library;
+        private readonly IDbConnection referenceConnection;
+        HttpClient? httpClient;
+        Dictionary<string, MetadataRow>? metadataRowMap;
 
-        public MetadataAgent(IDbConnection dbConnection, VideoLibrary library)
+        public MetadataAgent(IDbConnection referenceConnection)
         {
-            this.dbConnection = dbConnection;
-            this.library = library;
+            this.referenceConnection = referenceConnection;
         }
 
-        public async Task GetMetadata()
+        public async Task<VideoInfo> GetMetadata(string artist, string track)
         {
-            var httpClient = new HttpClient();
-            var rows = await dbConnection.QueryAsync<MetadataRow>("SELECT track_id, year, artist, album, track from songs;");
-            var metadataRowMap = rows.ToDictionary(x => $"{x.artist} - {x.track}");
-            foreach (var videoInfo in library.InfoMap.Values)
+            if (metadataRowMap == null)
             {
-                string target = $"{videoInfo.Artist} - {videoInfo.Title}";
-                Console.WriteLine(target);
-                var candidates = metadataRowMap.Keys.ToList();
-                var searchResult = FuzzySearch.FuzzySearchStrings(target.ToLower(), candidates, 90);
-                if (searchResult.Count == 0)
-                {
-                    Console.WriteLine($"Could not find metadata for {target} in database. Trying Deezer");
-                    var deezerResult = await GetFromDeezer(httpClient, videoInfo);
-                    if (deezerResult.Success)
-                    {
-                        videoInfo.Year = deezerResult.Year;
-                        videoInfo.Album = deezerResult.AlbumTitle;
-                        await dbConnection.ExecuteAsync("INSERT INTO songs (year, track, album, artist) values (@Year, @Track, @Album, @Artist)",
-                            new
-                            { Year = videoInfo.Year, Track = videoInfo.Title, Album = videoInfo.Album, Artist = videoInfo.Artist });
-                    }
-                    else
-                    {
-                        Console.WriteLine("Deezer failed to produce a result");
-                    }
-                    continue;
-                }
-                if (searchResult.Count > 1)
-                    throw new NotImplementedException("Multiple matches");
+                var rows = await referenceConnection.QueryAsync<MetadataRow>("SELECT track_id, year, artist, album, track from songs;");
+                metadataRowMap = rows.ToDictionary(x => $"{x.artist} - {x.track}");
+            }
 
-                var md = metadataRowMap[searchResult[0].Item1];
+            if (httpClient == null)
+                httpClient = new HttpClient();
+
+            var videoInfo = new VideoInfo { Artist = artist, Title = track };
+
+            string target = $"{artist} - {track}";
+            Console.WriteLine(target);
+            var candidates = metadataRowMap.Keys.ToList();
+            var searchResult = FuzzySearch.FuzzySearchStrings(target.ToLower(), candidates, 90);
+            if (searchResult.Count == 0)
+            {
+                Console.WriteLine($"Could not find metadata for {target} in database. Trying Deezer");
+                var deezerResult = await GetFromDeezer(httpClient, videoInfo);
+                if (deezerResult.Success)
+                {
+                    videoInfo.Year = deezerResult.Year;
+                    videoInfo.Album = deezerResult.AlbumTitle;
+                    await referenceConnection.ExecuteAsync("INSERT INTO songs (year, track, album, artist) values (@Year, @Track, @Album, @Artist)",
+                        new
+                        { Year = videoInfo.Year, Track = videoInfo.Title.Trim(), Album = videoInfo.Album?.Trim(), Artist = videoInfo.Artist });
+                }
+                else
+                {
+                    Console.WriteLine("Deezer failed to produce a result");
+                }
+            }
+            else
+            {
+                MetadataRow md;
+                if (searchResult.Count > 1)
+                {
+                    Tuple<string, int> maxTuple = searchResult.OrderByDescending(t => t.Item2).First();
+                    md = metadataRowMap[maxTuple.Item1];
+                }
+                else
+                {
+                    md = metadataRowMap[searchResult[0].Item1];
+                }
                 Console.WriteLine($"Likely album for {target} is {md.album}");
                 videoInfo.Album = md.album;
                 videoInfo.Year = md.year;
             }
+            return videoInfo;
         }
 
         async Task<DeezerResult> GetFromDeezer(HttpClient client, VideoInfo info)
