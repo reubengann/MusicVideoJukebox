@@ -19,7 +19,7 @@ artist text NOT NULL
 ");
     var fileNames = Directory.EnumerateFiles("E:\\Videos\\Music Videos\\On Media Center").Where(x => x.EndsWith(".mp4")).ToHashSet();
     var existingRows = await destConnection.QueryAsync<VideoRow>("SELECT video_id, filename, \"year\", title, album, artist FROM videos");
-    var filesInDb = existingRows.Select(x => x.filename).ToHashSet();
+    var filesInDb = existingRows.Select(x => Path.Combine("E:\\Videos\\Music Videos\\On Media Center", x.filename)).ToHashSet();
     var toRemove = filesInDb.Except(fileNames);
     var toAdd = fileNames.Except(filesInDb);
     // TODO: Remove items.
