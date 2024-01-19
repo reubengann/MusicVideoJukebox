@@ -5,7 +5,7 @@ namespace MusicVideoJukebox.Core
 {
 
     // Used to populate the library database. Not for normal use
-    public class LibraryFillInMetadataProvider
+    public class LibraryFillInMetadataProvider : IMetadataProvider
     {
         private readonly FuzzyMatchDatabaseMetadataProvider _fuzzy;
         private readonly DeezerMetadataProvider _deezer;

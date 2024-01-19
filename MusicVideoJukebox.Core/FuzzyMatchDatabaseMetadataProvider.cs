@@ -5,7 +5,7 @@ using System.Data;
 
 namespace MusicVideoJukebox.Core
 {
-    public class FuzzyMatchDatabaseMetadataProvider
+    public class FuzzyMatchDatabaseMetadataProvider : IMetadataProvider
     {
         private readonly IDbConnection referenceConnection;
         HttpClient? httpClient;
@@ -53,8 +53,6 @@ namespace MusicVideoJukebox.Core
             return videoInfo;
         }
     }
-
-
 
 
     class MetadataRow

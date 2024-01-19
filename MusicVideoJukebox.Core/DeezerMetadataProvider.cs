@@ -4,7 +4,7 @@ using System.Web;
 
 namespace MusicVideoJukebox.Core
 {
-    public class DeezerMetadataProvider
+    public class DeezerMetadataProvider : IMetadataProvider
     {
         HttpClient httpClient;
 
