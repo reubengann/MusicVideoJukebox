@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MusicVideoJukebox.Core;
 using System.Windows;
 
 namespace MusicVideoJukebox
@@ -13,5 +8,11 @@ namespace MusicVideoJukebox
     /// </summary>
     public partial class App : Application
     {
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            VideoLibraryStore store = new VideoLibraryStore(await VideoLibraryBuilder.Build("E:\\Videos\\Music Videos\\On Media Center"));
+            MainWindow = new MainWindow(store);
+            MainWindow.Show();
+        }
     }
 }

@@ -14,11 +14,11 @@ namespace MusicVideoJukebox
         private bool fadingOut = false;
         private bool fadingIn = false;
 
-        public MainWindow()
+        public MainWindow(VideoLibraryStore videoLibraryStore)
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this);
+            vm = new MainWindowViewModel(this, videoLibraryStore);
             DataContext = vm;
         }
 

@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -33,17 +31,17 @@ namespace MusicVideoJukebox
         bool isPlaying = false;
         int currentVideoIndex = 0;
         readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
-        readonly VideoLibrary library;
+        readonly VideoLibraryStore libraryStore;
         public ObservableCollection<string> VideoFiles { get; set; }
 
-        public MainWindowViewModel(IMediaPlayer mediaPlayer)
+        public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore)
         {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.Volume = 1;
-            library = VideoLibrary.FromFileList(Directory.EnumerateFiles(videoFolder).ToList());
-            VideoFiles = new ObservableCollection<string>(GetNiceNames(library));
+            libraryStore = videoLibraryStore;
+            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary));
 
-            mediaPlayer.SetSource(new System.Uri(library.FilePaths[currentVideoIndex]));
+            mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
 
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -113,20 +111,20 @@ namespace MusicVideoJukebox
         private void PrevTrack()
         {
             currentVideoIndex--;
-            if (currentVideoIndex < 0) currentVideoIndex = library.FilePaths.Count - 1;
+            if (currentVideoIndex < 0) currentVideoIndex = libraryStore.VideoLibrary.FilePaths.Count - 1;
             PlayVideoAtCurrentIndex();
         }
 
         private void NextTrack()
         {
             currentVideoIndex++;
-            if (currentVideoIndex > library.FilePaths.Count - 1) currentVideoIndex = 0;
+            if (currentVideoIndex > libraryStore.VideoLibrary.FilePaths.Count - 1) currentVideoIndex = 0;
             PlayVideoAtCurrentIndex();
         }
 
         private void PlayVideoAtCurrentIndex()
         {
-            mediaPlayer.SetSource(new System.Uri(library.FilePaths[currentVideoIndex]));
+            mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
             // show first frame
             mediaPlayer.Play();
             if (!isPlaying)
