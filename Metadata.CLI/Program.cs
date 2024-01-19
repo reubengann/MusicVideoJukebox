@@ -2,8 +2,8 @@
 using MusicVideoJukebox.Core;
 using System.Data.SQLite;
 
-using (SQLiteConnection refConnection = new SQLiteConnection(@"Data Source=C:\Users\reube\Downloads\songs.db"))
-using (SQLiteConnection destConnection = new SQLiteConnection(@"Data Source=E:\Videos\Music Videos\On Media Center\meta.db"))
+using (var refConnection = new SQLiteConnection(@"Data Source=C:\Users\reube\Downloads\songs.db"))
+using (var destConnection = new SQLiteConnection(@"Data Source=E:\Videos\Music Videos\On Media Center\meta.db"))
 {
     refConnection.Open();
     destConnection.Open();

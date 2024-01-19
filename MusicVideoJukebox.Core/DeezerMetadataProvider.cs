@@ -6,7 +6,7 @@ namespace MusicVideoJukebox.Core
 {
     public class DeezerMetadataProvider : IMetadataProvider
     {
-        HttpClient httpClient;
+        readonly HttpClient httpClient;
 
         public DeezerMetadataProvider(HttpClient httpClient)
         {

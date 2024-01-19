@@ -8,7 +8,6 @@ namespace MusicVideoJukebox.Core
     public class FuzzyMatchDatabaseMetadataProvider : IMetadataProvider
     {
         private readonly IDbConnection referenceConnection;
-        HttpClient? httpClient;
         Dictionary<string, MetadataRow>? metadataRowMap;
 
         public FuzzyMatchDatabaseMetadataProvider(IDbConnection referenceConnection)
@@ -23,9 +22,6 @@ namespace MusicVideoJukebox.Core
                 var rows = await referenceConnection.QueryAsync<MetadataRow>("SELECT track_id, year, artist, album, track from songs;");
                 metadataRowMap = rows.ToDictionary(x => $"{x.artist} - {x.track}");
             }
-
-            if (httpClient == null)
-                httpClient = new HttpClient();
 
             var videoInfo = new VideoInfo { Artist = artist, Title = track };
 
@@ -69,8 +65,7 @@ namespace MusicVideoJukebox.Core
     {
         public static List<Tuple<string, int>> FuzzySearchStrings(string target, List<string> collection, int threshold)
         {
-            List<Tuple<string, int>> results = new List<Tuple<string, int>>();
-
+            var results = new List<Tuple<string, int>>();
 
             foreach (string item in collection)
             {

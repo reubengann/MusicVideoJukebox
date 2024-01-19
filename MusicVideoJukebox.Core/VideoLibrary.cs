@@ -23,11 +23,17 @@
                 if (nameOnly.Contains(" - "))
                 {
                     var parts = nameOnly.Split(" - ");
+                    string title;
                     if (parts.Length > 2)
                     {
-                        string.Join(" - ", parts.Skip(1));
+                        title = string.Join(" - ", parts.Skip(1));
                     }
-                    infoMap[file] = new VideoInfo { Artist = parts[0], Title = parts[1] };
+                    else
+                    {
+                        title = parts[1];
+                    }
+                    string artist = parts[0];
+                    infoMap[file] = new VideoInfo { Artist = artist, Title = title };
                 }
                 else
                 {
@@ -60,11 +66,17 @@
             if (nameOnly.Contains(" - "))
             {
                 var parts = nameOnly.Split(" - ");
+                string title;
                 if (parts.Length > 2)
                 {
-                    string.Join(" - ", parts.Skip(1));
+                    title = string.Join(" - ", parts.Skip(1));
                 }
-                return (parts[0], parts[1]);
+                else
+                {
+                    title = parts[1];
+                }
+                string artist = parts[0];
+                return (artist, title);
             }
             else
             {
