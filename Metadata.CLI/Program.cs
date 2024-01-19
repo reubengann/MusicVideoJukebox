@@ -23,10 +23,7 @@ artist text NOT NULL
     var toRemove = filesInDb.Except(fileNames);
     var toAdd = fileNames.Except(filesInDb);
     // TODO: Remove items.
-
-
-    //var library = VideoLibrary.FromFileList(Directory.EnumerateFiles("E:\\Videos\\Music Videos\\On Media Center").ToList());
-    var agent = new MetadataAgent(refConnection);
+    var agent = new FuzzyMatchDatabaseMetadataProvider(refConnection);
     foreach (var row in toAdd)
     {
         var (artist, title) = FileNameHelpers.ParseFileNameIntoArtistTitle(row);
@@ -34,5 +31,4 @@ artist text NOT NULL
         var vr = new VideoRow { artist = artist, title = title, album = metadata.Album, filename = Path.GetFileName(row), year = metadata.Year };
         await destConnection.ExecuteAsync("INSERT INTO videos (filename, \"year\", title, album, artist) values (@filename, @year, @title, @album, @artist)", vr);
     }
-    //await agent.GetMetadata();
 }

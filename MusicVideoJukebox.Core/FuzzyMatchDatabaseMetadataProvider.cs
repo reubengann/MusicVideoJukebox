@@ -8,13 +8,13 @@ using System.Web;
 
 namespace MusicVideoJukebox.Core
 {
-    public class MetadataAgent
+    public class FuzzyMatchDatabaseMetadataProvider
     {
         private readonly IDbConnection referenceConnection;
         HttpClient? httpClient;
         Dictionary<string, MetadataRow>? metadataRowMap;
 
-        public MetadataAgent(IDbConnection referenceConnection)
+        public FuzzyMatchDatabaseMetadataProvider(IDbConnection referenceConnection)
         {
             this.referenceConnection = referenceConnection;
         }
