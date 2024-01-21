@@ -9,10 +9,10 @@
         MouseDoubleClick="Window_MouseDoubleClick" MouseMove="Window_MouseMove"
         d:DataContext="{d:DesignInstance local:MainWindowDesignTimeViewModel, IsDesignTimeCreatable=True}">
     <Grid Background="Black">
-        
-        <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True">
 
-        </MediaElement>
+        <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
+        <local:VideoInfoDisplay VerticalAlignment="Bottom" Margin="25 50"/>
+
         <Grid x:Name="VideoControls">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>

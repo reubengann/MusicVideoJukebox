@@ -14,20 +14,21 @@
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect
-                      ShadowDepth="1.1"
+                      ShadowDepth="5"
                       Direction="310"
                       Color="Black"
                       BlurRadius="0"
                         />
                 </Setter.Value>
             </Setter>
-            
+            <Setter Property="FontWeight" Value="Bold"/>
+
             <Setter Property="FontSize" Value="32"/>
         </Style>
         
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="Billy Joel" FontFamily="./#Kabel-Black"/>
+        <TextBlock Text="Billy Joel"/>
         <TextBlock Text="&quot;Uptown Girl&quot;"/>
         <TextBlock Text="Volume I &amp; Volume II"/>
         <TextBlock Text="1991"/>
