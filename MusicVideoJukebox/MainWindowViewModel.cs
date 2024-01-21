@@ -35,6 +35,12 @@ namespace MusicVideoJukebox
         readonly VideoLibraryStore libraryStore;
         public ObservableCollection<string> VideoFiles { get; set; }
 
+        public VideoInfoViewModel InfoViewModel
+        {
+            get { return new VideoInfoViewModel(libraryStore.VideoLibrary.InfoMap[libraryStore.VideoLibrary.FilePaths[currentVideoIndex]]); }
+        }
+
+
         public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore)
         {
             this.mediaPlayer = mediaPlayer;
@@ -140,6 +146,9 @@ namespace MusicVideoJukebox
             mediaPlayer.Play();
             if (!isPlaying)
                 mediaPlayer.Pause();
+            OnPropertyChanged(nameof(InfoViewModel));
+            if (infoDisplayed) mediaPlayer.HideInfo();
+            infoDisplayed = false;
         }
 
         public double Volume

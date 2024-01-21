@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:MusicVideoJukebox"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400"
-             d:Background="AliceBlue">
+             d:Background="AliceBlue"
+             d:DataContext="{d:DesignInstance local:VideoInfoDesignTimeViewModel, IsDesignTimeCreatable=True}"
+             >
     <UserControl.Resources>
         <!-- Define a TextBlock style with white foreground -->
         <Style TargetType="TextBlock">
@@ -28,9 +30,9 @@
         
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="Billy Joel"/>
-        <TextBlock Text="&quot;Uptown Girl&quot;"/>
-        <TextBlock Text="Volume I &amp; Volume II"/>
-        <TextBlock Text="1991"/>
+        <TextBlock Text="{Binding Artist}"/>
+        <TextBlock Text="{Binding Title}"/>
+        <TextBlock Text="{Binding Album}"/>
+        <TextBlock Text="{Binding Year}"/>
     </StackPanel>
 </UserControl>
