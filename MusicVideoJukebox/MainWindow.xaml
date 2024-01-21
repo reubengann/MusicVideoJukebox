@@ -11,7 +11,7 @@
     <Grid Background="Black">
 
         <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
-        <local:VideoInfoDisplay VerticalAlignment="Bottom" Margin="25 50"/>
+        <local:VideoInfoDisplay x:Name="VideoInfo" VerticalAlignment="Bottom" Margin="25 50" Opacity="0"/>
 
         <Grid x:Name="VideoControls">
             <Grid.ColumnDefinitions>

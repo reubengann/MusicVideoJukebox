@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -105,7 +104,7 @@ namespace MusicVideoJukebox
 
             fadeOutAnimation.Completed += (s, e) => fadingOut = false;
             fadingOut = true;
-            VideoControls.BeginAnimation(Button.OpacityProperty, fadeOutAnimation);
+            VideoControls.BeginAnimation(OpacityProperty, fadeOutAnimation);
         }
 
         public void MaybeFadeButtonsIn()
@@ -120,7 +119,17 @@ namespace MusicVideoJukebox
             };
             fadeInAnimation.Completed += (s, e) => fadingIn = false;
             fadingIn = true;
-            VideoControls.BeginAnimation(Button.OpacityProperty, fadeInAnimation);
+            VideoControls.BeginAnimation(OpacityProperty, fadeInAnimation);
+        }
+
+        public void ShowInfo()
+        {
+            VideoInfo.BeginAnimation(OpacityProperty, new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.25) });
+        }
+
+        public void HideInfo()
+        {
+            VideoInfo.BeginAnimation(OpacityProperty, new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.25) });
         }
     }
 }

@@ -14,6 +14,8 @@ namespace MusicVideoJukebox
         void SetFullScreen();
         void FadeButtonsOut();
         void MaybeFadeButtonsIn();
+        void ShowInfo();
+        void HideInfo();
 
         double Volume { get; set; }
     }

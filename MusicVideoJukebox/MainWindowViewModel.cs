@@ -29,6 +29,7 @@ namespace MusicVideoJukebox
         bool scrubbedRecently = false;
         bool isFullScreen = false;
         bool isPlaying = false;
+        bool infoDisplayed = false;
         int currentVideoIndex = 0;
         readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
         readonly VideoLibraryStore libraryStore;
@@ -98,6 +99,16 @@ namespace MusicVideoJukebox
         private void Timer_Tick(object? sender, EventArgs e)
         {
             if (isScrubbing) return;
+            if (VideoPositionTime > 3 && !infoDisplayed)
+            {
+                mediaPlayer.ShowInfo();
+                infoDisplayed = true;
+            }
+            if (VideoPositionTime > 10 && infoDisplayed)
+            {
+                mediaPlayer.HideInfo();
+                infoDisplayed = false;
+            }
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(VideoLengthSeconds));
         }
