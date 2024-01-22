@@ -5,7 +5,7 @@ namespace MusicVideoJukebox.Core
 {
     public class RandomPlaylistBuilder
     {
-        private string dbPath;
+        private readonly string dbPath;
 
         public RandomPlaylistBuilder(string dbPath)
         {

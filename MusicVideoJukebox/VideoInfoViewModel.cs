@@ -4,7 +4,7 @@ namespace MusicVideoJukebox
 {
     public class VideoInfoViewModel : BaseViewModel
     {
-        private VideoInfo videoInfo;
+        private readonly VideoInfo videoInfo;
 
         public VideoInfoViewModel(VideoInfo videoInfo)
         {

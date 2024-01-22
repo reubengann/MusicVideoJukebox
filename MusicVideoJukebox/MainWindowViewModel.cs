@@ -31,7 +31,6 @@ namespace MusicVideoJukebox
         bool isPlaying = false;
         bool infoDisplayed = false;
         int currentVideoIndex = 0;
-        readonly string videoFolder = "E:\\Videos\\Music Videos\\On Media Center";
         readonly VideoLibraryStore libraryStore;
         public ObservableCollection<string> VideoFiles { get; set; }
 
