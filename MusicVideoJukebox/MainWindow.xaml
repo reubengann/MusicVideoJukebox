@@ -11,9 +11,17 @@
     <Grid Background="Black">
 
         <MediaElement x:Name="player" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
-        <local:VideoInfoDisplay x:Name="VideoInfo" VerticalAlignment="Bottom" Margin="50 50" Opacity="0" DataContext="{Binding InfoViewModel}"/>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="50 50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Viewbox  Grid.Row="1" >
+                <local:VideoInfoDisplay x:Name="VideoInfo"  Opacity="100" DataContext="{Binding InfoViewModel}"/>
+            </Viewbox>
+        </Grid>
 
-        <Grid x:Name="VideoControls">
+        <Grid x:Name="VideoControls" Margin="15 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
