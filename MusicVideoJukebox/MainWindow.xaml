@@ -29,8 +29,8 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Button Grid.Row="0" Grid.Column="4" Margin="0 25 25 0" HorizontalAlignment="Right" Height="50" Width="50">Settings</Button>
-            
-            <ListView Grid.Row="2" Grid.Column="3" ItemsSource="{Binding VideoFiles}" SelectedItem="{Binding CurrentVideo}"
+            <ListView Grid.Row="2" Grid.Column="3" ItemsSource="{Binding VideoFiles}" 
+                      SelectedIndex="{Binding SelectedIndex}"
                       Margin="0 0 0 10" Background="Black" Width="300" Foreground="White" HorizontalAlignment="Right"
                       Grid.ColumnSpan="2" SelectionMode="Single" MaxHeight="400"
                       />

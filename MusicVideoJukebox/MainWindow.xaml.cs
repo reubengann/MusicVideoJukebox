@@ -19,6 +19,12 @@ namespace MusicVideoJukebox
             triggerElements.Add(player);
             vm = new MainWindowViewModel(this, videoLibraryStore);
             DataContext = vm;
+            player.MediaEnded += Player_MediaEnded;
+        }
+
+        private void Player_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            vm.DonePlaying();
         }
 
         public void Pause() => player.Pause();

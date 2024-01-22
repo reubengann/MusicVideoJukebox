@@ -76,20 +76,16 @@ namespace MusicVideoJukebox
             return niceStrings;
         }
 
-        public string CurrentVideo
+        public int SelectedIndex
         {
-            get
-            {
-                return VideoFiles[currentVideoIndex];
-            }
+            get { return currentVideoIndex; }
             set
             {
-                int selectedIndex = VideoFiles.IndexOf(value);
-                if (selectedIndex < 0) return;
-                currentVideoIndex = selectedIndex;
+                currentVideoIndex = value;
                 PlayVideoAtCurrentIndex();
             }
         }
+
 
         private void FadeTimer_Tick(object? sender, EventArgs e)
         {
@@ -146,6 +142,7 @@ namespace MusicVideoJukebox
             if (!isPlaying)
                 mediaPlayer.Pause();
             OnPropertyChanged(nameof(InfoViewModel));
+            OnPropertyChanged(nameof(SelectedIndex));
             if (infoDisplayed) mediaPlayer.HideInfo();
             infoDisplayed = false;
         }
@@ -211,6 +208,11 @@ namespace MusicVideoJukebox
             fadeTimer.Stop();
             fadeTimer.Start();
             mediaPlayer.MaybeFadeButtonsIn();
+        }
+
+        public void DonePlaying()
+        {
+            NextTrack();
         }
 
         public double VideoLengthSeconds => mediaPlayer.LengthSeconds;
