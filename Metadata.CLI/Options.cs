@@ -11,4 +11,11 @@ namespace Metadata.CLI
         [Value(1, MetaName = "folderPath", HelpText = "The path to the folder")]
         public string FolderPath { get; set; } = null!;
     }
+
+    [Verb("shuffled", HelpText = "Create shuffled playlist")]
+    public class ShuffledOptions
+    {
+        [Value(0, MetaName = "folderPath", HelpText = "The path to the folder")]
+        public string FolderPath { get; set; } = null!;
+    }
 }

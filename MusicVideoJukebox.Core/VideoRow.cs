@@ -9,4 +9,18 @@
         public string? album { get; set; }
         public string artist { get; set; } = null!;
     }
+
+    public class PlaylistsVideosRow
+    {
+        public int playlists_videos_id { get; set; }
+        public int playlist_id { get; set; }
+        public int video_id { get; set; }
+        public int play_order { get; set; }
+    }
+
+    public class PlaylistRow
+    {
+        public int PlaylistId { get; set; }
+        public string PlaylistName { get; set; } = null!;
+    }
 }
