@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="MainWindow" Height="750" Width="1000"
         MouseDoubleClick="Window_MouseDoubleClick" MouseMove="Window_MouseMove"
@@ -21,7 +22,7 @@
             </Viewbox>
         </Grid>
 
-        <Grid x:Name="VideoControls" Margin="15 0">
+        <Grid x:Name="VideoControls" Margin="15 15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -36,18 +37,19 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.Column="4" Margin="0 25 25 0" HorizontalAlignment="Right" Height="50" Width="50">Settings</Button>
+            <Button Grid.Row="0" Grid.Column="4" Margin="0 25 25 0" HorizontalAlignment="Right" Height="50" Width="50">
+                <fa:ImageAwesome Icon="Gear" Foreground="White"></fa:ImageAwesome></Button>
             <ListView Grid.Row="2" Grid.Column="3" ItemsSource="{Binding VideoFiles}" 
                       SelectedIndex="{Binding SelectedIndex}"
                       Margin="0 0 0 10" Background="Black" Width="300" Foreground="White" HorizontalAlignment="Right"
                       Grid.ColumnSpan="2" SelectionMode="Single" MaxHeight="400"
                       />
             <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Grid.Column="2" Width="50" Content="Prev" Command="{Binding PrevCommand}"/>
-                <Button Width="50" Content="Play" Command="{Binding PlayCommand}"/>
-                <Button Grid.Column="1" Width="50" Content="Pause" Command="{Binding PauseCommand}"/>
-                <Button Grid.Column="2" Width="50" Content="Stop" Command="{Binding StopCommand}"/>
-                <Button Grid.Column="2" Width="50" Content="Next" Command="{Binding NextCommand}"/>
+                <Button Command="{Binding PrevCommand}"><fa:ImageAwesome Icon="StepBackward" Foreground="White" Height="30" Width="30"/></Button>
+                <Button Command="{Binding PlayCommand}"><fa:ImageAwesome Icon="Play" Foreground="White" Height="30" Width="30"/></Button>
+                <Button Command="{Binding PauseCommand}"><fa:ImageAwesome Icon="Pause" Foreground="White" Height="30" Width="30"/></Button>
+                <Button Command="{Binding StopCommand}"><fa:ImageAwesome Icon="Stop" Foreground="White" Height="30" Width="30"/></Button>
+                <Button Command="{Binding NextCommand}"><fa:ImageAwesome Icon="StepForward" Foreground="White" Height="30" Width="30"/></Button>
             </StackPanel>
 
             <Slider Grid.Row="3" Grid.Column="4" VerticalAlignment="Center" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Value="{Binding Volume}"/>
