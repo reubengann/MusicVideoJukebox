@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Metadata.CLI": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\reube\\Downloads\\songs.db \"E:\\Videos\\Music Videos\\On Media Center\""
     }
   }
 }

@@ -1,3 +1,14 @@
-﻿using MusicVideoJukebox.Core;
+﻿using CommandLine;
+using Metadata.CLI;
+using MusicVideoJukebox.Core;
 
-await BackfillVideoDatabaseBuilder.BuildAsync(@"C:\Users\reube\Downloads\songs.db", @"E:\Videos\Music Videos\On Media Center\meta.db");
+
+await Parser.Default.ParseArguments<CreateOptions>(args)
+        .MapResult(
+      HandleCreate,
+      errs => Task.FromResult(0));
+
+static async Task HandleCreate(CreateOptions options)
+{
+    await BackfillVideoDatabaseBuilder.BuildAsync(options.LibraryPath, Path.Combine(options.FolderPath, "meta.db"));
+}

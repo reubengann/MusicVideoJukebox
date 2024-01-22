@@ -25,7 +25,7 @@
             <Label>Tracks</Label>
             <DataGrid IsReadOnly="True" SelectionMode="Single" ItemsSource="{Binding TrackListing}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Is Checked" Binding="{Binding IsActive}" />
+                    <DataGridCheckBoxColumn Header="" Binding="{Binding IsActive}" />
                     <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
                     <DataGridTextColumn Header="Track" Binding="{Binding Track}" />
                     <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
