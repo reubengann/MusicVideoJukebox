@@ -1,6 +1,7 @@
 ﻿using MusicVideoJukebox.Core;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,10 +35,47 @@ namespace MusicVideoJukebox
             {
                 Playlists.Add(playlistName);
             }
-            TrackListing = new ObservableCollection<SettingsSongViewModel>(
-            metadata.VideoInfos.Select(track => new SettingsSongViewModel { Album = track.Album, Artist = track.Artist, Track = track.Title, Year = track.Year.ToString() })
-            );
+
+            ObservableCollection<SettingsSongViewModel> settingsSongViewModels = new ObservableCollection<SettingsSongViewModel>(
+                        metadata.VideoInfos.Select(track =>
+                         new SettingsSongViewModel { VideoId = track.VideoId, Album = track.Album, Artist = track.Artist, Track = track.Title, Year = track.Year.ToString() })
+                        );
+            foreach (var songVm in settingsSongViewModels)
+            {
+                songVm.ItemWasChanged += SongVm_ItemWasChanged;
+            }
+            TrackListing = settingsSongViewModels;
             OnPropertyChanged(nameof(TrackListing));
         }
+
+        private void SongVm_ItemWasChanged()
+        {
+            Debug.WriteLine("Item was changed");
+        }
+    }
+
+    public class SettingsSongViewModel
+    {
+        public event Action? ItemWasChanged;
+
+        private bool isActive;
+        public bool IsModified { get; private set; } = false;
+
+        public bool IsActive
+        {
+            get => isActive;
+            set
+            {
+                isActive = value;
+                IsModified = true;
+                ItemWasChanged?.Invoke();
+            }
+        }
+        public int VideoId { get; set; }
+        public string Artist { get; set; } = null!;
+        public string Track { get; set; } = null!;
+        public string? Album { get; set; }
+        public string? Year { get; set; }
+        public int Order { get; set; }
     }
 }

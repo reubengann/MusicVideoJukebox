@@ -23,13 +23,5 @@ namespace MusicVideoJukebox
         }
     }
 
-    public class SettingsSongViewModel
-    {
-        public bool IsActive { get; set; }
-        public string Artist { get; set; } = null!;
-        public string Track { get; set; } = null!;
-        public string? Album { get; set; }
-        public string? Year { get; set; }
-        public int Order { get; set; }
-    }
+
 }
