@@ -26,17 +26,17 @@
             <DataGrid IsReadOnly="True" SelectionMode="Single" ItemsSource="{Binding TrackListing}" AutoGenerateColumns="False" Height="300">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="" Binding="{Binding IsActive}" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
-                    <DataGridTextColumn Header="Track" Binding="{Binding Track}" />
-                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" >
+                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="150"/>
+                    <DataGridTextColumn Header="Track" Binding="{Binding Track}" Width="200"/>
+                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="150"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="50" >
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Order"  Binding="{Binding Order}" >
+                    <DataGridTextColumn Header="Order"  Binding="{Binding Order}" Width="75">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
