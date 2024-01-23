@@ -17,7 +17,7 @@ namespace MusicVideoJukebox
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this, videoLibraryStore);
+            vm = new MainWindowViewModel(this, videoLibraryStore, new WindowsSettingsWindowFactory());
             DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
         }

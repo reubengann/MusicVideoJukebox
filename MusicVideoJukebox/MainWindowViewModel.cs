@@ -31,6 +31,7 @@ namespace MusicVideoJukebox
         bool isPlaying = false;
         bool infoDisplayed = false;
         int currentVideoIndex = 0;
+        private ISettingsWindowFactory settingsDialogFactory;
         readonly VideoLibraryStore libraryStore;
         public ObservableCollection<string> VideoFiles { get; set; }
 
@@ -40,7 +41,7 @@ namespace MusicVideoJukebox
         }
 
 
-        public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore)
+        public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore, ISettingsWindowFactory settingsDialogFactory)
         {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.Volume = 1;
@@ -60,6 +61,7 @@ namespace MusicVideoJukebox
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
             PlayVideo();
+            this.settingsDialogFactory = settingsDialogFactory;
         }
 
         private static IEnumerable<string> GetNiceNames(VideoLibrary library)
@@ -119,6 +121,13 @@ namespace MusicVideoJukebox
         public ICommand StopCommand => new DelegateCommand(StopVideo);
         public ICommand NextCommand => new DelegateCommand(NextTrack);
         public ICommand PrevCommand => new DelegateCommand(PrevTrack);
+        public ICommand SettingsCommand => new DelegateCommand(OpenSettings);
+
+        private void OpenSettings()
+        {
+            var settingsDialog = settingsDialogFactory.Create();
+            settingsDialog.ShowDialog();
+        }
 
         private void PrevTrack()
         {
