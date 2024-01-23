@@ -20,7 +20,10 @@
                 <Label Content="{Binding MetadataFoundString}"></Label>
                 <Button Visibility="{Binding MetadataNotFound, Converter={StaticResource BooleanToVisibilityConverter}}">Generate</Button>
             </StackPanel>
-            <Label>Playlists</Label>
+            <StackPanel Orientation="Horizontal">
+                <Label>Playlists</Label>
+                <Button Command="{Binding AddNewPlaylistCommand}">Add</Button>
+            </StackPanel>
             <DataGrid Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Item Name" Width="150" Binding="{Binding ItemName, Mode=TwoWay}"/>
@@ -63,7 +66,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" IsEnabled="{Binding HasSettingsToSave}">Save</Button>
+            <Button Grid.Column="0" IsEnabled="{Binding HasSettingsToSave}" Command="{Binding SaveChangesCommand}">Save</Button>
             <Button Grid.Column="2">Dismiss</Button>
         </Grid>
     </Grid>

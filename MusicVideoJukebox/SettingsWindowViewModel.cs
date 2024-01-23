@@ -1,9 +1,12 @@
 ﻿using MusicVideoJukebox.Core;
+using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MusicVideoJukebox
 {
@@ -18,6 +21,25 @@ namespace MusicVideoJukebox
         public int SelectedPlaylistIndex { get; set; } = 0;
         public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
         public bool HasSettingsToSave { get => hasSettingsToSave; set { hasSettingsToSave = value; OnPropertyChanged(nameof(HasSettingsToSave)); } }
+        public ICommand SaveChangesCommand => new DelegateCommand(SaveChanges);
+        public ICommand AddNewPlaylistCommand => new DelegateCommand(AddNewPlaylist);
+
+        private async void AddNewPlaylist()
+        {
+            var created = await MetadataLoader.AddNewPlaylist(VideoFolderPath, "New playlist");
+            Playlists.Add(new PlaylistViewModel(created.PlaylistName, created.PlaylistId));
+        }
+
+        private void SaveChanges()
+        {
+            if (Playlists.Select(x => x.NameWasChanged).Any())
+            {
+                foreach (var changedPlaylist in Playlists.Where(x => x.NameWasChanged))
+                {
+                    Debug.WriteLine($"Playlist {changedPlaylist.PlaylistId} name was changed to {changedPlaylist.ItemName}");
+                }
+            }
+        }
 
         public SettingsWindowViewModel(string folder)
         {
@@ -54,7 +76,7 @@ namespace MusicVideoJukebox
 
         private void PlaylistNameChanged()
         {
-            throw new NotImplementedException();
+            HasSettingsToSave = true;
         }
 
         private void SongVm_ItemWasChanged()

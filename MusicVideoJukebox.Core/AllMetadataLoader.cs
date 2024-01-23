@@ -15,5 +15,13 @@ namespace MusicVideoJukebox.Core
             var playlists = playlistRows.Select(x => new Playlist { PlaylistId = x.playlist_id, PlaylistName = x.playlist_name });
             return new LibraryMetadata { Folder = folder, Playlists = playlists.ToList(), VideoInfos = videoInfos.ToList() };
         }
+
+        public static async Task<Playlist> AddNewPlaylist(string folder, string playlistName)
+        {
+            var databaseFile = Path.Combine(folder, "meta.db");
+            using var conn = new SQLiteConnection($"Data Source={databaseFile}");
+            var id = await conn.ExecuteScalarAsync<int>("insert into playlists (playlist_name) values (@PlaylistName) returning playlist_id", new { PlaylistName = playlistName });
+            return new Playlist { PlaylistId = id, PlaylistName = playlistName };
+        }
     }
 }
