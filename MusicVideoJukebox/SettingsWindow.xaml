@@ -21,7 +21,11 @@
                 <Button Visibility="{Binding MetadataNotFound, Converter={StaticResource BooleanToVisibilityConverter}}">Generate</Button>
             </StackPanel>
             <Label>Playlists</Label>
-            <ListView Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex}"/>
+            <DataGrid Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Item Name" Width="150" Binding="{Binding ItemName, Mode=TwoWay}"/>
+                </DataGrid.Columns>
+            </DataGrid>
             <Label>Tracks</Label>
             <DataGrid  SelectionMode="Single" CanUserAddRows="False" ItemsSource="{Binding TrackListing}" AutoGenerateColumns="False" Height="300">
                 <DataGrid.Columns>
@@ -59,7 +63,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0">Save</Button>
+            <Button Grid.Column="0" IsEnabled="{Binding HasSettingsToSave}">Save</Button>
             <Button Grid.Column="2">Dismiss</Button>
         </Grid>
     </Grid>

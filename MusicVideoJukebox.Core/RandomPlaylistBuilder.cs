@@ -34,8 +34,8 @@ namespace MusicVideoJukebox.Core
             var videoRowsShuffled = videoRows.OrderBy(a => Guid.NewGuid()).ToList();
             var trans = await destConnection.BeginTransactionAsync();
             if (trans.Connection == null) { return; }
-            var id = await trans.Connection.ExecuteScalarAsync<int>("insert into playlists (playlist_name) values (@PlaylistName) returning playlist_id",
-                new PlaylistRow { PlaylistName = "All Songs Shuffled" });
+            var id = await trans.Connection.ExecuteScalarAsync<int>("insert into playlists (playlist_name) values (@playlist_name) returning playlist_id",
+                new PlaylistRow { playlist_name = "All Songs Shuffled" });
             var m2mrows = videoRowsShuffled.Select((x, index) => new PlaylistsVideosRow { playlist_id = id, video_id = x.video_id, play_order = index + 1 });
             await trans.Connection.ExecuteAsync("insert into playlists_videos (playlist_id, video_id, play_order) values (@playlist_id, @video_id, @play_order)", m2mrows);
             await trans.CommitAsync();

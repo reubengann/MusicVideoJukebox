@@ -1,7 +1,6 @@
 ﻿using MusicVideoJukebox.Core;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,17 +9,20 @@ namespace MusicVideoJukebox
 {
     class SettingsWindowViewModel : BaseViewModel
     {
+        private bool hasSettingsToSave;
+
         public string VideoFolderPath { get; set; }
         public bool MetadataNotFound { get; set; }
-        public ObservableCollection<string> Playlists { get; set; }
+        public ObservableCollection<PlaylistViewModel> Playlists { get; set; }
         public string MetadataFoundString => MetadataNotFound ? "No" : "Yes";
         public int SelectedPlaylistIndex { get; set; } = 0;
         public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
+        public bool HasSettingsToSave { get => hasSettingsToSave; set { hasSettingsToSave = value; OnPropertyChanged(nameof(HasSettingsToSave)); } }
 
         public SettingsWindowViewModel(string folder)
         {
             VideoFolderPath = folder;
-            Playlists = new ObservableCollection<string>();
+            Playlists = new ObservableCollection<PlaylistViewModel>();
             TrackListing = new ObservableCollection<SettingsSongViewModel>();
         }
 
@@ -31,9 +33,11 @@ namespace MusicVideoJukebox
             MetadataNotFound = false;
             OnPropertyChanged(nameof(MetadataFoundString));
             var metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
-            foreach (var playlistName in metadata.PlaylistNames)
+            foreach (var playlist in metadata.Playlists)
             {
-                Playlists.Add(playlistName);
+                PlaylistViewModel item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
+                Playlists.Add(item);
+                item.ItemChanged += PlaylistNameChanged;
             }
 
             ObservableCollection<SettingsSongViewModel> settingsSongViewModels = new ObservableCollection<SettingsSongViewModel>(
@@ -48,9 +52,44 @@ namespace MusicVideoJukebox
             OnPropertyChanged(nameof(TrackListing));
         }
 
+        private void PlaylistNameChanged()
+        {
+            throw new NotImplementedException();
+        }
+
         private void SongVm_ItemWasChanged()
         {
-            Debug.WriteLine("Item was changed");
+            HasSettingsToSave = true;
+        }
+    }
+
+    public class PlaylistViewModel : BaseViewModel
+    {
+        private string itemName;
+        public int PlaylistId { get; private set; }
+
+        public event Action? ItemChanged;
+        public bool NameWasChanged { get; private set; } = false;
+
+        public PlaylistViewModel(string itemName, int playlistId)
+        {
+            this.itemName = itemName;
+            this.PlaylistId = playlistId;
+        }
+
+        public string ItemName
+        {
+            get { return itemName; }
+            set
+            {
+                if (itemName != value)
+                {
+                    itemName = value;
+                    OnPropertyChanged(nameof(ItemName));
+                    ItemChanged?.Invoke();
+                    NameWasChanged = true;
+                }
+            }
         }
     }
 

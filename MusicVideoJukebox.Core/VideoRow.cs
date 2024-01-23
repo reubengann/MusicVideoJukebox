@@ -20,7 +20,7 @@
 
     public class PlaylistRow
     {
-        public int PlaylistId { get; set; }
-        public string PlaylistName { get; set; } = null!;
+        public int playlist_id { get; set; }
+        public string playlist_name { get; set; } = null!;
     }
 }
