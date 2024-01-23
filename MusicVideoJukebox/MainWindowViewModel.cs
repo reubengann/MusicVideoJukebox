@@ -118,7 +118,6 @@ namespace MusicVideoJukebox
 
         public ICommand PlayCommand => new DelegateCommand(PlayVideo);
         public ICommand PauseCommand => new DelegateCommand(PauseVideo);
-        public ICommand StopCommand => new DelegateCommand(StopVideo);
         public ICommand NextCommand => new DelegateCommand(NextTrack);
         public ICommand PrevCommand => new DelegateCommand(PrevTrack);
         public ICommand SettingsCommand => new DelegateCommand(OpenSettings);
@@ -188,13 +187,6 @@ namespace MusicVideoJukebox
         {
             isPlaying = false;
             mediaPlayer.Pause();
-            progressUpdateTimer.Stop();
-        }
-
-        private void StopVideo()
-        {
-            isPlaying = false;
-            mediaPlayer.Stop();
             progressUpdateTimer.Stop();
         }
 

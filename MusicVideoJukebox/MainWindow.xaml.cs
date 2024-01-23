@@ -29,7 +29,6 @@ namespace MusicVideoJukebox
 
         public void Pause() => player.Pause();
         public void Play() => player.Play();
-        public void Stop() => player.Stop();
 
         public void SetSource(Uri source) => player.Source = source;
 
