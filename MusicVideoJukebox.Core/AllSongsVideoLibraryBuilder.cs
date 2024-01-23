@@ -12,7 +12,7 @@ namespace MusicVideoJukebox.Core
             var rows = await conn.QueryAsync<VideoRow>("SELECT video_id, filename, \"year\", title, album, artist FROM videos order by artist, title");
             var fileNames = rows.Select(x => Path.Combine(folder, x.filename)).ToList();
             var infoMap = rows.ToDictionary(x => Path.Combine(folder, x.filename), x => new VideoInfo { Album = x.album, Artist = x.artist, Title = x.title, Year = x.year });
-            return new VideoLibrary(fileNames, infoMap);
+            return new VideoLibrary(fileNames, infoMap, folder);
         }
     }
 
@@ -32,7 +32,7 @@ where C.playlist_name = 'All Songs Shuffled'
 order by B.play_order");
             var fileNames = rows.Select(x => Path.Combine(folder, x.filename)).ToList();
             var infoMap = rows.ToDictionary(x => Path.Combine(folder, x.filename), x => new VideoInfo { Album = x.album, Artist = x.artist, Title = x.title, Year = x.year });
-            return new VideoLibrary(fileNames, infoMap);
+            return new VideoLibrary(fileNames, infoMap, folder);
         }
     }
 }

@@ -29,7 +29,21 @@
                     <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
                     <DataGridTextColumn Header="Track" Binding="{Binding Track}" />
                     <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" >
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Order"  Binding="{Binding Order}" >
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

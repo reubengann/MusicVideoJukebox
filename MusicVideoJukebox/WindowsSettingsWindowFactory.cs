@@ -2,9 +2,9 @@
 {
     class WindowsSettingsWindowFactory : ISettingsWindowFactory
     {
-        public ISettingsWindow Create()
+        public ISettingsWindow Create(VideoLibraryStore videoLibraryStore)
         {
-            return new SettingsWindow();
+            return new SettingsWindow(videoLibraryStore);
         }
     }
 }

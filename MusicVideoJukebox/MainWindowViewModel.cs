@@ -137,7 +137,7 @@ namespace MusicVideoJukebox
 
         private void OpenSettings()
         {
-            var settingsDialog = settingsDialogFactory.Create();
+            var settingsDialog = settingsDialogFactory.Create(libraryStore);
             settingsDialog.ShowDialog();
         }
 

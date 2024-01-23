@@ -2,52 +2,16 @@
 {
     public class VideoLibrary
     {
+        public string Folder;
         public List<string> FilePaths;
         public Dictionary<string, VideoInfo> InfoMap;
 
-        public VideoLibrary(List<string> filenames, Dictionary<string, VideoInfo> infoMap)
+        public VideoLibrary(List<string> filenames, Dictionary<string, VideoInfo> infoMap, string folder)
         {
             FilePaths = filenames;
             InfoMap = infoMap;
+            Folder = folder;
         }
-
-        public static VideoLibrary FromFileList(List<string> filePaths)
-        {
-            var infoMap = new Dictionary<string, VideoInfo>();
-            int ct = 0;
-            foreach (string file in filePaths)
-            {
-                if (!file.EndsWith(".mp4")) continue;
-                ct++;
-                var nameOnly = Path.GetFileNameWithoutExtension(file);
-                if (nameOnly.Contains(" - "))
-                {
-                    var parts = nameOnly.Split(" - ");
-                    string title;
-                    if (parts.Length > 2)
-                    {
-                        title = string.Join(" - ", parts.Skip(1));
-                    }
-                    else
-                    {
-                        title = parts[1];
-                    }
-                    string artist = parts[0];
-                    infoMap[file] = new VideoInfo { Artist = artist, Title = title };
-                }
-                else
-                {
-                    infoMap[file] = new VideoInfo { Title = file };
-                }
-                if (infoMap.Count != ct)
-                {
-                    throw new System.Exception();
-                }
-            }
-            return new VideoLibrary(filePaths, infoMap);
-        }
-
-
     }
 
     public class VideoInfo

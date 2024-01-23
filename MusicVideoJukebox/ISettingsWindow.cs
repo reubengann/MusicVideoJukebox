@@ -8,6 +8,6 @@
 
     public interface ISettingsWindowFactory
     {
-        ISettingsWindow Create();
+        ISettingsWindow Create(VideoLibraryStore videoLibraryStore);
     }
 }

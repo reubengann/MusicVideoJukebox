@@ -1,9 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MusicVideoJukebox
 {
-    class SettingsWindowDesignTimeViewModel
+    class SettingsWindowViewModel : BaseViewModel
     {
+        /*
         public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
         public string VideoFolderPath { get; set; } = @"C:\music_videos\";
         public bool MetadataNotFound { get; set; } = false;
@@ -21,15 +24,18 @@ namespace MusicVideoJukebox
             };
             Playlists = new ObservableCollection<string> { "All alphabetical" };
         }
-    }
+         */
+        private string folder;
 
-    public class SettingsSongViewModel
-    {
-        public bool IsActive { get; set; }
-        public string Artist { get; set; } = null!;
-        public string Track { get; set; } = null!;
-        public string? Album { get; set; }
-        public string? Year { get; set; }
-        public int Order { get; set; }
+        public SettingsWindowViewModel(string folder)
+        {
+            this.folder = folder;
+        }
+
+        public async Task LoadAllMetadataAsync()
+        {
+            if (!File.Exists(Path.Combine(folder, "meta.db")))
+                throw new NotImplementedException();
+        }
     }
 }
