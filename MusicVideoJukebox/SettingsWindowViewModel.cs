@@ -1,41 +1,43 @@
-﻿using System;
+﻿using MusicVideoJukebox.Core;
+using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MusicVideoJukebox
 {
     class SettingsWindowViewModel : BaseViewModel
     {
-        /*
-        public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
-        public string VideoFolderPath { get; set; } = @"C:\music_videos\";
-        public bool MetadataNotFound { get; set; } = false;
-        public string MetadataFoundString => MetadataNotFound ? "No" : "Yes";
-
+        public string VideoFolderPath { get; set; }
+        public bool MetadataNotFound { get; set; }
         public ObservableCollection<string> Playlists { get; set; }
+        public string MetadataFoundString => MetadataNotFound ? "No" : "Yes";
         public int SelectedPlaylistIndex { get; set; } = 0;
-
-        public SettingsWindowDesignTimeViewModel()
-        {
-            TrackListing = new ObservableCollection<SettingsSongViewModel>
-            {
-                new SettingsSongViewModel { Artist = "10,000 Maniacs", Track = "Because the Night [Unplugged]", Album = "Unplugged", Year = "1991", IsActive = true, Order = 1 },
-                new SettingsSongViewModel { Artist = "A Flock of Seagulls", Track = "I Ran", Album = "whatever", Year = "1982", Order = 2 },
-            };
-            Playlists = new ObservableCollection<string> { "All alphabetical" };
-        }
-         */
-        private string folder;
+        public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
 
         public SettingsWindowViewModel(string folder)
         {
-            this.folder = folder;
+            VideoFolderPath = folder;
+            Playlists = new ObservableCollection<string>();
+            TrackListing = new ObservableCollection<SettingsSongViewModel>();
         }
 
         public async Task LoadAllMetadataAsync()
         {
-            if (!File.Exists(Path.Combine(folder, "meta.db")))
+            if (!File.Exists(Path.Combine(VideoFolderPath, "meta.db")))
                 throw new NotImplementedException();
+            MetadataNotFound = false;
+            OnPropertyChanged(nameof(MetadataFoundString));
+            var metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
+            foreach (var playlistName in metadata.PlaylistNames)
+            {
+                Playlists.Add(playlistName);
+            }
+            TrackListing = new ObservableCollection<SettingsSongViewModel>(
+            metadata.VideoInfos.Select(track => new SettingsSongViewModel { Album = track.Album, Artist = track.Artist, Track = track.Title, Year = track.Year.ToString() })
+            );
+            OnPropertyChanged(nameof(TrackListing));
         }
     }
 }

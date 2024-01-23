@@ -12,6 +12,7 @@ namespace MusicVideoJukebox
             InitializeComponent();
             Loaded += SettingsWindow_Loaded;
             vm = new SettingsWindowViewModel(videoLibraryStore.VideoLibrary.Folder);
+            DataContext = vm;
         }
 
         private async void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
