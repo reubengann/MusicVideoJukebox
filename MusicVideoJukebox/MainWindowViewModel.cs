@@ -28,10 +28,12 @@ namespace MusicVideoJukebox
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
+        // TODO: Redundant with ShowPlay???
         bool isPlaying = false;
         bool infoDisplayed = false;
         int currentVideoIndex = 0;
         private ISettingsWindowFactory settingsDialogFactory;
+        private bool showPlay;
         readonly VideoLibraryStore libraryStore;
         public ObservableCollection<string> VideoFiles { get; set; }
 
@@ -121,6 +123,17 @@ namespace MusicVideoJukebox
         public ICommand NextCommand => new DelegateCommand(NextTrack);
         public ICommand PrevCommand => new DelegateCommand(PrevTrack);
         public ICommand SettingsCommand => new DelegateCommand(OpenSettings);
+        public bool ShowPlay
+        {
+            get => showPlay;
+            set
+            {
+                showPlay = value;
+                OnPropertyChanged(nameof(ShowPlay));
+                OnPropertyChanged(nameof(ShowPause));
+            }
+        }
+        public bool ShowPause => !ShowPlay;
 
         private void OpenSettings()
         {
@@ -153,6 +166,7 @@ namespace MusicVideoJukebox
             OnPropertyChanged(nameof(SelectedIndex));
             if (infoDisplayed) mediaPlayer.HideInfo();
             infoDisplayed = false;
+            ShowPlay = false;
         }
 
         public double Volume
@@ -181,6 +195,7 @@ namespace MusicVideoJukebox
             progressUpdateTimer.Start();
             OnPropertyChanged(nameof(VideoLengthSeconds));
             OnPropertyChanged(nameof(VideoPositionTime));
+            ShowPlay = false;
         }
 
         private void PauseVideo()
@@ -188,6 +203,7 @@ namespace MusicVideoJukebox
             isPlaying = false;
             mediaPlayer.Pause();
             progressUpdateTimer.Stop();
+            ShowPlay = true;
         }
 
         public void ChangeToFullScreenToggled()
