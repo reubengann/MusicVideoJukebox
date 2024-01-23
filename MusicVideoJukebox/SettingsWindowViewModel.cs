@@ -2,7 +2,6 @@
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,19 +25,21 @@ namespace MusicVideoJukebox
 
         private async void AddNewPlaylist()
         {
-            var created = await MetadataLoader.AddNewPlaylist(VideoFolderPath, "New playlist");
+            using var updater = new MetadataUpdater(VideoFolderPath);
+            var created = await updater.AddNewPlaylist("New playlist");
             Playlists.Add(new PlaylistViewModel(created.PlaylistName, created.PlaylistId));
         }
 
-        private void SaveChanges()
+        private async void SaveChanges()
         {
-            if (Playlists.Select(x => x.NameWasChanged).Any())
+            if (!Playlists.Select(x => x.NameWasChanged).Any())
+                return;
+            using var updater = new MetadataUpdater(VideoFolderPath);
+            foreach (var changedPlaylist in Playlists.Where(x => x.NameWasChanged))
             {
-                foreach (var changedPlaylist in Playlists.Where(x => x.NameWasChanged))
-                {
-                    Debug.WriteLine($"Playlist {changedPlaylist.PlaylistId} name was changed to {changedPlaylist.ItemName}");
-                }
+                await updater.UpdatePlaylistName(changedPlaylist.PlaylistId, changedPlaylist.ItemName);
             }
+            HasSettingsToSave = false;
         }
 
         public SettingsWindowViewModel(string folder)
