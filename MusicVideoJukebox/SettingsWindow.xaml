@@ -23,20 +23,20 @@
             <Label>Playlists</Label>
             <ListView Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex}"/>
             <Label>Tracks</Label>
-            <DataGrid IsReadOnly="True" SelectionMode="Single" ItemsSource="{Binding TrackListing}" AutoGenerateColumns="False" Height="300">
+            <DataGrid  SelectionMode="Single" CanUserAddRows="False" ItemsSource="{Binding TrackListing}" AutoGenerateColumns="False" Height="300">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="" Binding="{Binding IsActive}" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="150"/>
-                    <DataGridTextColumn Header="Track" Binding="{Binding Track}" Width="200"/>
-                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="150"/>
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="50" >
+                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Track" Binding="{Binding Track}" Width="200" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="50" IsReadOnly="True" >
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Order"  Binding="{Binding Order}" Width="75">
+                    <DataGridTextColumn Header="Order"  Binding="{Binding Order}" Width="75" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
