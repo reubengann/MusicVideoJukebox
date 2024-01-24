@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -33,10 +34,12 @@ namespace MusicVideoJukebox
         bool infoDisplayed = false;
         int currentVideoIndex = 0;
         private bool showPlay;
+        private int selectedPlaylistIndex = 0;
         readonly VideoLibraryStore libraryStore;
         private readonly ISettingsWindowFactory settingsDialogFactory;
 
         public ObservableCollection<string> VideoFiles { get; set; }
+        public ObservableCollection<string> PlaylistNames { get; set; }
 
         public VideoInfoViewModel InfoViewModel
         {
@@ -56,7 +59,7 @@ namespace MusicVideoJukebox
             libraryStore = videoLibraryStore;
             this.settingsDialogFactory = settingsDialogFactory;
             VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary));
-
+            PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
             mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
 
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -97,6 +100,8 @@ namespace MusicVideoJukebox
                 PlayVideoAtCurrentIndex();
             }
         }
+
+        public int SelectedPlaylistIndex { get => selectedPlaylistIndex; set => selectedPlaylistIndex = value; }
 
 
         private void FadeTimer_Tick(object? sender, EventArgs e)
