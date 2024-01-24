@@ -33,7 +33,7 @@ namespace MusicVideoJukebox
 
                 foreach (var ssvm in TrackListing)
                 {
-                    if (videoIdToPlayOrderMap.Keys.Contains(ssvm.VideoId))
+                    if (videoIdToPlayOrderMap.ContainsKey(ssvm.VideoId))
                     {
                         ssvm.Reset(true);
                         ssvm.Order = videoIdToPlayOrderMap[ssvm.VideoId];
@@ -94,12 +94,12 @@ namespace MusicVideoJukebox
             metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
             foreach (var playlist in metadata.Playlists)
             {
-                PlaylistViewModel item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
+                var item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
                 Playlists.Add(item);
                 item.ItemChanged += PlaylistNameChanged;
             }
 
-            ObservableCollection<SettingsSongViewModel> settingsSongViewModels = new ObservableCollection<SettingsSongViewModel>(
+            var settingsSongViewModels = new ObservableCollection<SettingsSongViewModel>(
                         metadata.VideoInfos.Select(track =>
                          new SettingsSongViewModel { VideoId = track.VideoId, Album = track.Album, Artist = track.Artist, Track = track.Title, Year = track.Year.ToString() })
                         );

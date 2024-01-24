@@ -36,7 +36,7 @@ namespace MusicVideoJukebox.Core
 
     public class MetadataUpdater : IDisposable
     {
-        SQLiteConnection conn;
+        readonly SQLiteConnection conn;
 
         public MetadataUpdater(string folder)
         {
@@ -53,6 +53,7 @@ namespace MusicVideoJukebox.Core
         public void Dispose()
         {
             conn.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public async Task UpdatePlaylistName(int playlistId, string newName)

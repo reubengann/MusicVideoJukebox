@@ -6,7 +6,7 @@ namespace MusicVideoJukebox
     public partial class SettingsWindow : Window, ISettingsWindow
     {
 
-        SettingsWindowViewModel vm;
+        readonly SettingsWindowViewModel vm;
 
         public SettingsWindow(VideoLibraryStore videoLibraryStore)
         {
