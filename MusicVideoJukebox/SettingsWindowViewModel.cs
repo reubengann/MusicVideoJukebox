@@ -2,6 +2,7 @@
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,12 +69,27 @@ namespace MusicVideoJukebox
 
         private async void SaveChanges()
         {
-            if (!Playlists.Select(x => x.NameWasChanged).Any())
-                return;
-            using var updater = new MetadataUpdater(VideoFolderPath);
-            foreach (var changedPlaylist in Playlists.Where(x => x.NameWasChanged))
+            if (Playlists.Select(x => x.NameWasChanged).Any())
             {
-                await updater.UpdatePlaylistName(changedPlaylist.PlaylistId, changedPlaylist.ItemName);
+                using var updater = new MetadataUpdater(VideoFolderPath);
+                foreach (var changedPlaylist in Playlists.Where(x => x.NameWasChanged))
+                {
+                    await updater.UpdatePlaylistName(changedPlaylist.PlaylistId, changedPlaylist.ItemName);
+                }
+            }
+            if (TrackListing.Select(x => x.IsModified).Any())
+            {
+                var selectedPlaylist = Playlists[selectedPlaylistIndex];
+                // get added tracks
+                foreach (var addedTrack in TrackListing.Where(x => x.WasAdded))
+                {
+                    Debug.WriteLine($"Item {addedTrack.VideoId} was added to playlist {selectedPlaylist.PlaylistId}");
+                }
+                // get removed tracks
+                foreach (var removedTrack in TrackListing.Where(x => x.WasRemoved))
+                {
+                    Debug.WriteLine($"Item {removedTrack.VideoId} was removed from playlist {selectedPlaylist.PlaylistId}");
+                }
             }
             HasSettingsToSave = false;
         }
@@ -159,12 +175,15 @@ namespace MusicVideoJukebox
 
         private bool isActive;
         private int order;
+        private bool originalState;
 
-        public bool IsModified { get; private set; } = false;
+        public bool IsModified => isActive != originalState;
+        public bool WasAdded => IsModified && (isActive && !originalState);
+        public bool WasRemoved => IsModified && (!isActive && originalState);
 
         public void Reset(bool activeState)
         {
-            IsModified = false;
+            originalState = activeState;
             isActive = activeState;
             OnPropertyChanged(nameof(IsActive));
         }
@@ -174,7 +193,6 @@ namespace MusicVideoJukebox
             set
             {
                 isActive = value;
-                IsModified = true;
                 ItemWasChanged?.Invoke();
             }
         }
