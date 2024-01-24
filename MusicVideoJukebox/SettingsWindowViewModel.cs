@@ -41,6 +41,7 @@ namespace MusicVideoJukebox
                     else
                     {
                         ssvm.Reset(false);
+                        ssvm.Order = 0;
                     }
                 }
             }
@@ -157,6 +158,8 @@ namespace MusicVideoJukebox
         public event Action? ItemWasChanged;
 
         private bool isActive;
+        private int order;
+
         public bool IsModified { get; private set; } = false;
 
         public void Reset(bool activeState)
@@ -180,6 +183,6 @@ namespace MusicVideoJukebox
         public string Track { get; set; } = null!;
         public string? Album { get; set; }
         public string? Year { get; set; }
-        public int Order { get; set; }
+        public int Order { get => order; set { order = value; OnPropertyChanged(nameof(Order)); } }
     }
 }
