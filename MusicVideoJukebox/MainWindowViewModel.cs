@@ -138,8 +138,12 @@ namespace MusicVideoJukebox
 
         private void OpenSettings()
         {
+            if (isPlaying)
+                PauseVideo();
             var settingsDialog = settingsDialogFactory.Create(libraryStore);
             settingsDialog.ShowDialog();
+            // reset the library
+
         }
 
         private void PrevTrack()
