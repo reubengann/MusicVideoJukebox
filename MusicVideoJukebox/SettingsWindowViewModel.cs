@@ -1,6 +1,7 @@
 ﻿using MusicVideoJukebox.Core;
 using Prism.Commands;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace MusicVideoJukebox
     {
         private bool hasSettingsToSave;
         private int selectedPlaylistIndex = 0;
+        private LibraryMetadata? metadata;
 
         public string VideoFolderPath { get; set; }
         public bool MetadataNotFound { get; set; }
@@ -24,8 +26,23 @@ namespace MusicVideoJukebox
             set
             {
                 selectedPlaylistIndex = value;
-                // Lookup the new playlist's enabled items.
-                // Update the viewmodels with the new playlist info.
+                if (metadata == null) { return; }
+
+                List<VideoInfoAndOrder> videoInfoAndOrders = metadata.PlaylistMap[Playlists[selectedPlaylistIndex].PlaylistId];
+                var idsInPlaylist = videoInfoAndOrders.ToDictionary(x => x.Info.VideoId, x => x.PlayOrder);
+
+                foreach (var ssvm in TrackListing)
+                {
+                    if (idsInPlaylist.Keys.Contains(ssvm.VideoId))
+                    {
+                        ssvm.Reset(true);
+                        ssvm.Order = idsInPlaylist[ssvm.VideoId];
+                    }
+                    else
+                    {
+                        ssvm.Reset(false);
+                    }
+                }
             }
         }
         public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
@@ -73,7 +90,7 @@ namespace MusicVideoJukebox
                 throw new NotImplementedException();
             MetadataNotFound = false;
             OnPropertyChanged(nameof(MetadataFoundString));
-            var metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
+            metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
             foreach (var playlist in metadata.Playlists)
             {
                 PlaylistViewModel item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
@@ -91,6 +108,7 @@ namespace MusicVideoJukebox
             }
             TrackListing = settingsSongViewModels;
             OnPropertyChanged(nameof(TrackListing));
+            SelectedPlaylistIndex = 0;
         }
 
         private void PlaylistNameChanged()
@@ -134,13 +152,19 @@ namespace MusicVideoJukebox
         }
     }
 
-    public class SettingsSongViewModel
+    public class SettingsSongViewModel : BaseViewModel
     {
         public event Action? ItemWasChanged;
 
         private bool isActive;
         public bool IsModified { get; private set; } = false;
 
+        public void Reset(bool activeState)
+        {
+            IsModified = false;
+            isActive = activeState;
+            OnPropertyChanged(nameof(IsActive));
+        }
         public bool IsActive
         {
             get => isActive;
