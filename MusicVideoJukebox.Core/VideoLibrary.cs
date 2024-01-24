@@ -4,13 +4,17 @@
     {
         public string Folder;
         public List<string> FilePaths;
-        public Dictionary<string, VideoInfo> InfoMap;
+        public Dictionary<int, VideoInfo> VideoIdToInfoMap;
+        public Dictionary<int, List<int>> PlaylistIdToSongMap;
+        public List<Playlist> Playlists;
 
-        public VideoLibrary(List<string> filenames, Dictionary<string, VideoInfo> infoMap, string folder)
+        public VideoLibrary(List<string> filenames, Dictionary<int, VideoInfo> infoMap, string folder, Dictionary<int, List<int>> playlistIdToSongMap, List<Playlist> playlists)
         {
             FilePaths = filenames;
-            InfoMap = infoMap;
+            VideoIdToInfoMap = infoMap;
             Folder = folder;
+            PlaylistIdToSongMap = playlistIdToSongMap;
+            Playlists = playlists;
         }
     }
 

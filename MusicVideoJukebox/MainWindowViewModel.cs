@@ -40,7 +40,12 @@ namespace MusicVideoJukebox
 
         public VideoInfoViewModel InfoViewModel
         {
-            get { return new VideoInfoViewModel(libraryStore.VideoLibrary.InfoMap[libraryStore.VideoLibrary.FilePaths[currentVideoIndex]]); }
+            get
+            {
+                var playlistId = libraryStore.VideoLibrary.Playlists[0].PlaylistId;
+                var songId = libraryStore.VideoLibrary.PlaylistIdToSongMap[playlistId][currentVideoIndex];
+                return new VideoInfoViewModel(libraryStore.VideoLibrary.VideoIdToInfoMap[songId]);
+            }
         }
 
 
@@ -70,9 +75,11 @@ namespace MusicVideoJukebox
         private static IEnumerable<string> GetNiceNames(VideoLibrary library)
         {
             var niceStrings = new List<string>();
-            foreach (var path in library.FilePaths)
+            var playlistId = library.Playlists[0].PlaylistId;
+            var songIds = library.PlaylistIdToSongMap[playlistId];
+            foreach (var songId in songIds)
             {
-                var vid = library.InfoMap[path];
+                var vid = library.VideoIdToInfoMap[songId];
                 if (vid.Artist == null)
                     niceStrings.Add(vid.Title);
                 else
