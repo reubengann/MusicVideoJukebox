@@ -70,7 +70,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" IsEnabled="{Binding HasSettingsToSave}" Command="{Binding SaveChangesCommand}">Save</Button>
-            <Button Grid.Column="2">Dismiss</Button>
+            <Button Grid.Column="2" Click="Button_Click">Dismiss</Button>
         </Grid>
     </Grid>
 </Window>
