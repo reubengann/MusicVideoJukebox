@@ -1,7 +1,6 @@
 ﻿using MusicVideoJukebox.Core;
 using Prism.Commands;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -28,15 +27,16 @@ namespace MusicVideoJukebox
                 selectedPlaylistIndex = value;
                 if (metadata == null) { return; }
 
-                List<VideoInfoAndOrder> videoInfoAndOrders = metadata.PlaylistMap[Playlists[selectedPlaylistIndex].PlaylistId];
-                var idsInPlaylist = videoInfoAndOrders.ToDictionary(x => x.Info.VideoId, x => x.PlayOrder);
+                var selectedPlaylist = Playlists[selectedPlaylistIndex];
+                var videoInfoAndOrders = metadata.PlaylistMap[selectedPlaylist.PlaylistId];
+                var videoIdToPlayOrderMap = videoInfoAndOrders.ToDictionary(x => x.Info.VideoId, x => x.PlayOrder);
 
                 foreach (var ssvm in TrackListing)
                 {
-                    if (idsInPlaylist.Keys.Contains(ssvm.VideoId))
+                    if (videoIdToPlayOrderMap.Keys.Contains(ssvm.VideoId))
                     {
                         ssvm.Reset(true);
-                        ssvm.Order = idsInPlaylist[ssvm.VideoId];
+                        ssvm.Order = videoIdToPlayOrderMap[ssvm.VideoId];
                     }
                     else
                     {
