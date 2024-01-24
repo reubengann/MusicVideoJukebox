@@ -45,11 +45,10 @@ namespace MusicVideoJukebox
         {
             get
             {
-                var playlistId = libraryStore.VideoLibrary.Playlists[0].PlaylistId;
-                var songId = libraryStore.VideoLibrary.PlaylistIdToSongMap[playlistId][currentVideoIndex];
-                return new VideoInfoViewModel(libraryStore.VideoLibrary.VideoIdToInfoMap[songId]);
+                return new VideoInfoViewModel(libraryStore.VideoLibrary.VideoIdToInfoMap[CurrentSongId]);
             }
         }
+
 
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore, ISettingsWindowFactory settingsDialogFactory)
@@ -58,9 +57,9 @@ namespace MusicVideoJukebox
             mediaPlayer.Volume = 1;
             libraryStore = videoLibraryStore;
             this.settingsDialogFactory = settingsDialogFactory;
-            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary));
+            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
             PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
-            mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
+            mediaPlayer.SetSource(new System.Uri(CurrentFileName));
 
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -75,10 +74,10 @@ namespace MusicVideoJukebox
             PlayVideo();
         }
 
-        private static IEnumerable<string> GetNiceNames(VideoLibrary library)
+        private static IEnumerable<string> GetNiceNames(VideoLibrary library, int selectedIndex)
         {
             var niceStrings = new List<string>();
-            var playlistId = library.Playlists[0].PlaylistId;
+            var playlistId = library.Playlists[selectedIndex].PlaylistId;
             var songIds = library.PlaylistIdToSongMap[playlistId];
             foreach (var songId in songIds)
             {
@@ -161,21 +160,21 @@ namespace MusicVideoJukebox
         private void PrevTrack()
         {
             currentVideoIndex--;
-            if (currentVideoIndex < 0) currentVideoIndex = libraryStore.VideoLibrary.FilePaths.Count - 1;
+            if (currentVideoIndex < 0) currentVideoIndex = CurrentSongIds.Count - 1;
             PlayVideoAtCurrentIndex();
         }
 
         private void NextTrack()
         {
             currentVideoIndex++;
-            if (currentVideoIndex > libraryStore.VideoLibrary.FilePaths.Count - 1) currentVideoIndex = 0;
+            if (currentVideoIndex > CurrentSongIds.Count - 1) currentVideoIndex = 0;
             PlayVideoAtCurrentIndex();
         }
 
         private void PlayVideoAtCurrentIndex()
         {
-            mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
-            // show first frame
+            mediaPlayer.SetSource(new System.Uri(CurrentFileName));
+            // show first frame if paused
             mediaPlayer.Play();
             if (!isPlaying)
                 mediaPlayer.Pause();
@@ -185,6 +184,11 @@ namespace MusicVideoJukebox
             infoDisplayed = false;
             ShowPlay = false;
         }
+
+        private string CurrentFileName => libraryStore.VideoLibrary.FilePaths[CurrentSongId];
+        private Playlist CurrentPlaylist => libraryStore.VideoLibrary.Playlists[SelectedPlaylistIndex];
+        private int CurrentSongId => CurrentSongIds[currentVideoIndex];
+        private List<int> CurrentSongIds => libraryStore.VideoLibrary.PlaylistIdToSongMap[CurrentPlaylist.PlaylistId];
 
         public double Volume
         {

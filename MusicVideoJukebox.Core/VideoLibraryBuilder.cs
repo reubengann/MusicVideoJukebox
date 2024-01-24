@@ -17,7 +17,7 @@ join playlists C
 ON B.playlist_id = C.playlist_id
 where C.playlist_name = @PlaylistName
 order by B.play_order", new { PlaylistName = playlistName });
-            var fileNames = videoRows.Select(x => Path.Combine(folder, x.filename)).ToList();
+            var fileNames = videoRows.ToDictionary(x => x.video_id, x => Path.Combine(folder, x.filename));
             var infoMap = videoRows.ToDictionary(x => x.video_id, x => new VideoInfo { Album = x.album, Artist = x.artist, Title = x.title, Year = x.year });
             var playlistItemRows = await conn.QueryAsync<VideoIdPlaylistIdPair>("select playlist_id, video_id from playlists_videos order by playlist_id, play_order");
             var playlistIdToSongMap = new Dictionary<int, List<int>>();
