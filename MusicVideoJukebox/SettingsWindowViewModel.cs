@@ -2,7 +2,6 @@
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,17 +79,13 @@ namespace MusicVideoJukebox
             if (TrackListing.Select(x => x.IsModified).Any())
             {
                 var selectedPlaylist = Playlists[selectedPlaylistIndex];
-                // get added tracks
-                foreach (var addedTrack in TrackListing.Where(x => x.WasAdded))
-                {
-                    Debug.WriteLine($"Item {addedTrack.VideoId} was added to playlist {selectedPlaylist.PlaylistId}");
-                }
-                // get removed tracks
-                foreach (var removedTrack in TrackListing.Where(x => x.WasRemoved))
-                {
-                    Debug.WriteLine($"Item {removedTrack.VideoId} was removed from playlist {selectedPlaylist.PlaylistId}");
-                }
+                var added = TrackListing.Where(x => x.WasAdded).Select(x => x.VideoId).ToList();
+                var removed = TrackListing.Where(x => x.WasRemoved).Select(x => x.VideoId).ToList();
+                using var updater = new MetadataUpdater(VideoFolderPath);
+                await updater.UpdateTracksInPlaylist(selectedPlaylist.PlaylistId, added, removed);
             }
+            metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
+            SelectedPlaylistIndex = selectedPlaylistIndex;
             HasSettingsToSave = false;
         }
 
