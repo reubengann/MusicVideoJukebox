@@ -12,14 +12,31 @@ namespace MusicVideoJukebox
     class SettingsWindowViewModel : BaseViewModel
     {
         private bool hasSettingsToSave;
+        private int selectedPlaylistIndex = 0;
 
         public string VideoFolderPath { get; set; }
         public bool MetadataNotFound { get; set; }
         public ObservableCollection<PlaylistViewModel> Playlists { get; set; }
         public string MetadataFoundString => MetadataNotFound ? "No" : "Yes";
-        public int SelectedPlaylistIndex { get; set; } = 0;
+        public int SelectedPlaylistIndex
+        {
+            get => selectedPlaylistIndex;
+            set
+            {
+                selectedPlaylistIndex = value;
+                // Update the viewmodels with the new playlist info.
+            }
+        }
         public ObservableCollection<SettingsSongViewModel> TrackListing { get; set; }
-        public bool HasSettingsToSave { get => hasSettingsToSave; set { hasSettingsToSave = value; OnPropertyChanged(nameof(HasSettingsToSave)); } }
+        public bool HasSettingsToSave
+        {
+            get => hasSettingsToSave;
+            set
+            {
+                hasSettingsToSave = value;
+                OnPropertyChanged(nameof(HasSettingsToSave));
+            }
+        }
         public ICommand SaveChangesCommand => new DelegateCommand(SaveChanges);
         public ICommand AddNewPlaylistCommand => new DelegateCommand(AddNewPlaylist);
 

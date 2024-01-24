@@ -32,9 +32,10 @@ namespace MusicVideoJukebox
         bool isPlaying = false;
         bool infoDisplayed = false;
         int currentVideoIndex = 0;
-        private ISettingsWindowFactory settingsDialogFactory;
         private bool showPlay;
         readonly VideoLibraryStore libraryStore;
+        private readonly ISettingsWindowFactory settingsDialogFactory;
+
         public ObservableCollection<string> VideoFiles { get; set; }
 
         public VideoInfoViewModel InfoViewModel
@@ -48,6 +49,7 @@ namespace MusicVideoJukebox
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.Volume = 1;
             libraryStore = videoLibraryStore;
+            this.settingsDialogFactory = settingsDialogFactory;
             VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary));
 
             mediaPlayer.SetSource(new System.Uri(libraryStore.VideoLibrary.FilePaths[currentVideoIndex]));
@@ -63,7 +65,6 @@ namespace MusicVideoJukebox
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
             PlayVideo();
-            this.settingsDialogFactory = settingsDialogFactory;
         }
 
         private static IEnumerable<string> GetNiceNames(VideoLibrary library)

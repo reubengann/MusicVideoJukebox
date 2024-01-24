@@ -24,7 +24,10 @@
                 <Label>Playlists</Label>
                 <Button Command="{Binding AddNewPlaylistCommand}">Add</Button>
             </StackPanel>
-            <DataGrid Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None">
+            <DataGrid x:Name="PlaylistDataGrid" Height="75" ItemsSource="{Binding Playlists}" SelectedIndex="{Binding SelectedPlaylistIndex, Mode=TwoWay}" 
+                      AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None" 
+                      SelectionChanged="PlaylistDataGrid_SelectionChanged"
+                      >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Item Name" Width="150" Binding="{Binding ItemName, Mode=TwoWay}"/>
                 </DataGrid.Columns>
