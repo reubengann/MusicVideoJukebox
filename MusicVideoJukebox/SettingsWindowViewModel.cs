@@ -24,6 +24,7 @@ namespace MusicVideoJukebox
             set
             {
                 selectedPlaylistIndex = value;
+                // Lookup the new playlist's enabled items.
                 // Update the viewmodels with the new playlist info.
             }
         }
