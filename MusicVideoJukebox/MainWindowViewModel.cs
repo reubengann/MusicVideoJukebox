@@ -26,6 +26,7 @@ namespace MusicVideoJukebox
         readonly DispatcherTimer progressUpdateTimer;
         readonly DispatcherTimer scrubDebouceTimer;
         readonly DispatcherTimer fadeTimer;
+
         bool isScrubbing = false;
         bool scrubbedRecently = false;
         bool isFullScreen = false;
@@ -48,8 +49,6 @@ namespace MusicVideoJukebox
                 return new VideoInfoViewModel(libraryStore.VideoLibrary.VideoIdToInfoMap[CurrentSongId]);
             }
         }
-
-
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer, VideoLibraryStore videoLibraryStore, ISettingsWindowFactory settingsDialogFactory)
         {
@@ -95,12 +94,28 @@ namespace MusicVideoJukebox
             get { return currentVideoIndex; }
             set
             {
+                // When loading a new playlist, this ends up being -1. Ignore that event.
+                if (value < 0)
+                    return;
                 currentVideoIndex = value;
                 PlayVideoAtCurrentIndex();
             }
         }
 
-        public int SelectedPlaylistIndex { get => selectedPlaylistIndex; set => selectedPlaylistIndex = value; }
+        public int SelectedPlaylistIndex
+        {
+            get => selectedPlaylistIndex;
+            set
+            {
+                selectedPlaylistIndex = value;
+
+                VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, selectedPlaylistIndex));
+                OnPropertyChanged(nameof(VideoFiles));
+                currentVideoIndex = 0;
+                PlayVideoAtCurrentIndex();
+                // TODO: Because we got to this from an event, updating the currentVideoIndex will not update the highlighted item in the listview.
+            }
+        }
 
 
         private void FadeTimer_Tick(object? sender, EventArgs e)
@@ -153,8 +168,7 @@ namespace MusicVideoJukebox
                 PauseVideo();
             var settingsDialog = settingsDialogFactory.Create(libraryStore);
             settingsDialog.ShowDialog();
-            // reset the library
-
+            // reset the current playlist maybe
         }
 
         private void PrevTrack()
