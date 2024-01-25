@@ -40,23 +40,23 @@ namespace MusicVideoJukebox.Core
                 videoRows.Select(x => new VideoInfoWithId { VideoId = x.video_id, Album = x.album, Artist = x.artist, Title = x.title, Year = x.year }).ToList(),
                 playlistIdToVideosWithOrderMap);
         }
-    }
 
-    class PlaylistOrderRow
-    {
-        public int video_id { get; set; }
-        public string filename { get; set; } = null!;
-        public int? year { get; set; }
-        public string title { get; set; } = null!;
-        public string? album { get; set; }
-        public string artist { get; set; } = null!;
-        public int play_order { get; set; }
+        class PlaylistOrderRow
+        {
+            public int video_id { get; set; }
+            public string filename { get; set; } = null!;
+            public int? year { get; set; }
+            public string title { get; set; } = null!;
+            public string? album { get; set; }
+            public string artist { get; set; } = null!;
+            public int play_order { get; set; }
 
-    }
+        }
 
-    class VideoIdPlaylistIdPair
-    {
-        public int video_id { get; set; }
-        public int playlist_id { get; set; }
+        class VideoIdPlaylistIdPair
+        {
+            public int video_id { get; set; }
+            public int playlist_id { get; set; }
+        }
     }
 }
