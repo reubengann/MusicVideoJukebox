@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MusicVideoJukebox
 {
@@ -9,5 +11,24 @@ namespace MusicVideoJukebox
             "File 2 abcdefghijklmnopqrstuvwxy                              z" };
 
         public static VideoInfoDesignTimeViewModel InfoViewModel => new();
+
+        public ICommand? PrevCommand => null;
+        public ICommand? NextCommand => null;
+        public ICommand? PlayPauseCommand => null;
+        public ICommand? SettingsCommand => null;
+
+        public int SelectedIndex => 0;
+
+        public List<string> PlaylistNames => new List<string> { "Main" };
+
+        public int SelectedPlaylistIndex => 0;
+
+        public bool ShowPlay => false;
+
+        public bool ShowPause => true;
+
+        public double VideoLengthSeconds => 121.0;
+
+        public double VideoPositionTime { get => 57.1; set { } }
     }
 }
