@@ -20,6 +20,14 @@ namespace MusicVideoJukebox.Core
             var status = await conn.QuerySingleAsync<CurrentPlayStatus>("select playlist_id, song_id from play_status");
             return new ProgressPersister(databaseFile, status);
         }
+
+        public async Task StoreStatusAsync(int playlistId, int songId)
+        {
+            CurrentPlayStatus.playlist_id = playlistId;
+            CurrentPlayStatus.song_id = songId;
+            using var conn = new SQLiteConnection($"Data Source={databaseFile}");
+            await conn.ExecuteAsync("update play_status set playlist_id = @PlaylistId, song_id = @SongId", new { PlaylistId = playlistId, SongId = songId });
+        }
     }
 
     public class CurrentPlayStatus

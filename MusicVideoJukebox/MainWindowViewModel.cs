@@ -228,6 +228,8 @@ namespace MusicVideoJukebox
             if (infoDisplayed) mediaPlayer.HideInfo();
             infoDisplayed = false;
             ShowPlay = false;
+            // fire and forget the update to the current persistance
+            _ = libraryStore.VideoLibrary.ProgressPersister.StoreStatusAsync(CurrentPlaylist.PlaylistId, CurrentSongId);
         }
 
         private string CurrentFileName => libraryStore.VideoLibrary.FilePaths[CurrentSongId];
