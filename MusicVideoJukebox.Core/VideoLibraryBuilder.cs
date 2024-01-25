@@ -5,19 +5,13 @@ namespace MusicVideoJukebox.Core
 {
     public static class VideoLibraryBuilder
     {
-        public static async Task<VideoLibrary> BuildFromName(string folder, string playlistName)
+        public static async Task<VideoLibrary> BuildFromName(string folder)
         {
             var databaseFile = Path.Combine(folder, "meta.db");
             using var conn = new SQLiteConnection($"Data Source={databaseFile}");
-            var videoRows = await conn.QueryAsync<VideoRow>(@"select A.* from
-videos A
-join playlists_videos B
-ON A.video_id = B.video_id
-join playlists C
-ON B.playlist_id = C.playlist_id
-where C.playlist_name = @PlaylistName
-order by B.play_order", new { PlaylistName = playlistName });
+            var videoRows = await conn.QueryAsync<VideoRow>(@"select * from videos");
             var fileNames = videoRows.ToDictionary(x => x.video_id, x => Path.Combine(folder, x.filename));
+
             var infoMap = videoRows.ToDictionary(x => x.video_id, x => new VideoInfo { Album = x.album, Artist = x.artist, Title = x.title, Year = x.year });
             var playlistItemRows = await conn.QueryAsync<VideoIdPlaylistIdPair>("select playlist_id, video_id from playlists_videos order by playlist_id, play_order");
             var playlistIdToSongMap = new Dictionary<int, List<int>>();
@@ -28,8 +22,36 @@ order by B.play_order", new { PlaylistName = playlistName });
                 playlistIdToSongMap[row.playlist_id].Add(row.video_id);
             }
             var playlistRows = await conn.QueryAsync<PlaylistRow>("select playlist_id, playlist_name from playlists order by playlist_id");
-            return new VideoLibrary(fileNames, infoMap, folder, playlistIdToSongMap, playlistRows.Select(x => new Playlist { PlaylistId = x.playlist_id, PlaylistName = x.playlist_name }).ToList());
+            var playlistIdToVideosWithOrderMap = new Dictionary<int, List<VideoInfoAndOrder>>();
+            foreach (var row in playlistRows)
+            {
+                var foo = await conn.QueryAsync<PlaylistOrderRow>(@"select A.*, B.play_order from
+                    videos A
+                    join playlists_videos B
+                    ON A.video_id = B.video_id
+                    join playlists C
+                    ON B.playlist_id = C.playlist_id
+                    where C.playlist_id = @PlaylistId
+                    order by B.play_order", new { PlaylistId = row.playlist_id });
+                playlistIdToVideosWithOrderMap[row.playlist_id] = foo.Select(x => new VideoInfoAndOrder { Info = new VideoInfoWithId { VideoId = x.video_id, Album = x.album, Artist = x.artist, Title = x.title, Year = x.year }, PlayOrder = x.play_order }).ToList();
+            }
+
+            return new VideoLibrary(fileNames, infoMap, folder, playlistIdToSongMap, playlistRows.Select(x => new Playlist { PlaylistId = x.playlist_id, PlaylistName = x.playlist_name }).ToList(),
+                videoRows.Select(x => new VideoInfoWithId { VideoId = x.video_id, Album = x.album, Artist = x.artist, Title = x.title, Year = x.year }).ToList(),
+                playlistIdToVideosWithOrderMap);
         }
+    }
+
+    class PlaylistOrderRow
+    {
+        public int video_id { get; set; }
+        public string filename { get; set; } = null!;
+        public int? year { get; set; }
+        public string title { get; set; } = null!;
+        public string? album { get; set; }
+        public string artist { get; set; } = null!;
+        public int play_order { get; set; }
+
     }
 
     class VideoIdPlaylistIdPair

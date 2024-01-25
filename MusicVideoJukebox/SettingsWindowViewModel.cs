@@ -2,9 +2,7 @@
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MusicVideoJukebox
@@ -13,7 +11,7 @@ namespace MusicVideoJukebox
     {
         private bool hasSettingsToSave;
         private int selectedPlaylistIndex = 0;
-        private LibraryMetadata? metadata;
+        private readonly VideoLibraryStore videoLibraryStore;
 
         public string VideoFolderPath { get; set; }
         public bool MetadataNotFound { get; set; }
@@ -25,10 +23,8 @@ namespace MusicVideoJukebox
             set
             {
                 selectedPlaylistIndex = value;
-                if (metadata == null) { return; }
-
                 var selectedPlaylist = Playlists[selectedPlaylistIndex];
-                var videoInfoAndOrders = metadata.PlaylistMap[selectedPlaylist.PlaylistId];
+                var videoInfoAndOrders = videoLibraryStore.VideoLibrary.PlaylistIdToSongOrderMap[selectedPlaylist.PlaylistId];
                 var videoIdToPlayOrderMap = videoInfoAndOrders.ToDictionary(x => x.Info.VideoId, x => x.PlayOrder);
 
                 foreach (var ssvm in TrackListing)
@@ -84,26 +80,18 @@ namespace MusicVideoJukebox
                 using var updater = new MetadataUpdater(VideoFolderPath);
                 await updater.UpdateTracksInPlaylist(selectedPlaylist.PlaylistId, added, removed);
             }
-            metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
-            SelectedPlaylistIndex = selectedPlaylistIndex;
+            videoLibraryStore.VideoLibrary = await VideoLibraryBuilder.BuildFromName(videoLibraryStore.VideoLibrary.Folder);
+            SelectedPlaylistIndex = selectedPlaylistIndex; // refreshes the listing
             HasSettingsToSave = false;
         }
 
-        public SettingsWindowViewModel(string folder)
+        public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore)
         {
-            VideoFolderPath = folder;
+            VideoFolderPath = videoLibraryStore.VideoLibrary.Folder;
             Playlists = new ObservableCollection<PlaylistViewModel>();
             TrackListing = new ObservableCollection<SettingsSongViewModel>();
-        }
-
-        public async Task LoadAllMetadataAsync()
-        {
-            if (!File.Exists(Path.Combine(VideoFolderPath, "meta.db")))
-                throw new NotImplementedException();
-            MetadataNotFound = false;
-            OnPropertyChanged(nameof(MetadataFoundString));
-            metadata = await MetadataLoader.LoadAsync(VideoFolderPath);
-            foreach (var playlist in metadata.Playlists)
+            this.videoLibraryStore = videoLibraryStore;
+            foreach (var playlist in videoLibraryStore.VideoLibrary.Playlists)
             {
                 var item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
                 Playlists.Add(item);
@@ -111,7 +99,7 @@ namespace MusicVideoJukebox
             }
 
             var settingsSongViewModels = new ObservableCollection<SettingsSongViewModel>(
-                        metadata.VideoInfos.Select(track =>
+                        videoLibraryStore.VideoLibrary.VideoInfos.Select(track =>
                          new SettingsSongViewModel { VideoId = track.VideoId, Album = track.Album, Artist = track.Artist, Track = track.Title, Year = track.Year.ToString() })
                         );
             foreach (var songVm in settingsSongViewModels)
@@ -119,7 +107,7 @@ namespace MusicVideoJukebox
                 songVm.ItemWasChanged += SongVm_ItemWasChanged;
             }
             TrackListing = settingsSongViewModels;
-            OnPropertyChanged(nameof(TrackListing));
+            //OnPropertyChanged(nameof(TrackListing));
             SelectedPlaylistIndex = 0;
         }
 

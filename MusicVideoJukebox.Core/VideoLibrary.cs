@@ -6,15 +6,24 @@
         public Dictionary<int, string> FilePaths;
         public Dictionary<int, VideoInfo> VideoIdToInfoMap;
         public Dictionary<int, List<int>> PlaylistIdToSongMap;
+        public Dictionary<int, List<VideoInfoAndOrder>> PlaylistIdToSongOrderMap;
         public List<Playlist> Playlists;
+        public List<VideoInfoWithId> VideoInfos;
 
-        public VideoLibrary(Dictionary<int, string> filenames, Dictionary<int, VideoInfo> infoMap, string folder, Dictionary<int, List<int>> playlistIdToSongMap, List<Playlist> playlists)
+        public VideoLibrary(Dictionary<int, string> filenames,
+            Dictionary<int, VideoInfo> infoMap, string folder,
+            Dictionary<int, List<int>> playlistIdToSongMap,
+            List<Playlist> playlists,
+            List<VideoInfoWithId> videoInfos,
+            Dictionary<int, List<VideoInfoAndOrder>> playlistIdToSongOrderMap)
         {
             FilePaths = filenames;
             VideoIdToInfoMap = infoMap;
             Folder = folder;
             PlaylistIdToSongMap = playlistIdToSongMap;
             Playlists = playlists;
+            VideoInfos = videoInfos;
+            PlaylistIdToSongOrderMap = playlistIdToSongOrderMap;
         }
     }
 
