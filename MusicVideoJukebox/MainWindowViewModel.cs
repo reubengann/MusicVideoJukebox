@@ -147,6 +147,15 @@ namespace MusicVideoJukebox
 
         public ICommand PlayCommand => new DelegateCommand(PlayVideo);
         public ICommand PauseCommand => new DelegateCommand(PauseVideo);
+        public ICommand PlayPauseCommand => new DelegateCommand(PlayPause);
+
+        private void PlayPause()
+        {
+            if (isPlaying)
+                PauseVideo();
+            else PlayVideo();
+        }
+
         public ICommand NextCommand => new DelegateCommand(NextTrack);
         public ICommand PrevCommand => new DelegateCommand(PrevTrack);
         public ICommand SettingsCommand => new DelegateCommand(OpenSettings);
