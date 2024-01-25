@@ -16,20 +16,6 @@ namespace MusicVideoJukebox.Core
         {
             using var destConnection = new SQLiteConnection($"Data Source={dbPath}");
             destConnection.Open();
-            await destConnection.ExecuteAsync(@"
-                create table if not exists playlists (
-                playlist_id integer primary key autoincrement,
-                playlist_name text not null
-                )
-                ");
-            await destConnection.ExecuteAsync(@"
-                create table if not exists playlists_videos (
-                playlists_videos_id integer primary key autoincrement,
-                playlist_id integer not null,
-                video_id integer not null,
-                play_order integer not null
-                )
-                ");
             var videoRows = await destConnection.QueryAsync<VideoRow>("SELECT video_id, filename, \"year\", title, album, artist FROM videos");
             var videoRowsShuffled = videoRows.OrderBy(a => Guid.NewGuid()).ToList();
             var trans = await destConnection.BeginTransactionAsync();

@@ -56,8 +56,30 @@ namespace MusicVideoJukebox
             mediaPlayer.Volume = 1;
             libraryStore = videoLibraryStore;
             this.settingsDialogFactory = settingsDialogFactory;
-            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
+
             PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
+
+            // figure out the SelectedPlaylistIndex
+            var previousPlaylist = libraryStore.VideoLibrary.Playlists.FirstOrDefault(x => x.PlaylistId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.playlist_id);
+            if (previousPlaylist != null)
+            {
+                var previousPlaylistIndex = libraryStore.VideoLibrary.Playlists.IndexOf(previousPlaylist);
+                if (previousPlaylistIndex != -1)
+                {
+                    selectedPlaylistIndex = previousPlaylistIndex;
+                }
+                // figure out the SelectedIndex
+                var previousSong = libraryStore.VideoLibrary.PlaylistIdToSongOrderMap[previousPlaylist.PlaylistId].FirstOrDefault(x => x.Info.VideoId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.song_id);
+                if (previousSong != null)
+                {
+                    if (previousSong.PlayOrder < libraryStore.VideoLibrary.PlaylistIdToSongMap[previousPlaylist.PlaylistId].Count())
+                        currentVideoIndex = previousSong.PlayOrder - 1;
+                }
+            }
+
+
+
+            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
             mediaPlayer.SetSource(new System.Uri(CurrentFileName));
 
             progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };

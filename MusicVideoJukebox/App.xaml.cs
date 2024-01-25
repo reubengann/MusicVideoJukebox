@@ -7,7 +7,7 @@ namespace MusicVideoJukebox
     {
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var store = new VideoLibraryStore(await VideoLibraryBuilder.BuildFromName("E:\\Videos\\Music Videos\\On Media Center"));
+            var store = new VideoLibraryStore(await VideoLibraryBuilder.BuildAsync("E:\\Videos\\Music Videos\\On Media Center"));
             MainWindow = new MainWindow(store);
             MainWindow.Show();
         }

@@ -9,13 +9,15 @@
         public Dictionary<int, List<VideoInfoAndOrder>> PlaylistIdToSongOrderMap;
         public List<Playlist> Playlists;
         public List<VideoInfoWithId> VideoInfos;
+        public ProgressPersister ProgressPersister;
 
         public VideoLibrary(Dictionary<int, string> filenames,
             Dictionary<int, VideoInfo> infoMap, string folder,
             Dictionary<int, List<int>> playlistIdToSongMap,
             List<Playlist> playlists,
             List<VideoInfoWithId> videoInfos,
-            Dictionary<int, List<VideoInfoAndOrder>> playlistIdToSongOrderMap)
+            Dictionary<int, List<VideoInfoAndOrder>> playlistIdToSongOrderMap,
+            ProgressPersister progressPersister)
         {
             FilePaths = filenames;
             VideoIdToInfoMap = infoMap;
@@ -24,6 +26,7 @@
             Playlists = playlists;
             VideoInfos = videoInfos;
             PlaylistIdToSongOrderMap = playlistIdToSongOrderMap;
+            ProgressPersister = progressPersister;
         }
     }
 

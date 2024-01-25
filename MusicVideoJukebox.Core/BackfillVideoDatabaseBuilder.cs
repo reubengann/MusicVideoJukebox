@@ -12,15 +12,35 @@ namespace MusicVideoJukebox.Core
             refConnection.Open();
             destConnection.Open();
             await destConnection.ExecuteAsync(@"
-create table if not exists videos (
-video_id integer primary key autoincrement,
-filename text NOT NULL,
-""year"" integer NULL,
-title text NOT NULL, 
-album text NULL, 
-artist text NOT NULL
-)
-");
+                create table if not exists videos (
+                video_id integer primary key autoincrement,
+                filename text NOT NULL,
+                ""year"" integer NULL,
+                title text NOT NULL, 
+                album text NULL, 
+                artist text NOT NULL
+                )
+            ");
+            await destConnection.ExecuteAsync(@"
+                create table if not exists playlists (
+                playlist_id integer primary key autoincrement,
+                playlist_name text not null
+                )
+                ");
+            await destConnection.ExecuteAsync(@"
+                create table if not exists playlists_videos (
+                playlists_videos_id integer primary key autoincrement,
+                playlist_id integer not null,
+                video_id integer not null,
+                play_order integer not null
+                )
+                ");
+            await destConnection.ExecuteAsync(@"
+                create table if not exists play_status (
+                playlist_id integer null,
+                song_id integer null
+                )
+                ");
             var fileNames = Directory.EnumerateFiles("E:\\Videos\\Music Videos\\On Media Center").Where(x => x.EndsWith(".mp4")).ToHashSet();
             var existingRows = await destConnection.QueryAsync<VideoRow>("SELECT video_id, filename, \"year\", title, album, artist FROM videos");
             var filesInDb = existingRows.Select(x => Path.Combine("E:\\Videos\\Music Videos\\On Media Center", x.filename)).ToHashSet();

@@ -80,7 +80,7 @@ namespace MusicVideoJukebox
                 using var updater = new MetadataUpdater(VideoFolderPath);
                 await updater.UpdateTracksInPlaylist(selectedPlaylist.PlaylistId, added, removed);
             }
-            videoLibraryStore.VideoLibrary = await VideoLibraryBuilder.BuildFromName(videoLibraryStore.VideoLibrary.Folder);
+            videoLibraryStore.VideoLibrary = await VideoLibraryBuilder.BuildAsync(videoLibraryStore.VideoLibrary.Folder);
             SelectedPlaylistIndex = selectedPlaylistIndex; // refreshes the listing
             HasSettingsToSave = false;
         }

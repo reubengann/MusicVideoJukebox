@@ -5,7 +5,7 @@ namespace MusicVideoJukebox.Core
 {
     public static class VideoLibraryBuilder
     {
-        public static async Task<VideoLibrary> BuildFromName(string folder)
+        public static async Task<VideoLibrary> BuildAsync(string folder)
         {
             var databaseFile = Path.Combine(folder, "meta.db");
             using var conn = new SQLiteConnection($"Data Source={databaseFile}");
@@ -36,9 +36,21 @@ namespace MusicVideoJukebox.Core
                 playlistIdToVideosWithOrderMap[row.playlist_id] = foo.Select(x => new VideoInfoAndOrder { Info = new VideoInfoWithId { VideoId = x.video_id, Album = x.album, Artist = x.artist, Title = x.title, Year = x.year }, PlayOrder = x.play_order }).ToList();
             }
 
+            // if there's no status row, create one
+            var numStatusRows = await conn.ExecuteScalarAsync<int>("select count(*) from play_status");
+            if (numStatusRows == 0)
+            {
+                var firstPlaylistId = playlistRows.First().playlist_id;
+                var firstSongId = playlistIdToSongMap[firstPlaylistId].First();
+                await conn.ExecuteAsync("insert into play_status (playlist_id, song_id) values (@PlaylistId, @SongId)", new { PlaylistId = firstPlaylistId, SongId = firstSongId });
+            }
+            var progressPersister = await ProgressPersister.CreateAsync(databaseFile);
+
             return new VideoLibrary(fileNames, infoMap, folder, playlistIdToSongMap, playlistRows.Select(x => new Playlist { PlaylistId = x.playlist_id, PlaylistName = x.playlist_name }).ToList(),
                 videoRows.Select(x => new VideoInfoWithId { VideoId = x.video_id, Album = x.album, Artist = x.artist, Title = x.title, Year = x.year }).ToList(),
-                playlistIdToVideosWithOrderMap);
+                playlistIdToVideosWithOrderMap,
+                progressPersister
+                );
         }
 
         class PlaylistOrderRow
