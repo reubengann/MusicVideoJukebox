@@ -55,6 +55,8 @@ namespace MusicVideoJukebox
             }
         }
 
+
+
         public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService)
         {
             this.mediaPlayer = mediaPlayer;
@@ -207,6 +209,17 @@ namespace MusicVideoJukebox
         public ICommand NextCommand => new DelegateCommand(NextTrack);
         public ICommand PrevCommand => new DelegateCommand(PrevTrack);
         public ICommand SettingsCommand => new DelegateCommand(OpenSettings);
+        public ICommand ExitFullScreenCommand => new DelegateCommand(ExitFullScreenMaybe);
+
+        private void ExitFullScreenMaybe()
+        {
+            if (isFullScreen)
+            {
+                mediaPlayer.SetWindowed();
+                isFullScreen = false;
+            }
+        }
+
         public bool ShowPlay
         {
             get => showPlay;

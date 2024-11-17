@@ -16,6 +16,7 @@
         <KeyBinding Command="{Binding PlayPauseCommand}" Key="Space"/>
         <KeyBinding Command="{Binding NextCommand}" Key="Right"/>
         <KeyBinding Command="{Binding PrevCommand}" Key="Left"/>
+        <KeyBinding Command="{Binding ExitFullScreenCommand}" Key="Escape"/>
     </Window.InputBindings>
     <Grid Background="Black">
 
