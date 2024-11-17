@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using HostInitActions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
+using MusicVideoJukebox.Core;
 using System.Windows;
 
 namespace MusicVideoJukebox
@@ -16,48 +17,23 @@ namespace MusicVideoJukebox
             await _host.StartAsync();
 
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+
             MainWindow = mainWindow;
             await mainWindow.Initialize();
-
-            //var appSettingsStore = await AppSettingsStore.Create();
-
-            //if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !Directory.Exists(appSettingsStore.VideoLibraryPath))
-            //{
-            //    var dialog = new OpenFolderDialog
-            //    {
-            //        Title = "Select a folder for the Video Library",
-            //        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-            //    };
-
-            //    if (dialog.ShowDialog() == true)
-            //    {
-            //        // Update the path in settings
-            //        appSettingsStore.UpdateVideoLibraryPath(dialog.FolderName);
-
-            //        // Save updated settings
-            //        await appSettingsStore.Save();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("A folder is required to continue. The application will now exit.",
-            //                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        Application.Current.Shutdown();
-            //        return;
-            //    }
-            //}
-
-            //ArgumentNullException.ThrowIfNull(appSettingsStore.VideoLibraryPath);
-            //var libraryStore = new VideoLibraryStore(await VideoLibraryBuilder.BuildAsync(appSettingsStore.VideoLibraryPath));
-            //MainWindow = new MainWindow(libraryStore);
 
             MainWindow.Show();
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            //services.AddSingleton<IFolderPicker, WpfFolderPicker>();
-            services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<MainWindow>();
+            services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
+            services.AddSingleton<IDialogService, WindowsDialogService>();
+            //services.AddAsyncServiceInitialization()
+            //    .AddInitAction<MainWindowViewModel>(async (viewModel, cancellationToken) =>
+            //    {
+            //        await viewModel.Initialize();
+            //    });
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using MusicVideoJukebox.Core;
+﻿using ControlzEx.Standard;
+using MusicVideoJukebox.Core;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -24,10 +26,11 @@ namespace MusicVideoJukebox
     public class MainWindowViewModel : BaseViewModel
     {
         private readonly IMediaPlayer mediaPlayer;
-        private readonly AppSettingsStore appSettingsStore = null!;
-        readonly DispatcherTimer progressUpdateTimer = null!;
-        readonly DispatcherTimer scrubDebouceTimer = null!;
-        readonly DispatcherTimer fadeTimer = null!;
+        private readonly IDialogService dialogService;
+        private AppSettingsStore appSettingsStore = null!;
+        private DispatcherTimer progressUpdateTimer = null!;
+        private DispatcherTimer scrubDebouceTimer = null!;
+        private DispatcherTimer fadeTimer = null!;
 
         bool isScrubbing = false;
         bool scrubbedRecently = false;
@@ -38,8 +41,8 @@ namespace MusicVideoJukebox
         int currentVideoIndex = 0;
         private bool showPlay;
         private int selectedPlaylistIndex = 0;
-        readonly VideoLibraryStore libraryStore = null!;
-        private readonly ISettingsWindowFactory settingsDialogFactory = null!;
+        VideoLibraryStore libraryStore = null!;
+        private readonly ISettingsWindowFactory settingsDialogFactory;
 
         public ObservableCollection<string> VideoFiles { get; set; } = null!;
         public ObservableCollection<string> PlaylistNames { get; set; } = null!;
@@ -52,81 +55,70 @@ namespace MusicVideoJukebox
             }
         }
 
-        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory)
+        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService)
         {
             this.mediaPlayer = mediaPlayer;
-            //this.appSettingsStore = appSettingsStore;
+            this.dialogService = dialogService;
+            this.settingsDialogFactory = settingsDialogFactory;
             mediaPlayer.Volume = 1;
         }
 
         public async Task Initialize()
         {
-            //var appSettingsStore = await AppSettingsStore.Create();
+            appSettingsStore = await AppSettingsStore.Create();
 
-            //if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !Directory.Exists(appSettingsStore.VideoLibraryPath))
-            //{
-            //    var dialog = new OpenFolderDialog
-            //    {
-            //        Title = "Select a folder for the Video Library",
-            //        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-            //    };
+            if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !Directory.Exists(appSettingsStore.VideoLibraryPath))
+            {
+                var result = dialogService.ShowFolderSelect("Select a folder for the Video Library", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+                if (result.Accepted)
+                {
+                    ArgumentNullException.ThrowIfNull(result.SelectedFolder);
+                    appSettingsStore.UpdateVideoLibraryPath(result.SelectedFolder);
+                    await appSettingsStore.Save();
+                }
+                else
+                {
+                    dialogService.ShowError("A folder is required to continue. The application will now exit.");
+                    dialogService.ShutDownApp();
+                }
+            }
+            ArgumentNullException.ThrowIfNull(appSettingsStore.VideoLibraryPath);
+            libraryStore = new VideoLibraryStore(await VideoLibraryBuilder.BuildAsync(appSettingsStore.VideoLibraryPath));
 
-            //    if (dialog.ShowDialog() == true)
-            //    {
-            //        // Update the path in settings
-            //        appSettingsStore.UpdateVideoLibraryPath(dialog.FolderName);
+            PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
 
-            //        // Save updated settings
-            //        await appSettingsStore.Save();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("A folder is required to continue. The application will now exit.",
-            //                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        Application.Current.Shutdown();
-            //        return;
-            //    }
-            //}
+            // figure out the SelectedPlaylistIndex
+            var previousPlaylist = libraryStore.VideoLibrary.Playlists.FirstOrDefault(x => x.PlaylistId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.playlist_id);
+            if (previousPlaylist != null)
+            {
+                var previousPlaylistIndex = libraryStore.VideoLibrary.Playlists.IndexOf(previousPlaylist);
+                if (previousPlaylistIndex != -1)
+                {
+                    selectedPlaylistIndex = previousPlaylistIndex;
+                }
+                // figure out the SelectedIndex
+                var previousSong = libraryStore.VideoLibrary.PlaylistIdToSongOrderMap[previousPlaylist.PlaylistId].FirstOrDefault(x => x.Info.VideoId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.song_id);
+                if (previousSong != null)
+                {
+                    if (previousSong.PlayOrder < libraryStore.VideoLibrary.PlaylistIdToSongMap[previousPlaylist.PlaylistId].Count())
+                        currentVideoIndex = previousSong.PlayOrder - 1;
+                }
+            }
 
-            //libraryStore = videoLibraryStore;
-            //this.settingsDialogFactory = settingsDialogFactory;
+            VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
+            mediaPlayer.SetSource(new System.Uri(CurrentFileName));
 
-            //PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
-
-            //// figure out the SelectedPlaylistIndex
-            //var previousPlaylist = libraryStore.VideoLibrary.Playlists.FirstOrDefault(x => x.PlaylistId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.playlist_id);
-            //if (previousPlaylist != null)
-            //{
-            //    var previousPlaylistIndex = libraryStore.VideoLibrary.Playlists.IndexOf(previousPlaylist);
-            //    if (previousPlaylistIndex != -1)
-            //    {
-            //        selectedPlaylistIndex = previousPlaylistIndex;
-            //    }
-            //    // figure out the SelectedIndex
-            //    var previousSong = libraryStore.VideoLibrary.PlaylistIdToSongOrderMap[previousPlaylist.PlaylistId].FirstOrDefault(x => x.Info.VideoId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.song_id);
-            //    if (previousSong != null)
-            //    {
-            //        if (previousSong.PlayOrder < libraryStore.VideoLibrary.PlaylistIdToSongMap[previousPlaylist.PlaylistId].Count())
-            //            currentVideoIndex = previousSong.PlayOrder - 1;
-            //    }
-            //}
-
-
-
-            //VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
-            //mediaPlayer.SetSource(new System.Uri(CurrentFileName));
-
-            //progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            //scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            //progressUpdateTimer.Tick += Timer_Tick;
-            //scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
-            //fadeTimer = new DispatcherTimer
-            //{
-            //    Interval = TimeSpan.FromSeconds(2)
-            //};
-            //fadeTimer.Tick += FadeTimer_Tick;
-            //fadeTimer.Start();
-            //PlayVideo();
+            progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            progressUpdateTimer.Tick += Timer_Tick;
+            scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
+            fadeTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2)
+            };
+            fadeTimer.Tick += FadeTimer_Tick;
+            fadeTimer.Start();
+            PlayVideo();
         }
 
         private static IEnumerable<string> GetNiceNames(VideoLibrary library, int selectedIndex)

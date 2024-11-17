@@ -15,19 +15,19 @@ namespace MusicVideoJukebox
         private bool fadingOut = false;
         private bool fadingIn = false;
 
-        public MainWindow(ISettingsWindowFactory settingsWindow)
+        public MainWindow(ISettingsWindowFactory settingsWindowFactory, IDialogService dialogService)
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this, settingsWindow);
+            vm = new MainWindowViewModel(this, settingsWindowFactory, dialogService);
             DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
         }
 
-        public async Task Initialize()
-        {
-            await vm.Initialize();
-        }
+        //public async Task Initialize()
+        //{
+        //    await vm.Initialize();
+        //}
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
@@ -142,6 +142,11 @@ namespace MusicVideoJukebox
         public void HideInfo()
         {
             VideoInfo.BeginAnimation(OpacityProperty, new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.25) });
+        }
+
+        internal async Task Initialize()
+        {
+            await vm.Initialize();
         }
     }
 }
