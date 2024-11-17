@@ -6,7 +6,7 @@ namespace MusicVideoJukebox
 {
     public class DispatcherUITimer : IUIThreadTimer
     {
-        DispatcherTimer _timer;
+        readonly DispatcherTimer _timer;
 
         public DispatcherUITimer(TimeSpan interval)
         {

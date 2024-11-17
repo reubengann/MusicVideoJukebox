@@ -29,10 +29,10 @@ namespace MusicVideoJukebox
 
                 foreach (var ssvm in TrackListing)
                 {
-                    if (videoIdToPlayOrderMap.ContainsKey(ssvm.VideoId))
+                    if (videoIdToPlayOrderMap.TryGetValue(ssvm.VideoId, out int order))
                     {
                         ssvm.Reset(true);
-                        ssvm.Order = videoIdToPlayOrderMap[ssvm.VideoId];
+                        ssvm.Order = order;
                     }
                     else
                     {
@@ -88,8 +88,8 @@ namespace MusicVideoJukebox
         public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore)
         {
             VideoFolderPath = videoLibraryStore.VideoLibrary.Folder;
-            Playlists = new ObservableCollection<PlaylistViewModel>();
-            TrackListing = new ObservableCollection<SettingsSongViewModel>();
+            Playlists = [];
+            TrackListing = [];
             this.videoLibraryStore = videoLibraryStore;
             foreach (var playlist in videoLibraryStore.VideoLibrary.Playlists)
             {
@@ -122,19 +122,13 @@ namespace MusicVideoJukebox
         }
     }
 
-    public class PlaylistViewModel : BaseViewModel
+    public class PlaylistViewModel(string itemName, int playlistId) : BaseViewModel
     {
-        private string itemName;
-        public int PlaylistId { get; private set; }
+        private string itemName = itemName;
+        public int PlaylistId { get; private set; } = playlistId;
 
         public event Action? ItemChanged;
         public bool NameWasChanged { get; private set; } = false;
-
-        public PlaylistViewModel(string itemName, int playlistId)
-        {
-            this.itemName = itemName;
-            this.PlaylistId = playlistId;
-        }
 
         public string ItemName
         {

@@ -1,13 +1,8 @@
 ﻿namespace MusicVideoJukebox.Core
 {
-    public class VideoInfoViewModel : BaseViewModel
+    public class VideoInfoViewModel(VideoInfo videoInfo) : BaseViewModel
     {
-        private readonly VideoInfo videoInfo;
-
-        public VideoInfoViewModel(VideoInfo videoInfo)
-        {
-            this.videoInfo = videoInfo;
-        }
+        private readonly VideoInfo videoInfo = videoInfo;
 
         public string Artist => videoInfo.Artist;
         public string Title => $"\"{videoInfo.Title}\"";
