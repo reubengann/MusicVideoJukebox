@@ -1,5 +1,4 @@
-﻿using HostInitActions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicVideoJukebox.Core;
 using System.Windows;
@@ -29,11 +28,6 @@ namespace MusicVideoJukebox
             services.AddSingleton<MainWindow>();
             services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
             services.AddSingleton<IDialogService, WindowsDialogService>();
-            //services.AddAsyncServiceInitialization()
-            //    .AddInitAction<MainWindowViewModel>(async (viewModel, cancellationToken) =>
-            //    {
-            //        await viewModel.Initialize();
-            //    });
         }
     }
 }

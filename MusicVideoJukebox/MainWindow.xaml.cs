@@ -24,10 +24,10 @@ namespace MusicVideoJukebox
             player.MediaEnded += Player_MediaEnded;
         }
 
-        //public async Task Initialize()
-        //{
-        //    await vm.Initialize();
-        //}
+        public async Task Initialize()
+        {
+            await vm.Initialize();
+        }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
@@ -142,11 +142,6 @@ namespace MusicVideoJukebox
         public void HideInfo()
         {
             VideoInfo.BeginAnimation(OpacityProperty, new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.25) });
-        }
-
-        internal async Task Initialize()
-        {
-            await vm.Initialize();
         }
     }
 }
