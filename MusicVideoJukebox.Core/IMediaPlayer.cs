@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MusicVideoJukebox
+namespace MusicVideoJukebox.Core
 {
     public interface IMediaPlayer
     {

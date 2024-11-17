@@ -1,6 +1,4 @@
-﻿using MusicVideoJukebox.Core;
-
-namespace MusicVideoJukebox
+﻿namespace MusicVideoJukebox.Core
 {
     public class VideoInfoViewModel : BaseViewModel
     {

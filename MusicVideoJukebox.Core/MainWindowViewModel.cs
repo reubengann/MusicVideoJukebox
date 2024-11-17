@@ -1,17 +1,10 @@
-﻿using MusicVideoJukebox.Core;
-using Prism.Commands;
-using System;
-using System.Collections.Generic;
+﻿using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Threading;
 
-namespace MusicVideoJukebox
+namespace MusicVideoJukebox.Core
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -26,10 +19,11 @@ namespace MusicVideoJukebox
     {
         private readonly IMediaPlayer mediaPlayer;
         private readonly IDialogService dialogService;
+        private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         private AppSettingsStore appSettingsStore = null!;
-        private DispatcherTimer progressUpdateTimer = null!;
-        private DispatcherTimer scrubDebouceTimer = null!;
-        private DispatcherTimer fadeTimer = null!;
+        private IUIThreadTimer progressUpdateTimer = null!;
+        private IUIThreadTimer scrubDebouceTimer = null!;
+        private IUIThreadTimer fadeTimer = null!;
 
         bool isScrubbing = false;
         bool scrubbedRecently = false;
@@ -54,12 +48,11 @@ namespace MusicVideoJukebox
             }
         }
 
-
-
-        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService)
+        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory)
         {
             this.mediaPlayer = mediaPlayer;
             this.dialogService = dialogService;
+            this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.settingsDialogFactory = settingsDialogFactory;
             mediaPlayer.Volume = 1;
         }
@@ -109,14 +102,11 @@ namespace MusicVideoJukebox
             VideoFiles = new ObservableCollection<string>(GetNiceNames(libraryStore.VideoLibrary, SelectedPlaylistIndex));
             mediaPlayer.SetSource(new System.Uri(CurrentFileName));
 
-            progressUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            scrubDebouceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
+            scrubDebouceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += Timer_Tick;
             scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
-            fadeTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(2)
-            };
+            fadeTimer = uIThreadTimerFactory.Create(TimeSpan.FromSeconds(2));
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
             PlayVideo();
