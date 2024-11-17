@@ -1,4 +1,6 @@
-﻿namespace MusicVideoJukebox
+﻿using MusicVideoJukebox.Core;
+
+namespace MusicVideoJukebox
 {
     class WindowsSettingsWindowFactory : ISettingsWindowFactory
     {

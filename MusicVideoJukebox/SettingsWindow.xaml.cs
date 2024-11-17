@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MusicVideoJukebox.Core;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace MusicVideoJukebox

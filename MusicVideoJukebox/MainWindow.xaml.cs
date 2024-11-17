@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MusicVideoJukebox.Core;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -13,13 +15,18 @@ namespace MusicVideoJukebox
         private bool fadingOut = false;
         private bool fadingIn = false;
 
-        public MainWindow(VideoLibraryStore videoLibraryStore)
+        public MainWindow(ISettingsWindowFactory settingsWindow)
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this, videoLibraryStore, new WindowsSettingsWindowFactory());
+            vm = new MainWindowViewModel(this, settingsWindow);
             DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
+        }
+
+        public async Task Initialize()
+        {
+            await vm.Initialize();
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)

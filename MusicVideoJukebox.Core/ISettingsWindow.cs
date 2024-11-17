@@ -1,4 +1,4 @@
-﻿namespace MusicVideoJukebox
+﻿namespace MusicVideoJukebox.Core
 {
     public interface ISettingsWindow
     {
