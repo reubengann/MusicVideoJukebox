@@ -18,7 +18,7 @@ namespace MusicVideoJukebox.Core
             foreach (var row in playlistItemRows)
             {
                 if (!playlistIdToSongMap.ContainsKey(row.playlist_id))
-                    playlistIdToSongMap[row.playlist_id] = new List<int>();
+                    playlistIdToSongMap[row.playlist_id] = [];
                 playlistIdToSongMap[row.playlist_id].Add(row.video_id);
             }
             var playlistRows = await conn.QueryAsync<PlaylistRow>("select playlist_id, playlist_name from playlists order by playlist_id");

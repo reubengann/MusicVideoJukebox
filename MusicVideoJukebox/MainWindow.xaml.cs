@@ -11,7 +11,7 @@ namespace MusicVideoJukebox
     public partial class MainWindow : Window, IMediaPlayer
     {
         readonly MainWindowViewModel vm;
-        private readonly List<UIElement> triggerElements = new();
+        private readonly List<UIElement> triggerElements = [];
         private bool fadingOut = false;
         private bool fadingIn = false;
 

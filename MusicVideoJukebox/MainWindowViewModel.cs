@@ -1,5 +1,4 @@
-﻿using ControlzEx.Standard;
-using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -102,7 +101,7 @@ namespace MusicVideoJukebox
                 var previousSong = libraryStore.VideoLibrary.PlaylistIdToSongOrderMap[previousPlaylist.PlaylistId].FirstOrDefault(x => x.Info.VideoId == libraryStore.VideoLibrary.ProgressPersister.CurrentPlayStatus.song_id);
                 if (previousSong != null)
                 {
-                    if (previousSong.PlayOrder < libraryStore.VideoLibrary.PlaylistIdToSongMap[previousPlaylist.PlaylistId].Count())
+                    if (previousSong.PlayOrder < libraryStore.VideoLibrary.PlaylistIdToSongMap[previousPlaylist.PlaylistId].Count)
                         currentVideoIndex = previousSong.PlayOrder - 1;
                 }
             }
@@ -123,7 +122,7 @@ namespace MusicVideoJukebox
             PlayVideo();
         }
 
-        private static IEnumerable<string> GetNiceNames(VideoLibrary library, int selectedIndex)
+        private static List<string> GetNiceNames(VideoLibrary library, int selectedIndex)
         {
             var niceStrings = new List<string>();
             var playlistId = library.Playlists[selectedIndex].PlaylistId;
