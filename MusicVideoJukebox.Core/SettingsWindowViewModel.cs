@@ -1,13 +1,10 @@
-﻿using MusicVideoJukebox.Core;
-using Prism.Commands;
-using System;
+﻿using Prism.Commands;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
-namespace MusicVideoJukebox
+namespace MusicVideoJukebox.Core
 {
-    class SettingsWindowViewModel : BaseViewModel
+    public class SettingsWindowViewModel : BaseViewModel
     {
         private bool hasSettingsToSave;
         private int selectedPlaylistIndex = 0;

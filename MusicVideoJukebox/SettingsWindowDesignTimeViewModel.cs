@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using MusicVideoJukebox.Core;
+using System.Collections.ObjectModel;
 
 namespace MusicVideoJukebox
 {
@@ -14,12 +15,12 @@ namespace MusicVideoJukebox
 
         public SettingsWindowDesignTimeViewModel()
         {
-            TrackListing = new ObservableCollection<SettingsSongViewModel>
-            {
+            TrackListing =
+            [
                 new SettingsSongViewModel { Artist = "10,000 Maniacs", Track = "Because the Night [Unplugged]", Album = "Unplugged", Year = "1991", IsActive = true, Order = 1 },
                 new SettingsSongViewModel { Artist = "A Flock of Seagulls", Track = "I Ran", Album = "whatever", Year = "1982", Order = 2 },
-            };
-            Playlists = new ObservableCollection<string> { "All alphabetical" };
+            ];
+            Playlists = ["All alphabetical"];
         }
     }
 
