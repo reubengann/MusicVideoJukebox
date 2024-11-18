@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="MusicVideoJukebox.ImportControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicVideoJukebox"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Margin="10">
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <Button Command="{Binding SelectFilesCommand}" Content="Select MP4 Files" />
+            <Label Content="{Binding SelectedFilesCount, StringFormat='Files Selected: {0}'}" Margin="10,0,0,0" />
+        </StackPanel>
+        <ListBox ItemsSource="{Binding SelectedFiles}" Height="200" Margin="0 0 0 10" />
+        <Button Command="{Binding ImportCommand}" IsEnabled="{Binding CanImport}" Content="Import" Width="100" />
+    </StackPanel>
+</UserControl>

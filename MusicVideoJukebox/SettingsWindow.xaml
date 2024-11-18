@@ -9,7 +9,9 @@
         Background="Black"
         d:DataContext="{d:DesignInstance local:SettingsWindowDesignTimeViewModel, IsDesignTimeCreatable=True}">
     <Grid>
-        <StackPanel Margin="10">
+        <TabControl>
+            <TabItem Header="Folder Settings">
+            <StackPanel Margin="10">
             <Label>Folder</Label>
             <StackPanel Orientation="Horizontal">
                 <TextBox Text="{Binding VideoFolderPath}" Width="500"/>
@@ -63,6 +65,11 @@
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
+            </TabItem>
+            <TabItem Header="Import">
+                <local:ImportControl/>
+            </TabItem>
+        </TabControl>
         <Grid Margin="10" VerticalAlignment="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -71,6 +78,7 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" IsEnabled="{Binding HasSettingsToSave}" Command="{Binding SaveChangesCommand}">Save</Button>
             <Button Grid.Column="2" Click="Button_Click">Dismiss</Button>
-        </Grid>
-    </Grid>
+                    </Grid>
+                </Grid>
+
 </Window>

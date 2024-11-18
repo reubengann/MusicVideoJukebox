@@ -7,6 +7,11 @@ namespace MusicVideoJukebox.Test
         public bool ShowedFolderSelect = false;
         public FolderPickerResult PickResultToReturn = new();
 
+        public MultipleFilePickerResult PickMultipleFiles(string filter)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ShowError(string message)
         {
         }
