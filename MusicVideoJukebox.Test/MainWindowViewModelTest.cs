@@ -11,6 +11,7 @@ namespace MusicVideoJukebox.Test
         FakeUIThreadFactory uIThreadFactory;
         FakeFileSystemService fileSystemService;
         FakeVideoLibraryBuilder videoLibraryBuilder;
+        FakeAppSettingsFactory appSettingsFactory;
 
         public MainWindowViewModelTest()
         {
@@ -20,7 +21,24 @@ namespace MusicVideoJukebox.Test
             fileSystemService = new FakeFileSystemService();
             videoLibraryBuilder = new FakeVideoLibraryBuilder();
             uIThreadFactory = new FakeUIThreadFactory();
-            dut = new MainWindowViewModel(mediaPlayer, settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder);
+            appSettingsFactory = new FakeAppSettingsFactory();
+            dut = new MainWindowViewModel(mediaPlayer, settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder, appSettingsFactory);
+        }
+
+        [Fact]
+        public async Task Foo()
+        {
+            WithOneSong();
+            await dut.Initialize();
+        }
+
+        private void WithOneSong()
+        {
+            videoLibraryBuilder.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1 });
+            videoLibraryBuilder.ToReturn.PlaylistIdToSongOrderMap[1] = [];
+            videoLibraryBuilder.ToReturn.PlaylistIdToSongMap[1] = [1];
+            videoLibraryBuilder.ToReturn.VideoIdToInfoMap[1] = new VideoInfo { };
+            videoLibraryBuilder.ToReturn.FilePaths[1] = @"c:\temp\foo";
         }
     }
 }

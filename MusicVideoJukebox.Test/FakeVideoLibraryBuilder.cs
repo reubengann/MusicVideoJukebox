@@ -4,9 +4,12 @@ namespace MusicVideoJukebox.Test
 {
     internal class FakeVideoLibraryBuilder : IVideoLibraryBuilder
     {
-        public Task<VideoLibrary> BuildAsync(string folder)
+        public VideoLibrary ToReturn = new([], [], "", [], [], [], [], new ProgressPersister("", new CurrentPlayStatus()));
+
+        public async Task<VideoLibrary> BuildAsync(string folder)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return ToReturn;
         }
     }
 }

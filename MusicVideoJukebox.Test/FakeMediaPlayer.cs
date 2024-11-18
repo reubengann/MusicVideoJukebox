@@ -4,10 +4,14 @@ namespace MusicVideoJukebox.Test
 {
     internal class FakeMediaPlayer : IMediaPlayer
     {
+        List<Uri> SourcesSet = [];
+
+        double volume = 0;
+
         public double LengthSeconds => throw new NotImplementedException();
 
         public double CurrentTimeSeconds { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public double Volume { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public double Volume { get => volume; set => volume = value; }
 
         public void FadeButtonsOut()
         {
@@ -31,7 +35,7 @@ namespace MusicVideoJukebox.Test
 
         public void Play()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void SetFullScreen()
@@ -41,7 +45,7 @@ namespace MusicVideoJukebox.Test
 
         public void SetSource(Uri source)
         {
-            throw new NotImplementedException();
+            SourcesSet.Add(source);
         }
 
         public void SetWindowed()

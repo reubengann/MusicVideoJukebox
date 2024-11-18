@@ -8,7 +8,7 @@ namespace MusicVideoJukebox.Core
         private readonly string databaseFile;
         public CurrentPlayStatus CurrentPlayStatus;
 
-        private ProgressPersister(string databaseFile, CurrentPlayStatus status)
+        public ProgressPersister(string databaseFile, CurrentPlayStatus status)
         {
             this.databaseFile = databaseFile;
             this.CurrentPlayStatus = status;

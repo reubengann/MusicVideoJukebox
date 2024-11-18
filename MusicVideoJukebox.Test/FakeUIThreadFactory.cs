@@ -2,11 +2,28 @@
 
 namespace MusicVideoJukebox.Test
 {
+    internal class FakeUiThreadTimer : IUIThreadTimer
+    {
+        public event EventHandler? Tick;
+        bool Started = false;
+        bool Stopped = false;
+
+        public void Start()
+        {
+            Started = true;
+        }
+
+        public void Stop()
+        {
+            Stopped = true;
+        }
+    }
+
     internal class FakeUIThreadFactory : IUIThreadTimerFactory
     {
         public IUIThreadTimer Create(TimeSpan interval)
         {
-            throw new NotImplementedException();
+            return new FakeUiThreadTimer();
         }
     }
 }

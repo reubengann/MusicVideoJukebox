@@ -6,17 +6,15 @@ namespace MusicVideoJukebox.Test
     {
         public void ShowError(string message)
         {
-            throw new NotImplementedException();
         }
 
         public FolderPickerResult ShowFolderSelect(string title, string InitialDirectory)
         {
-            throw new NotImplementedException();
+            return new FolderPickerResult();
         }
 
         public void ShutDownApp()
         {
-            throw new NotImplementedException();
         }
     }
 }

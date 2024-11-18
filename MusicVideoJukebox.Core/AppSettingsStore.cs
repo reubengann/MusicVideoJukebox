@@ -2,48 +2,73 @@
 
 namespace MusicVideoJukebox.Core
 {
-    public class AppSettingsStore
+    public interface IAppSettingsFactory
     {
-        private class AppSettings
+        Task<IAppSettings> Create();
+    }
+
+    public class FileAppSettingsFactory : IAppSettingsFactory
+    {
+        public async Task<IAppSettings> Create()
+        {
+            return await FileAppSettings.Create();
+        }
+    }
+
+    public class FileAppSettings : IAppSettings
+    {
+        private class AppSettingData
         {
             public string? VideoLibraryPath { get; set; }
         }
 
         private const string SettingsFilePath = "appsettings.json";
-        private AppSettings _settings;
+        private readonly AppSettingData data;
+        static JsonSerializerOptions options = new() { WriteIndented = true };
 
-        public string? VideoLibraryPath => _settings?.VideoLibraryPath;
-
-        private AppSettingsStore(AppSettings settings)
+        private FileAppSettings(AppSettingData data)
         {
-            _settings = settings;
+            this.data = data;
         }
 
-        public static async Task<AppSettingsStore> Create()
+        public static async Task<FileAppSettings> Create()
         {
-            AppSettings settings;
+            AppSettingData settingData;
 
             if (File.Exists(SettingsFilePath))
             {
                 var json = await File.ReadAllTextAsync(SettingsFilePath);
-                settings = JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
+                settingData = JsonSerializer.Deserialize<AppSettingData>(json) ?? new AppSettingData();
             }
             else
             {
-                settings = new AppSettings();
+                settingData = new AppSettingData();
             }
-            return new AppSettingsStore(settings);
-        }
-
-        public void UpdateVideoLibraryPath(string folderName)
-        {
-            _settings.VideoLibraryPath = folderName;
+            return new FileAppSettings(settingData);
         }
 
         public async Task Save()
         {
-            var json = JsonSerializer.Serialize(_settings, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(data, options);
             await File.WriteAllTextAsync(SettingsFilePath, json);
+        }
+
+        public void UpdateVideoLibraryPath(string folderName)
+        {
+            data.VideoLibraryPath = folderName;
+        }
+
+        public string? VideoLibraryPath { get => data.VideoLibraryPath; set => data.VideoLibraryPath = value; }
+    }
+
+
+    public class AppSettingsStore
+    {
+        public IAppSettings Settings { get; }
+
+        public AppSettingsStore(IAppSettings settings)
+        {
+            Settings = settings;
         }
     }
 }

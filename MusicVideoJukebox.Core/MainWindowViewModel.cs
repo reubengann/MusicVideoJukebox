@@ -22,6 +22,7 @@ namespace MusicVideoJukebox.Core
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         private readonly IFileSystemService fileSystemService;
         private readonly IVideoLibraryBuilder videoLibraryBuilder;
+        private readonly IAppSettingsFactory appSettingsFactory;
         private AppSettingsStore appSettingsStore = null!;
         private IUIThreadTimer progressUpdateTimer = null!;
         private IUIThreadTimer scrubDebounceTimer = null!;
@@ -51,29 +52,31 @@ namespace MusicVideoJukebox.Core
         }
 
         public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory, IFileSystemService fileSystemService,
-            IVideoLibraryBuilder videoLibraryBuilder)
+            IVideoLibraryBuilder videoLibraryBuilder, IAppSettingsFactory appSettingsFactory)
         {
             this.mediaPlayer = mediaPlayer;
             this.dialogService = dialogService;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.fileSystemService = fileSystemService;
             this.videoLibraryBuilder = videoLibraryBuilder;
+            this.appSettingsFactory = appSettingsFactory;
             this.settingsDialogFactory = settingsDialogFactory;
             mediaPlayer.Volume = 1;
         }
 
         public async Task Initialize()
         {
-            appSettingsStore = await AppSettingsStore.Create();
+            var appsettings = await appSettingsFactory.Create();
+            appSettingsStore = new AppSettingsStore(appsettings);
 
-            if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !fileSystemService.FolderExists(appSettingsStore.VideoLibraryPath))
+            if (string.IsNullOrWhiteSpace(appSettingsStore.Settings.VideoLibraryPath) || !fileSystemService.FolderExists(appSettingsStore.Settings.VideoLibraryPath))
             {
                 var result = dialogService.ShowFolderSelect("Select a folder for the Video Library", fileSystemService.GetMyDocuments());
                 if (result.Accepted)
                 {
                     ArgumentNullException.ThrowIfNull(result.SelectedFolder);
-                    appSettingsStore.UpdateVideoLibraryPath(result.SelectedFolder);
-                    await appSettingsStore.Save();
+                    appSettingsStore.Settings.UpdateVideoLibraryPath(result.SelectedFolder);
+                    await appSettingsStore.Settings.Save();
                 }
                 else
                 {
@@ -81,8 +84,8 @@ namespace MusicVideoJukebox.Core
                     dialogService.ShutDownApp();
                 }
             }
-            ArgumentNullException.ThrowIfNull(appSettingsStore.VideoLibraryPath);
-            libraryStore = new VideoLibraryStore(await videoLibraryBuilder.BuildAsync(appSettingsStore.VideoLibraryPath));
+            ArgumentNullException.ThrowIfNull(appSettingsStore.Settings.VideoLibraryPath);
+            libraryStore = new VideoLibraryStore(await videoLibraryBuilder.BuildAsync(appSettingsStore.Settings.VideoLibraryPath));
 
             PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
 

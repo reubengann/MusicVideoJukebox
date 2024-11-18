@@ -11,7 +11,7 @@ namespace MusicVideoJukebox.Test
 
         public string GetMyDocuments()
         {
-            throw new NotImplementedException();
+            return "mydocs";
         }
     }
 }

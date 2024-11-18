@@ -19,7 +19,7 @@ namespace MusicVideoJukebox
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this, settingsWindowFactory, dialogService, new DispatcherUITimerFactory(), new FileSystemService(), new SqliteVideoLibraryBuilder());
+            vm = new MainWindowViewModel(this, settingsWindowFactory, dialogService, new DispatcherUITimerFactory(), new FileSystemService(), new SqliteVideoLibraryBuilder(), new FileAppSettingsFactory());
             DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
         }
