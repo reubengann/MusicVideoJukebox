@@ -26,19 +26,41 @@ namespace MusicVideoJukebox.Test
         }
 
         [Fact]
-        public async Task Foo()
+        public async Task PlaysOnInitialized()
         {
-            WithOneSong();
+            appSettingsFactory.Settings.VideoLibraryPath = "avalidpath";
+            fileSystemService.ExistingPaths.Add("avalidpath");
+            WithPlaylist(1);
+            WithOneSong(1, 1);
             await dut.Initialize();
+            Assert.False(dialogService.ShowedFolderSelect);
+            Assert.True(mediaPlayer.SetToPlay);
+            Assert.False(dut.ShowPlay);
         }
 
-        private void WithOneSong()
+        [Fact]
+        public async Task PromptsWhenNoLibraryLoaded()
         {
-            videoLibraryBuilder.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1 });
-            videoLibraryBuilder.ToReturn.PlaylistIdToSongOrderMap[1] = [];
-            videoLibraryBuilder.ToReturn.PlaylistIdToSongMap[1] = [1];
-            videoLibraryBuilder.ToReturn.VideoIdToInfoMap[1] = new VideoInfo { };
-            videoLibraryBuilder.ToReturn.FilePaths[1] = @"c:\temp\foo";
+            dialogService.PickResultToReturn.SelectedFolder = "avalidpath";
+            dialogService.PickResultToReturn.Accepted = true;
+            WithPlaylist(1);
+            WithOneSong(1, 1);
+            await dut.Initialize();
+            Assert.True(dialogService.ShowedFolderSelect);
+        }
+
+        private void WithPlaylist(int id)
+        {
+            videoLibraryBuilder.ToReturn.Playlists.Add(new Playlist { PlaylistId = id });
+            videoLibraryBuilder.ToReturn.PlaylistIdToSongMap[id] = [];
+            videoLibraryBuilder.ToReturn.PlaylistIdToSongOrderMap[id] = [];
+        }
+
+        private void WithOneSong(int playlistId, int songId)
+        {
+            videoLibraryBuilder.ToReturn.PlaylistIdToSongMap[playlistId].Add(1);
+            videoLibraryBuilder.ToReturn.VideoIdToInfoMap[songId] = new VideoInfo { };
+            videoLibraryBuilder.ToReturn.FilePaths[songId] = @"c:\temp\foo";
         }
     }
 }

@@ -4,9 +4,11 @@ namespace MusicVideoJukebox.Test
 {
     internal class FakeFileSystemService : IFileSystemService
     {
+        public List<string> ExistingPaths = [];
+
         public bool FolderExists(string path)
         {
-            throw new NotImplementedException();
+            return ExistingPaths.Contains(path);
         }
 
         public string GetMyDocuments()

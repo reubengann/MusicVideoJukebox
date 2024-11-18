@@ -5,6 +5,7 @@ namespace MusicVideoJukebox.Test
     internal class FakeMediaPlayer : IMediaPlayer
     {
         List<Uri> SourcesSet = [];
+        public bool SetToPlay = false;
 
         double volume = 0;
 
@@ -35,7 +36,7 @@ namespace MusicVideoJukebox.Test
 
         public void Play()
         {
-            
+            SetToPlay = true;
         }
 
         public void SetFullScreen()
