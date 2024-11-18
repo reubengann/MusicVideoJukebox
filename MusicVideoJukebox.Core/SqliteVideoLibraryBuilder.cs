@@ -3,9 +3,9 @@ using System.Data.SQLite;
 
 namespace MusicVideoJukebox.Core
 {
-    public static class VideoLibraryBuilder
+    public class SqliteVideoLibraryBuilder : IVideoLibraryBuilder
     {
-        public static async Task<VideoLibrary> BuildAsync(string folder)
+        public async Task<VideoLibrary> BuildAsync(string folder)
         {
             var databaseFile = Path.Combine(folder, "meta.db");
             using var conn = new SQLiteConnection($"Data Source={databaseFile}");

@@ -20,9 +20,11 @@ namespace MusicVideoJukebox.Core
         private readonly IMediaPlayer mediaPlayer;
         private readonly IDialogService dialogService;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
+        private readonly IFileSystemService fileSystemService;
+        private readonly IVideoLibraryBuilder videoLibraryBuilder;
         private AppSettingsStore appSettingsStore = null!;
         private IUIThreadTimer progressUpdateTimer = null!;
-        private IUIThreadTimer scrubDebouceTimer = null!;
+        private IUIThreadTimer scrubDebounceTimer = null!;
         private IUIThreadTimer fadeTimer = null!;
 
         bool isScrubbing = false;
@@ -48,11 +50,14 @@ namespace MusicVideoJukebox.Core
             }
         }
 
-        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory)
+        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory, IFileSystemService fileSystemService,
+            IVideoLibraryBuilder videoLibraryBuilder)
         {
             this.mediaPlayer = mediaPlayer;
             this.dialogService = dialogService;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
+            this.fileSystemService = fileSystemService;
+            this.videoLibraryBuilder = videoLibraryBuilder;
             this.settingsDialogFactory = settingsDialogFactory;
             mediaPlayer.Volume = 1;
         }
@@ -61,9 +66,9 @@ namespace MusicVideoJukebox.Core
         {
             appSettingsStore = await AppSettingsStore.Create();
 
-            if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !Directory.Exists(appSettingsStore.VideoLibraryPath))
+            if (string.IsNullOrWhiteSpace(appSettingsStore.VideoLibraryPath) || !fileSystemService.FolderExists(appSettingsStore.VideoLibraryPath))
             {
-                var result = dialogService.ShowFolderSelect("Select a folder for the Video Library", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+                var result = dialogService.ShowFolderSelect("Select a folder for the Video Library", fileSystemService.GetMyDocuments());
                 if (result.Accepted)
                 {
                     ArgumentNullException.ThrowIfNull(result.SelectedFolder);
@@ -77,7 +82,7 @@ namespace MusicVideoJukebox.Core
                 }
             }
             ArgumentNullException.ThrowIfNull(appSettingsStore.VideoLibraryPath);
-            libraryStore = new VideoLibraryStore(await VideoLibraryBuilder.BuildAsync(appSettingsStore.VideoLibraryPath));
+            libraryStore = new VideoLibraryStore(await videoLibraryBuilder.BuildAsync(appSettingsStore.VideoLibraryPath));
 
             PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
 
@@ -103,9 +108,9 @@ namespace MusicVideoJukebox.Core
             mediaPlayer.SetSource(new System.Uri(CurrentFileName));
 
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
-            scrubDebouceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
+            scrubDebounceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += Timer_Tick;
-            scrubDebouceTimer.Tick += ScrubDebouceTimer_Tick;
+            scrubDebounceTimer.Tick += ScrubDebounceTimer_Tick;
             fadeTimer = uIThreadTimerFactory.Create(TimeSpan.FromSeconds(2));
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
@@ -162,7 +167,7 @@ namespace MusicVideoJukebox.Core
             mediaPlayer.FadeButtonsOut();
         }
 
-        private void ScrubDebouceTimer_Tick(object? sender, EventArgs e)
+        private void ScrubDebounceTimer_Tick(object? sender, EventArgs e)
         {
             scrubbedRecently = false;
         }
@@ -273,14 +278,14 @@ namespace MusicVideoJukebox.Core
 
         public void StopScrubbing()
         {
-            scrubDebouceTimer.Stop();
+            scrubDebounceTimer.Stop();
             scrubbedRecently = false;
             isScrubbing = false;
         }
 
         public void StartScrubbing()
         {
-            scrubDebouceTimer.Start();
+            scrubDebounceTimer.Start();
             isScrubbing = true;
         }
 

@@ -9,6 +9,7 @@ namespace MusicVideoJukebox.Core
         private bool hasSettingsToSave;
         private int selectedPlaylistIndex = 0;
         private readonly VideoLibraryStore videoLibraryStore;
+        private readonly IVideoLibraryBuilder videoLibraryBuilder;
 
         public string VideoFolderPath { get; set; }
         public bool MetadataNotFound { get; set; }
@@ -77,17 +78,18 @@ namespace MusicVideoJukebox.Core
                 using var updater = new MetadataUpdater(VideoFolderPath);
                 await updater.UpdateTracksInPlaylist(selectedPlaylist.PlaylistId, added, removed);
             }
-            videoLibraryStore.VideoLibrary = await VideoLibraryBuilder.BuildAsync(videoLibraryStore.VideoLibrary.Folder);
+            videoLibraryStore.VideoLibrary = await videoLibraryBuilder.BuildAsync(videoLibraryStore.VideoLibrary.Folder);
             SelectedPlaylistIndex = selectedPlaylistIndex; // refreshes the listing
             HasSettingsToSave = false;
         }
 
-        public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore)
+        public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore, IVideoLibraryBuilder videoLibraryBuilder)
         {
             VideoFolderPath = videoLibraryStore.VideoLibrary.Folder;
             Playlists = [];
             TrackListing = [];
             this.videoLibraryStore = videoLibraryStore;
+            this.videoLibraryBuilder = videoLibraryBuilder;
             foreach (var playlist in videoLibraryStore.VideoLibrary.Playlists)
             {
                 var item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);
