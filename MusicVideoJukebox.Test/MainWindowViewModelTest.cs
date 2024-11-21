@@ -22,7 +22,7 @@ namespace MusicVideoJukebox.Test
             videoLibraryBuilder = new FakeVideoLibraryBuilder();
             uIThreadFactory = new FakeUIThreadFactory();
             appSettingsFactory = new FakeAppSettingsFactory();
-            dut = new MainWindowViewModel(mediaPlayer, settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder, appSettingsFactory);
+            dut = new MainWindowViewModel(settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder, appSettingsFactory);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace MusicVideoJukebox.Test
             fileSystemService.ExistingPaths.Add("avalidpath");
             WithPlaylist(1);
             WithOneSong(1, 1);
-            await dut.Initialize();
+            await dut.Initialize(mediaPlayer);
             Assert.False(dialogService.ShowedFolderSelect);
             Assert.True(mediaPlayer.SetToPlay);
             Assert.False(dut.ShowPlay);
@@ -45,7 +45,7 @@ namespace MusicVideoJukebox.Test
             dialogService.PickResultToReturn.Accepted = true;
             WithPlaylist(1);
             WithOneSong(1, 1);
-            await dut.Initialize();
+            await dut.Initialize(mediaPlayer);
             Assert.True(dialogService.ShowedFolderSelect);
         }
 

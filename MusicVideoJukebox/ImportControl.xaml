@@ -11,7 +11,7 @@
             <Button Command="{Binding SelectFilesCommand}" Content="Select MP4 Files" />
             <Label Content="{Binding SelectedFilesCount, StringFormat='Files Selected: {0}'}" Margin="10,0,0,0" />
         </StackPanel>
-        <ListBox ItemsSource="{Binding SelectedFiles}" Height="200" Margin="0 0 0 10" />
+        <ListBox ItemsSource="{Binding SelectedFiles}" Height="200" Margin="0 0 0 10" Background="Gray"/>
         <Button Command="{Binding ImportCommand}" IsEnabled="{Binding CanImport}" Content="Import" Width="100" />
     </StackPanel>
 </UserControl>

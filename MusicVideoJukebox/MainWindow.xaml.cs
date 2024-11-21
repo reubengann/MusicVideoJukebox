@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicVideoJukebox.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,18 +16,18 @@ namespace MusicVideoJukebox
         private bool fadingOut = false;
         private bool fadingIn = false;
 
-        public MainWindow(ISettingsWindowFactory settingsWindowFactory, IDialogService dialogService)
+        public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = new MainWindowViewModel(this, settingsWindowFactory, dialogService, new DispatcherUITimerFactory(), new FileSystemService(), new SqliteVideoLibraryBuilder(), new FileAppSettingsFactory());
+            vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
         }
 
         public async Task Initialize()
         {
-            await vm.Initialize();
+            await vm.Initialize(this);
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)

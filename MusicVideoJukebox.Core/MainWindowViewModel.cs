@@ -17,7 +17,7 @@ namespace MusicVideoJukebox.Core
 
     public class MainWindowViewModel : BaseViewModel
     {
-        private readonly IMediaPlayer mediaPlayer;
+        private IMediaPlayer mediaPlayer = null!;
         private readonly IDialogService dialogService;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         private readonly IFileSystemService fileSystemService;
@@ -51,21 +51,23 @@ namespace MusicVideoJukebox.Core
             }
         }
 
-        public MainWindowViewModel(IMediaPlayer mediaPlayer, ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory, IFileSystemService fileSystemService,
+        public MainWindowViewModel(ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory, IFileSystemService fileSystemService,
             IVideoLibraryBuilder videoLibraryBuilder, IAppSettingsFactory appSettingsFactory)
         {
-            this.mediaPlayer = mediaPlayer;
+            
             this.dialogService = dialogService;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.fileSystemService = fileSystemService;
             this.videoLibraryBuilder = videoLibraryBuilder;
             this.appSettingsFactory = appSettingsFactory;
             this.settingsDialogFactory = settingsDialogFactory;
-            mediaPlayer.Volume = 1;
+            
         }
 
-        public async Task Initialize()
+        public async Task Initialize(IMediaPlayer mediaPlayer)
         {
+            this.mediaPlayer = mediaPlayer;
+            mediaPlayer.Volume = 1;
             var appsettings = await appSettingsFactory.Create();
             appSettingsStore = new AppSettingsStore(appsettings);
 
