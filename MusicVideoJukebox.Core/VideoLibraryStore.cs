@@ -2,11 +2,10 @@
 {
     public class VideoLibraryStore
     {
-        private VideoLibrary videoLibrary;
+        private VideoLibrary videoLibrary = null!;
 
-        public VideoLibraryStore(VideoLibrary videoLibrary)
+        public VideoLibraryStore()
         {
-            this.videoLibrary = videoLibrary;
         }
 
         public VideoLibrary VideoLibrary { get => videoLibrary; set { videoLibrary = value; } }

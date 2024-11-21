@@ -9,10 +9,10 @@ namespace MusicVideoJukebox
 
         readonly SettingsWindowViewModel vm;
 
-        public SettingsWindow(VideoLibraryStore videoLibraryStore, IVideoLibraryBuilder videoLibraryBuilder)
+        public SettingsWindow(VideoLibraryStore videoLibraryStore, IVideoLibraryBuilder videoLibraryBuilder, SettingsWindowViewModel settingsWindowViewModel)
         {
             InitializeComponent();
-            vm = new SettingsWindowViewModel(videoLibraryStore, videoLibraryBuilder);
+            vm = settingsWindowViewModel;
             DataContext = vm;
         }
 

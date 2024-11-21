@@ -67,7 +67,7 @@
         </StackPanel>
             </TabItem>
             <TabItem Header="Import">
-                <local:ImportControl/>
+                <local:ImportControl DataContext="{Binding ImportViewModel}"/>
             </TabItem>
         </TabControl>
         <Grid Margin="10" VerticalAlignment="Bottom">

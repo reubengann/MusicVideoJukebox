@@ -52,16 +52,16 @@ namespace MusicVideoJukebox.Core
         }
 
         public MainWindowViewModel(ISettingsWindowFactory settingsDialogFactory, IDialogService dialogService, IUIThreadTimerFactory uIThreadTimerFactory, IFileSystemService fileSystemService,
-            IVideoLibraryBuilder videoLibraryBuilder, IAppSettingsFactory appSettingsFactory)
+            IVideoLibraryBuilder videoLibraryBuilder, IAppSettingsFactory appSettingsFactory, VideoLibraryStore libraryStore)
         {
-            
+
             this.dialogService = dialogService;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.fileSystemService = fileSystemService;
             this.videoLibraryBuilder = videoLibraryBuilder;
             this.appSettingsFactory = appSettingsFactory;
             this.settingsDialogFactory = settingsDialogFactory;
-            
+            this.libraryStore = libraryStore;
         }
 
         public async Task Initialize(IMediaPlayer mediaPlayer)
@@ -87,7 +87,7 @@ namespace MusicVideoJukebox.Core
                 }
             }
             ArgumentNullException.ThrowIfNull(appSettingsStore.Settings.VideoLibraryPath);
-            libraryStore = new VideoLibraryStore(await videoLibraryBuilder.BuildAsync(appSettingsStore.Settings.VideoLibraryPath));
+            libraryStore.VideoLibrary = await videoLibraryBuilder.BuildAsync(appSettingsStore.Settings.VideoLibraryPath);
 
             PlaylistNames = new ObservableCollection<string>(libraryStore.VideoLibrary.Playlists.Select(x => x.PlaylistName));
 
@@ -235,7 +235,7 @@ namespace MusicVideoJukebox.Core
         {
             if (isPlaying)
                 PauseVideo();
-            var settingsDialog = settingsDialogFactory.Create(libraryStore);
+            var settingsDialog = settingsDialogFactory.Create();
             settingsDialog.ShowDialog();
             // reset the current playlist maybe
         }

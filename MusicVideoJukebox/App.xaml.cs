@@ -26,7 +26,11 @@ namespace MusicVideoJukebox
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             services.AddSingleton<MainWindow>();
+            services.AddSingleton<SettingsWindow>();
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<ImportViewModel>();
+            services.AddSingleton<SettingsWindowViewModel>();
+            services.AddSingleton<VideoLibraryStore>();
             services.AddSingleton<IFileSystemService, FileSystemService>();
             services.AddSingleton<IAppSettingsFactory, FileAppSettingsFactory>();
             services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();

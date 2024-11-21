@@ -53,6 +53,8 @@ namespace MusicVideoJukebox.Core
         public ICommand SaveChangesCommand => new DelegateCommand(SaveChanges);
         public ICommand AddNewPlaylistCommand => new DelegateCommand(AddNewPlaylist);
 
+        public ImportViewModel ImportViewModel { get; }
+
         private async void AddNewPlaylist()
         {
             using var updater = new MetadataUpdater(VideoFolderPath);
@@ -83,13 +85,14 @@ namespace MusicVideoJukebox.Core
             HasSettingsToSave = false;
         }
 
-        public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore, IVideoLibraryBuilder videoLibraryBuilder)
+        public SettingsWindowViewModel(VideoLibraryStore videoLibraryStore, IVideoLibraryBuilder videoLibraryBuilder, ImportViewModel importViewModel)
         {
             VideoFolderPath = videoLibraryStore.VideoLibrary.Folder;
             Playlists = [];
             TrackListing = [];
             this.videoLibraryStore = videoLibraryStore;
             this.videoLibraryBuilder = videoLibraryBuilder;
+            ImportViewModel = importViewModel;
             foreach (var playlist in videoLibraryStore.VideoLibrary.Playlists)
             {
                 var item = new PlaylistViewModel(playlist.PlaylistName, playlist.PlaylistId);

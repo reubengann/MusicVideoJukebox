@@ -1,20 +1,21 @@
-﻿using MusicVideoJukebox.Core;
-using System.CodeDom;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicVideoJukebox.Core;
+using System;
 
 namespace MusicVideoJukebox
 {
     class WindowsSettingsWindowFactory : ISettingsWindowFactory
     {
-        private readonly IVideoLibraryBuilder videoLibraryBuilder;
+        private readonly IServiceProvider serviceProvider;
 
-        public WindowsSettingsWindowFactory(IVideoLibraryBuilder videoLibraryBuilder)
+        public WindowsSettingsWindowFactory(IServiceProvider serviceProvider)
         {
-            this.videoLibraryBuilder = videoLibraryBuilder;
+            this.serviceProvider = serviceProvider;
         }
 
-        public ISettingsWindow Create(VideoLibraryStore videoLibraryStore)
+        public ISettingsWindow Create()
         {
-            return new SettingsWindow(videoLibraryStore, videoLibraryBuilder);
+            return serviceProvider.GetRequiredService<SettingsWindow>();
         }
     }
 }
