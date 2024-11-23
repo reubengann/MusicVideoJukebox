@@ -59,14 +59,13 @@ namespace MusicVideoJukebox.Core
             CanImport = false;
         }
 
-        private Task ImportFileAsync(string filePath)
+        private async Task ImportFileAsync(string filePath)
         {
-            // Replace with actual import logic
-            return Task.Run(() =>
-            {
-                // Simulate processing
-                System.Threading.Thread.Sleep(500);
-            });
+            // Copy the file
+            // Normalize the audio (optional)
+            // Get the metadata
+            // Add it to the database
+            // Add it to the "all songs" playlist
         }
     }
 }
