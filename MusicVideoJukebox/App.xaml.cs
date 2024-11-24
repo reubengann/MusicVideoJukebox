@@ -15,28 +15,28 @@ namespace MusicVideoJukebox
             _host = Host.CreateDefaultBuilder(e.Args).ConfigureServices(ConfigureServices).Build();
             await _host.StartAsync();
 
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            //var mainWindow = _host.Services.GetRequiredService<MainWindow>();
 
-            MainWindow = mainWindow;
-            await mainWindow.Initialize();
-
+            //MainWindow = mainWindow;
+            //await mainWindow.Initialize();
+            MainWindow = new NewMainWindow();
             MainWindow.Show();
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<SettingsWindow>();
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<ImportViewModel>();
-            services.AddSingleton<SettingsWindowViewModel>();
-            services.AddSingleton<VideoLibraryStore>();
-            services.AddSingleton<IFileSystemService, FileSystemService>();
-            services.AddSingleton<IAppSettingsFactory, FileAppSettingsFactory>();
-            services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();
-            services.AddSingleton<IVideoLibraryBuilder, SqliteVideoLibraryBuilder>();
-            services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
-            services.AddSingleton<IDialogService, WindowsDialogService>();
+            //services.AddSingleton<MainWindow>();
+            //services.AddSingleton<SettingsWindow>();
+            //services.AddSingleton<MainWindowViewModel>();
+            //services.AddSingleton<ImportViewModel>();
+            //services.AddSingleton<SettingsWindowViewModel>();
+            //services.AddSingleton<VideoLibraryStore>();
+            //services.AddSingleton<IFileSystemService, FileSystemService>();
+            //services.AddSingleton<IAppSettingsFactory, FileAppSettingsFactory>();
+            //services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();
+            //services.AddSingleton<IVideoLibraryBuilder, SqliteVideoLibraryBuilder>();
+            //services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
+            //services.AddSingleton<IDialogService, WindowsDialogService>();
         }
     }
 }

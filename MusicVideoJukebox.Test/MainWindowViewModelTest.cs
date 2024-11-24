@@ -22,7 +22,7 @@ namespace MusicVideoJukebox.Test
             videoLibraryBuilder = new FakeVideoLibraryBuilder();
             uIThreadFactory = new FakeUIThreadFactory();
             appSettingsFactory = new FakeAppSettingsFactory();
-            dut = new MainWindowViewModel(settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder, appSettingsFactory);
+            //dut = new MainWindowViewModel(settingsDialogFactory, dialogService, uIThreadFactory, fileSystemService, videoLibraryBuilder, appSettingsFactory);
         }
 
         [Fact]

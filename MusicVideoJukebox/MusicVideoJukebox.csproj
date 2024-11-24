@@ -12,6 +12,7 @@
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
   </ItemGroup>
 

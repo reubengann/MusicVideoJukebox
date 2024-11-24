@@ -1,0 +1,79 @@
+﻿<Window x:Class="MusicVideoJukebox.NewMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicVideoJukebox"
+        xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        mc:Ignorable="d"
+        Title="Music Video Jukebox" Height="450" Width="800">
+    <Window.Resources>
+        <local:BoolToBrushConverter x:Key="BoolToBrushConverter" TrueBrush="Yellow" FalseBrush="Transparent"/>
+        <local:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Highlight the button on mouseover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Highlight}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="IconMaterialStyle2" TargetType="mat:MaterialIcon">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Window.Resources>
+    <Grid Background="Black">
+        <Grid Panel.ZIndex="0">
+            
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".70*"/>
+                <ColumnDefinition Width="9*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{DynamicResource MahApps.Brushes.Accent4}" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
+                <Viewbox VerticalAlignment="Top">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                            <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                                              Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                            <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                      Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                            <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                        Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        </Button>
+                    </StackPanel>
+                </Viewbox>
+            </Border>
+            <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="1">
+                <!--<ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type local:LauncherViewModel}">
+                        --><!--<local:LauncherView></local:LauncherView>--><!--
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type local:SettingsWindowViewModel}">
+                        --><!--<local:SettingsView></local:SettingsView>--><!--
+                    </DataTemplate>
+                </ContentControl.Resources>-->
+            </ContentControl>
+        </Grid>
+    </Grid>
+</Window>
