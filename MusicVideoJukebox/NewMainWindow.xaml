@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox"
         xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
         mc:Ignorable="d"
-        Title="Music Video Jukebox" Height="450" Width="800">
+        Title="Music Video Jukebox" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance core:NewMainWindowViewModel, IsDesignTimeCreatable=False}"
+        >
     <Window.Resources>
         <local:BoolToBrushConverter x:Key="BoolToBrushConverter" TrueBrush="Yellow" FalseBrush="Transparent"/>
         <local:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
@@ -49,17 +52,17 @@
             <Border Background="{DynamicResource MahApps.Brushes.Accent4}" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
                 <Viewbox VerticalAlignment="Top">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateLibraryCommand}">
                             <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                                              Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                                              Opacity="{Binding IsLibrarySelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistCommand}">
                             <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                      Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                      Opacity="{Binding IsPlaylistSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateMetadataCommand}">
                             <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                        Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        Opacity="{Binding IsMetadataSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
                     </StackPanel>
                 </Viewbox>

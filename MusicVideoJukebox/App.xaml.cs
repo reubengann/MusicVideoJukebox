@@ -19,12 +19,15 @@ namespace MusicVideoJukebox
 
             //MainWindow = mainWindow;
             //await mainWindow.Initialize();
-            MainWindow = new NewMainWindow();
+
+            MainWindow = _host.Services.GetRequiredService<NewMainWindow>();
             MainWindow.Show();
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
+            services.AddSingleton<NewMainWindow>();
+            services.AddSingleton<NewMainWindowViewModel>();
             //services.AddSingleton<MainWindow>();
             //services.AddSingleton<SettingsWindow>();
             //services.AddSingleton<MainWindowViewModel>();
