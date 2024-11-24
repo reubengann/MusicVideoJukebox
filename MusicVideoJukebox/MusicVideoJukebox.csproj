@@ -8,16 +8,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\library_add.svg" />
+    <None Remove="Images\library_music.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MusicVideoJukebox.Core\MusicVideoJukebox.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\library_add.svg" />
+    <Resource Include="Images\library_music.svg" />
   </ItemGroup>
 
 </Project>

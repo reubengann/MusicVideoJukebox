@@ -3,12 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+             xmlns:view="clr-namespace:MusicVideoJukebox.Views"
+             xmlns:local="clr-namespace:MusicVideoJukebox"
+             xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
+             xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=core:LibraryViewModel, IsDesignTimeCreatable=True}"
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             >
+    <Grid>
         <Viewbox>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="This is the libraries view" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Items}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                        MouseEnter="Border_MouseEnter">
+                        <StackPanel Orientation="Vertical">
+                            <local:MultiFormatImage Source="{Binding Icon}" Width="50" Height="50"/>
+                            <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="4" Rows="3"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
         </Viewbox>
     </Grid>
 </UserControl>
