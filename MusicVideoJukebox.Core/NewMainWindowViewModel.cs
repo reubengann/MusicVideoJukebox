@@ -16,7 +16,7 @@ namespace MusicVideoJukebox.Core
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
-        public BaseViewModel? CurrentViewModel { get; set; } = null;
+        public BaseViewModel? CurrentViewModel => navigationService.CurrentViewModel;
 
         public NewMainWindowViewModel(INavigationService navigationService)
         {
@@ -36,6 +36,7 @@ namespace MusicVideoJukebox.Core
             {
                 navigationService.NavigateTo<LibraryViewModel>();
             }
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
 
         private void NavigateToPlaylist()
@@ -48,6 +49,7 @@ namespace MusicVideoJukebox.Core
             {
                 navigationService.NavigateTo<NewPlaylistViewModel>();
             }
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
 
         private void NavigateToMetadata()
@@ -60,6 +62,7 @@ namespace MusicVideoJukebox.Core
             {
                 navigationService.NavigateTo<MetadataEditViewModel>();
             }
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
     }
 }

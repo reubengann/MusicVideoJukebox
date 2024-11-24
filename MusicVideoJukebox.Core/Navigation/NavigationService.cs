@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace MusicVideoJukebox.Core.Navigation
 {
-    public class NavigationService : INavigationService, INotifyPropertyChanged
+    public class NavigationService : INavigationService//, INotifyPropertyChanged
     {
         private readonly IServiceProvider _serviceProvider;
         private BaseViewModel? _currentViewModel;
@@ -20,15 +18,7 @@ namespace MusicVideoJukebox.Core.Navigation
             private set
             {
                 _currentViewModel = value;
-                OnPropertyChanged();
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void NavigateTo<TViewModel>() where TViewModel : BaseViewModel

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MusicVideoJukebox"
         xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
+        xmlns:views="clr-namespace:MusicVideoJukebox.Views"
         mc:Ignorable="d"
         Title="Music Video Jukebox" Height="450" Width="800"
         d:DataContext="{d:DesignInstance core:NewMainWindowViewModel, IsDesignTimeCreatable=False}"
@@ -79,12 +80,15 @@
                     </Style>
                 </ContentControl.Style>
                 <ContentControl.Resources>
-                    <!--<DataTemplate DataType="{x:Type local:LauncherViewModel}">
-                        <local:LauncherView></local:LauncherView>
+                    <DataTemplate DataType="{x:Type core:LibraryViewModel}">
+                        <views:LibrariesView />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type local:SettingsWindowViewModel}">
-                        <local:SettingsView></local:SettingsView>
-                    </DataTemplate>-->
+                    <DataTemplate DataType="{x:Type core:NewPlaylistViewModel}">
+                        <views:PlaylistsView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type core:MetadataEditViewModel}">
+                        <views:MetadataEditView />
+                    </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>
         </Grid>
