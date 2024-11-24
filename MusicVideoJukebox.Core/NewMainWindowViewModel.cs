@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using MusicVideoJukebox.Core.Navigation;
+using Prism.Commands;
 using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core
@@ -7,52 +8,58 @@ namespace MusicVideoJukebox.Core
     {
         private bool isLibrarySelected = false;
         private bool isPlaylistSelected = false;
+        private readonly INavigationService navigationService;
 
-        public bool IsLibrarySelected { get => isLibrarySelected; set { isLibrarySelected = value; OnPropertyChanged(nameof(IsLibrarySelected)); } }
-        public bool IsPlaylistSelected { get => isPlaylistSelected; set { isPlaylistSelected = value; OnPropertyChanged(nameof(IsPlaylistSelected)); } }
-        public bool IsMetadataSelected { get; set; } = false;
+        public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
+        public bool IsPlaylistSelected => navigationService.CurrentViewModel is NewPlaylistViewModel;
+        public bool IsMetadataSelected => navigationService.CurrentViewModel is MetadataEditViewModel;
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
         public BaseViewModel? CurrentViewModel { get; set; } = null;
 
-        public NewMainWindowViewModel()
+        public NewMainWindowViewModel(INavigationService navigationService)
         {
             NavigateLibraryCommand = new DelegateCommand(NavigateToLibrary);
             NavigatePlaylistCommand = new DelegateCommand(NavigateToPlaylist);
             NavigateMetadataCommand = new DelegateCommand(NavigateToMetadata);
+            this.navigationService = navigationService;
         }
 
         private void NavigateToLibrary()
         {
             if (IsLibrarySelected) 
-            { 
-                IsLibrarySelected = false;
-                return;
+            {
+                navigationService.NavigateToNothing();
             }
-            IsLibrarySelected = true;
-            IsPlaylistSelected = false;
-            IsMetadataSelected = false;
+            else
+            {
+                navigationService.NavigateTo<LibraryViewModel>();
+            }
         }
 
         private void NavigateToPlaylist()
         {
             if (IsPlaylistSelected)
             {
-                IsPlaylistSelected = false;
-                return;
+                navigationService.NavigateToNothing();
             }
-            IsLibrarySelected = false;
-            IsPlaylistSelected = true;
-            IsMetadataSelected = false;
+            else
+            {
+                navigationService.NavigateTo<NewPlaylistViewModel>();
+            }
         }
 
         private void NavigateToMetadata()
         {
-            if (IsMetadataSelected) { IsMetadataSelected = false; return; }
-            IsLibrarySelected = false;
-            IsPlaylistSelected = false;
-            IsMetadataSelected = true;
+            if (IsMetadataSelected) 
+            {
+                navigationService.NavigateToNothing();
+            }
+            else
+            {
+                navigationService.NavigateTo<MetadataEditViewModel>();
+            }
         }
     }
 }

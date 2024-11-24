@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Navigation;
 using System.Windows;
 
 namespace MusicVideoJukebox
@@ -28,6 +29,10 @@ namespace MusicVideoJukebox
         {
             services.AddSingleton<NewMainWindow>();
             services.AddSingleton<NewMainWindowViewModel>();
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<LibraryViewModel>();
+            services.AddSingleton<MetadataEditViewModel>();
+            services.AddSingleton<NewPlaylistViewModel>();
             //services.AddSingleton<MainWindow>();
             //services.AddSingleton<SettingsWindow>();
             //services.AddSingleton<MainWindowViewModel>();

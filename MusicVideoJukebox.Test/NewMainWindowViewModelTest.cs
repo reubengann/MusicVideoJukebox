@@ -4,11 +4,13 @@ namespace MusicVideoJukebox.Test
 {
     public class NewMainWindowViewModelTest
     {
+        FakeNavigationService navigationService;
         NewMainWindowViewModel dut;
 
         public NewMainWindowViewModelTest()
         {
-            dut = new NewMainWindowViewModel();
+            navigationService = new FakeNavigationService();
+            dut = new NewMainWindowViewModel(navigationService);
         }
 
         [Fact]
@@ -22,6 +24,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedLibraryEnableIt()
         {
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
         }
@@ -29,6 +32,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedLibraryAgainDisableIt()
         {
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
             dut.NavigateLibraryCommand.Execute(null);
@@ -38,6 +42,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedPlaylistAgainDisableIt()
         {
+            navigationService.ViewModelsToGenerate[typeof(NewPlaylistViewModel)] = new NewPlaylistViewModel();
             dut.NavigatePlaylistCommand.Execute(null);
             Assert.True(dut.IsPlaylistSelected);
             dut.NavigatePlaylistCommand.Execute(null);
@@ -47,6 +52,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedMetadataAgainDisableIt()
         {
+            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel();
             dut.NavigateMetadataCommand.Execute(null);
             Assert.True(dut.IsMetadataSelected);
             dut.NavigateMetadataCommand.Execute(null);
@@ -58,6 +64,5 @@ namespace MusicVideoJukebox.Test
         {
             Assert.Null(dut.CurrentViewModel);
         }
-
     }
 }
