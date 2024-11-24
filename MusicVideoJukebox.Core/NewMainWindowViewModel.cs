@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Navigation;
+using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
 
@@ -8,6 +9,7 @@ namespace MusicVideoJukebox.Core
     {
         private bool isLibrarySelected = false;
         private bool isPlaylistSelected = false;
+        private IFadesWhenInactive interfaceFader = null!;
         private readonly INavigationService navigationService;
 
         public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
@@ -31,10 +33,12 @@ namespace MusicVideoJukebox.Core
             if (IsLibrarySelected) 
             {
                 navigationService.NavigateToNothing();
+                interfaceFader.EnableFading();
             }
             else
             {
                 navigationService.NavigateTo<LibraryViewModel>();
+                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
@@ -44,10 +48,12 @@ namespace MusicVideoJukebox.Core
             if (IsPlaylistSelected)
             {
                 navigationService.NavigateToNothing();
+                interfaceFader.EnableFading();
             }
             else
             {
                 navigationService.NavigateTo<NewPlaylistViewModel>();
+                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
@@ -57,12 +63,19 @@ namespace MusicVideoJukebox.Core
             if (IsMetadataSelected) 
             {
                 navigationService.NavigateToNothing();
+                interfaceFader.EnableFading();
             }
             else
             {
                 navigationService.NavigateTo<MetadataEditViewModel>();
+                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
+        }
+
+        public void Initialize(IFadesWhenInactive interfaceFader)
+        {
+            this.interfaceFader = interfaceFader;
         }
     }
 }

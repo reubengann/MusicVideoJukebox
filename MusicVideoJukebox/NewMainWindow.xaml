@@ -7,6 +7,7 @@
         xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
         xmlns:views="clr-namespace:MusicVideoJukebox.Views"
+        MouseMove="Window_MouseMove"
         mc:Ignorable="d"
         Title="Music Video Jukebox" Height="450" Width="800"
         d:DataContext="{d:DesignInstance core:NewMainWindowViewModel, IsDesignTimeCreatable=False}"
@@ -50,7 +51,7 @@
                 <ColumnDefinition Width=".70*"/>
                 <ColumnDefinition Width="9*"/>
             </Grid.ColumnDefinitions>
-            <Border Background="{DynamicResource MahApps.Brushes.Accent4}" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
+            <Border x:Name="Sidebar" Background="{DynamicResource MahApps.Brushes.Accent4}" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
                 <Viewbox VerticalAlignment="Top">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateLibraryCommand}">
