@@ -29,7 +29,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="IconMaterialStyle2" TargetType="mat:MaterialIcon">
+        <Style x:Key="IconMaterialStyle" TargetType="mat:MaterialIcon">
             <Setter Property="Width" Value="50"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="Margin" Value="8"/>
@@ -50,15 +50,15 @@
                 <Viewbox VerticalAlignment="Top">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
-                            <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                            <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                                               Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
-                            <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                            <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                       Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateHomeCommand}">
-                            <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle2}"
+                            <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                         Opacity="{Binding IsSettingsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
                     </StackPanel>
