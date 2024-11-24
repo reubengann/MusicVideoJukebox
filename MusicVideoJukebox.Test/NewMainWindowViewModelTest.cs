@@ -52,5 +52,12 @@ namespace MusicVideoJukebox.Test
             dut.NavigateMetadataCommand.Execute(null);
             Assert.False(dut.IsMetadataSelected);
         }
+
+        [Fact]
+        public void NoViewModelInitially()
+        {
+            Assert.Null(dut.CurrentViewModel);
+        }
+
     }
 }

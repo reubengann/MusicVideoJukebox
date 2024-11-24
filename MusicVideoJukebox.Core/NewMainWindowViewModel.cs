@@ -14,6 +14,7 @@ namespace MusicVideoJukebox.Core
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
+        public BaseViewModel? CurrentViewModel { get; set; } = null;
 
         public NewMainWindowViewModel()
         {
