@@ -11,15 +11,5 @@ namespace MusicVideoJukebox.Views
         {
             InitializeComponent();
         }
-
-        private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            //if (sender is FrameworkElement element &&
-            //element.DataContext is ItemViewModel hoveredViewModel
-            //&& DataContext is LauncherViewModel launcherViewModel)
-            //{
-            //    launcherViewModel.Hovered(hoveredViewModel);
-            //}
-        }
     }
 }
