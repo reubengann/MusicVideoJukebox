@@ -17,9 +17,19 @@
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Items}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    <Border BorderThickness="5" Padding="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                         MouseEnter="Border_MouseEnter">
-                        <StackPanel Orientation="Vertical">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Highlight}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Orientation="Vertical">
                             <local:MultiFormatImage Source="{Binding Icon}" Width="50" Height="50"/>
                             <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                         </StackPanel>
