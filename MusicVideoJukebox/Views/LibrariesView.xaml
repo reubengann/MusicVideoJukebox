@@ -12,12 +12,37 @@
              d:DataContext="{d:DesignInstance Type=core:LibraryViewModel, IsDesignTimeCreatable=True}"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              >
+    <UserControl.Resources>
+        <!-- Custom Style for the Edit Button -->
+        <Style x:Key="EditButtonStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Style.Triggers>
+                <!-- Change background to gray on hover -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Viewbox>
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Items}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                        <Border BorderThickness="5" Padding="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
+                        <Border BorderThickness="5" Padding="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                >
+                            <Border.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.SelectLibraryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                    CommandParameter="{Binding}" />
+                            </Border.InputBindings>
                             <Border.Style>
                                 <Style TargetType="Border">
                                     <Setter Property="Background" Value="Transparent" />
@@ -29,9 +54,25 @@
                                 </Style>
                             </Border.Style>
                             <StackPanel Orientation="Vertical">
-                            <local:MultiFormatImage Source="{Binding Icon}" Width="50" Height="50"/>
-                            <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                        </StackPanel>
+                                <local:MultiFormatImage Source="{Binding Icon}" Width="50" Height="50"/>
+                                <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" HorizontalAlignment="Center"/>
+                                <!-- Edit Button -->
+                                <Button
+                                    Command="{Binding DataContext.EditLibraryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}" Margin="5,10,5,0" HorizontalAlignment="Center">
+                                    <mat:MaterialIcon Kind="Edit"/>
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource EditButtonStyle}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAddNew}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

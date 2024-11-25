@@ -6,7 +6,7 @@ namespace MusicVideoJukebox.Core
     {
         public string? Icon { get; set; }
         required public string Name { get; set; }
-        public bool IsAddButton { get; set; } // Flag to differentiate "Add Library"
+        public bool IsAddNew { get; set; }
     }
 
     public class LibraryViewModel : BaseViewModel
@@ -15,8 +15,8 @@ namespace MusicVideoJukebox.Core
 
         public LibraryViewModel()
         {
-            Items.Add(new LibraryItem { Icon = "Images/library_music.svg", IsAddButton = false, Name = "Library 1" });
-            Items.Add(new LibraryItem { Icon = "/Images/library_add.svg", IsAddButton = true, Name = "Add new"});
+            //Items.Add(new LibraryItem { Icon = "Images/library_music.svg", IsAddNew = false, Name = "Library 1" });
+            Items.Add(new LibraryItem { Icon = "/Images/library_add.svg", IsAddNew = true, Name = "Add new"});
         }
     }
 }

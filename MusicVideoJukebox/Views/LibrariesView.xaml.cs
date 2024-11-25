@@ -11,5 +11,10 @@ namespace MusicVideoJukebox.Views
         {
             InitializeComponent();
         }
+
+        private void LibraryItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
     }
 }
