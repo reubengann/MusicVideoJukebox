@@ -1,7 +1,7 @@
 ﻿using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Navigation;
 
-namespace MusicVideoJukebox.Test
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeNavigationService : INavigationService
     {

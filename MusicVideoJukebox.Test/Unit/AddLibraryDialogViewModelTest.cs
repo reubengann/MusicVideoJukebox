@@ -1,5 +1,6 @@
 ﻿using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
 {

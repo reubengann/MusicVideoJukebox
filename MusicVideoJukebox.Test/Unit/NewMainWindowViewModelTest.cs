@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -9,9 +10,13 @@ namespace MusicVideoJukebox.Test.Unit
         FakeInterfaceFader interfaceFader;
         FakeLibrarySetRepo librarySetRepo;
         FakeWindowLauncher windowLauncher;
+        FakeMetadataManager metadataManager;
+        FakeDialogService dialogService;
 
         public NewMainWindowViewModelTest()
         {
+            dialogService = new FakeDialogService(); 
+            metadataManager = new FakeMetadataManager();
             librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();
@@ -31,7 +36,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedLibraryEnableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher);
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManager, dialogService);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
         }
@@ -39,7 +44,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedLibraryAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher);
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManager, dialogService);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
             dut.NavigateLibraryCommand.Execute(null);
@@ -75,7 +80,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void DontFadeWhenInLibraryView()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher);
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManager, dialogService);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.False(interfaceFader.FadingEnabled);
         }
@@ -83,7 +88,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void FadeWhenExitedLibraryView()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher);
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManager, dialogService);
             dut.NavigateLibraryCommand.Execute(null);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(interfaceFader.FadingEnabled);

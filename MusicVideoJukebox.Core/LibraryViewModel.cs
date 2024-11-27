@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;
 using Prism.Commands;
 using System.Collections.ObjectModel;
@@ -18,17 +19,24 @@ namespace MusicVideoJukebox.Core
     {
         private readonly ILibrarySetRepo librarySetRepo;
         private readonly IWindowLauncher windowLauncher;
+        private readonly IMetadataManager metadataManager;
+        private readonly IDialogService dialogService;
 
         public ObservableCollection<LibraryItemViewModel> Items { get; } = new ObservableCollection<LibraryItemViewModel>();
         public ICommand EditLibraryCommand { get; }
         public ICommand SelectLibraryCommand { get; }
 
-        public LibraryViewModel(ILibrarySetRepo librarySetRepo, IWindowLauncher windowLauncher)
+        public LibraryViewModel(ILibrarySetRepo librarySetRepo, 
+            IWindowLauncher windowLauncher, 
+            IMetadataManager metadataManager,
+            IDialogService dialogService)
         {
             EditLibraryCommand = new DelegateCommand<LibraryItemViewModel>(EditLibrary);
             SelectLibraryCommand = new DelegateCommand<LibraryItemViewModel>(SelectLibrary);
             this.librarySetRepo = librarySetRepo;
             this.windowLauncher = windowLauncher;
+            this.metadataManager = metadataManager;
+            this.dialogService = dialogService;
         }
 
         private void SelectLibrary(LibraryItemViewModel library)
@@ -40,7 +48,18 @@ namespace MusicVideoJukebox.Core
                 var result = windowLauncher.LaunchAddLibraryDialog();
                 if (result.Accepted)
                 {
-
+                    ArgumentNullException.ThrowIfNull(result.Path);
+                    if (!metadataManager.HasMetadata(result.Path))
+                    {
+                        var success = metadataManager.CreateMetadata(result.Path);
+                        if (!success)
+                        {
+                            dialogService.ShowError("Didn't find metadata in {result.Path}, and could not create it");
+                            return;
+                        }
+                    }
+                    // create at least a basic metadata
+                    // store in library
                 }
             }
             else

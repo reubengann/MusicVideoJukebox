@@ -1,6 +1,6 @@
 ﻿using MusicVideoJukebox.Core.UserInterface;
 
-namespace MusicVideoJukebox.Test
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeInterfaceFader : IFadesWhenInactive
     {

@@ -1,6 +1,6 @@
 ﻿using MusicVideoJukebox.Core;
 
-namespace MusicVideoJukebox.Test
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeIAppSettings : IAppSettings
     {

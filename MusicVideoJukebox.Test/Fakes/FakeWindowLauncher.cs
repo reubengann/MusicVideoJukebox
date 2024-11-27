@@ -1,12 +1,14 @@
 ﻿using MusicVideoJukebox.Core.Navigation;
 
-namespace MusicVideoJukebox.Test
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeWindowLauncher : IWindowLauncher
     {
+        public AddLibraryDialogResult ToReturn {  get; set; } = new AddLibraryDialogResult { Accepted = false };
+
         public AddLibraryDialogResult LaunchAddLibraryDialog()
         {
-            throw new NotImplementedException();
+            return ToReturn;
         }
     }
 }

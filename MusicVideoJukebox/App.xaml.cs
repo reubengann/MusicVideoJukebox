@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;
 using System;
 using System.IO;
@@ -34,7 +35,6 @@ namespace MusicVideoJukebox
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "music_video_libraries.db");
-            //dbPath = @"c:\repos\realfoo.db";
             var connectionString = $"Data Source={dbPath};Pooling=False;";
             services.AddSingleton<ILibrarySetRepo>(x => new LibrarySetRepo(connectionString));
 
@@ -45,6 +45,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<MetadataEditViewModel>();
             services.AddSingleton<NewPlaylistViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
+            services.AddSingleton<IMetadataManager, MetadataManager>();
             //services.AddSingleton<MainWindow>();
             //services.AddSingleton<SettingsWindow>();
             //services.AddSingleton<MainWindowViewModel>();

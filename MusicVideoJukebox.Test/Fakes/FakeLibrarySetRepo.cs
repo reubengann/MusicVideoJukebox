@@ -1,6 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
 
-namespace MusicVideoJukebox.Test
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeLibrarySetRepo : ILibrarySetRepo
     {
