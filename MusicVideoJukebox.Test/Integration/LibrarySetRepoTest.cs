@@ -65,6 +65,17 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(result, [@"c:\folder1", @"c:\folder2"]);
         }
 
+        [Fact]
+        public async Task CanGetAllLibraryNames()
+        {
+            await dut.Initialize();
+            WithLibrary(@"c:\folder1", "folder1");
+            WithLibrary(@"c:\folder2", "folder2");
+            var result = await dut.GetAllLibraryNames();
+            Assert.Equal(2, result.Count);
+            Assert.Equal(result, ["folder1", "folder2"]);
+        }
+
         int WithLibrary(string path, string name)
         {
             using (var conn = new SQLiteConnection(connectionString))

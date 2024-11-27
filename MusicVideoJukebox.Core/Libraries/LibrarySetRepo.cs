@@ -25,6 +25,17 @@ namespace MusicVideoJukebox.Core.Libraries
             }
         }
 
+        public async Task<List<string>> GetAllLibraryNames()
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                var result = await conn.QueryAsync<string>(@"
+                    SELECT name from library;");
+                conn.Close();
+                return result.ToList();
+            }
+        }
+
         public async Task<List<string>> GetAllLibraryPaths()
         {
             using (var conn = new SQLiteConnection(connectionString))

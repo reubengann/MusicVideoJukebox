@@ -12,6 +12,12 @@ namespace MusicVideoJukebox.Test
             return LibraryItems;
         }
 
+        public async Task<List<string>> GetAllLibraryNames()
+        {
+            await Task.CompletedTask;
+            return LibraryItems.Select(x => x.Name).ToList();
+        }
+
         public async Task<List<string>> GetAllLibraryPaths()
         {
             await Task.CompletedTask;

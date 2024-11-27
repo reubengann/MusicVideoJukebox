@@ -32,5 +32,27 @@ namespace MusicVideoJukebox.Test.Unit
             dut.SaveCommand.Execute(null);
             Assert.True(dialogService.ShowedError);
         }
+
+        [Fact]
+        public void WhenNameIsInDbRejectIt()
+        {
+            librarySetRepo.LibraryItems.Add(new LibraryItem { Name = "foo", FolderPath = @"c:\" });
+            dut.FolderPath = @"c:\Windows";
+            dut.LibraryName = @"foo";
+            dut.SaveCommand.Execute(null);
+            Assert.True(dialogService.ShowedError);
+        }
+
+        [Fact]
+        public void WhenValidReportGood()
+        {
+            bool requestedClose = false;
+            dut.RequestClose += (s) => requestedClose = s;
+            dut.FolderPath = @"c:\Windows";
+            dut.LibraryName = @"foo";
+            dut.SaveCommand.Execute(null);
+            Assert.False(dialogService.ShowedError);
+            Assert.True(requestedClose);
+        }
     }
 }

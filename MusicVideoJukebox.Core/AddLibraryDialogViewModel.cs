@@ -54,6 +54,14 @@ namespace MusicVideoJukebox.Core
                 dialogService.ShowError($"Folder {FolderPath} is already a library.");
                 return;
             }
+            var existingNames = await librarySetRepo.GetAllLibraryNames();
+            if (existingNames.Contains(LibraryName))
+            {
+                dialogService.ShowError($"Library with name {LibraryName} already exists.");
+                return;
+            }
+            // If so, we request close and verify we're good
+            RequestClose?.Invoke(true);
         }
         
 

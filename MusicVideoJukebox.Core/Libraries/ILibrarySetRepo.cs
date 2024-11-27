@@ -13,5 +13,6 @@
         Task Initialize();
         Task<List<LibraryItem>> GetAllLibraries();
         Task<List<string>> GetAllLibraryPaths();
+        Task<List<string>> GetAllLibraryNames();
     }
 }
