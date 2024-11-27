@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MusicVideoJukebox.Core;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MusicVideoJukebox.Views
 {
@@ -19,9 +8,21 @@ namespace MusicVideoJukebox.Views
     /// </summary>
     public partial class AddLibraryDialog : Window
     {
-        public AddLibraryDialog()
+        private readonly AddLibraryDialogViewModel vm;
+
+        public AddLibraryDialog(AddLibraryDialogViewModel vm)
         {
             InitializeComponent();
+            DataContext = vm;
+            vm.RequestClose += Vm_RequestClose;
+            Closed += (s, e) => vm.RequestClose -= Vm_RequestClose;
+            this.vm = vm;
+        }
+
+        private void Vm_RequestClose(bool result)
+        {
+            DialogResult = result;
+            Close();
         }
     }
 }

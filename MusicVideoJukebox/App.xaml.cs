@@ -56,7 +56,7 @@ namespace MusicVideoJukebox
             //services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();
             //services.AddSingleton<IVideoLibraryBuilder, SqliteVideoLibraryBuilder>();
             //services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
-            //services.AddSingleton<IDialogService, WindowsDialogService>();
+            services.AddSingleton<IDialogService, WindowsDialogService>();
         }
     }
 }

@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+        xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
         mc:Ignorable="d"
         Title="AddLibraryDialog" Height="450" Width="800"
-        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+        d:DataContext="{d:DesignInstance Type=core:AddLibraryDialogViewModel}">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*"/>
@@ -14,7 +16,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <TextBlock Text="Library Name" FontWeight="Bold" Margin="0,0,0,5" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-            <TextBox Text="{Binding LibraryName}" IsReadOnly="{Binding IsEditMode}" Margin="0,0,0,10" MaxLength="50" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+            <TextBox Text="{Binding LibraryName}" Margin="0,0,0,10" MaxLength="50" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
 
             <TextBlock Text="Folder Path" FontWeight="Bold" Margin="0,0,0,5" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             <Grid HorizontalAlignment="Stretch">
@@ -24,7 +26,7 @@
                     <ColumnDefinition Width="Auto" />
                     <!-- Button sizes to its content -->
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding FolderPath}" IsReadOnly="{Binding IsEditMode}" Margin="0,0,5,0" />
+                <TextBox Grid.Column="0" Text="{Binding FolderPath}" Margin="0,0,5,0" />
                 <Button Grid.Column="1" Content="Browse" Command="{Binding BrowseFolderCommand}" />
             </Grid>
 

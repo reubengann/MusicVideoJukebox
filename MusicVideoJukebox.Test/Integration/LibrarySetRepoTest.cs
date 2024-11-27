@@ -47,18 +47,30 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetLibraries()
         {
             await dut.Initialize();
-            WithLibrary();
+            WithLibrary(@"c:\foo\bar", "libraryfoo");
             var result = await dut.GetAllLibraries();
             Assert.Single(result);
             Assert.Equal(@"c:\foo\bar", result[0].FolderPath);
             Assert.Equal("libraryfoo", result[0].Name);
         }
 
-        int WithLibrary()
+        [Fact]
+        public async Task CanGetAllPaths()
+        {
+            await dut.Initialize();
+            WithLibrary(@"c:\folder1", "folder1");
+            WithLibrary(@"c:\folder2", "folder2");
+            var result = await dut.GetAllLibraryPaths();
+            Assert.Equal(2, result.Count);
+            Assert.Equal(result, [@"c:\folder1", @"c:\folder2"]);
+        }
+
+        int WithLibrary(string path, string name)
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO library (folder_path, name) values ('c:\foo\bar', 'libraryfoo') RETURNING library_id");
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO library (folder_path, name) values (@path, @name) RETURNING library_id", 
+                    new { path, name });
                 conn.Close();
                 return id;
             }

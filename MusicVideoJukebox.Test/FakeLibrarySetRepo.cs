@@ -4,14 +4,23 @@ namespace MusicVideoJukebox.Test
 {
     internal class FakeLibrarySetRepo : ILibrarySetRepo
     {
-        public Task<List<LibraryItem>> GetAllLibraries()
+        public List<LibraryItem> LibraryItems { get; set; } = [];
+
+        public async Task<List<LibraryItem>> GetAllLibraries()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return LibraryItems;
         }
 
-        public Task Initialize()
+        public async Task<List<string>> GetAllLibraryPaths()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return LibraryItems.Select(x => x.FolderPath).ToList();
+        }
+
+        public async Task Initialize()
+        {
+            await Task.CompletedTask;
         }
     }
 }
