@@ -2,8 +2,9 @@
 {
     public class AddLibraryDialogResult
     {
-        bool Accepted { get; set; }
-        int? LibraryId { get; set; }
+        public bool Accepted { get; set; }
+        public string? Name { get; set; }
+        public string? Path { get; set; }
     }
 
     public interface IWindowLauncher

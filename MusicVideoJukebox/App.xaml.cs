@@ -44,6 +44,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<LibraryViewModel>();
             services.AddSingleton<MetadataEditViewModel>();
             services.AddSingleton<NewPlaylistViewModel>();
+            services.AddSingleton<IWindowLauncher, WindowLauncher>();
             //services.AddSingleton<MainWindow>();
             //services.AddSingleton<SettingsWindow>();
             //services.AddSingleton<MainWindowViewModel>();
