@@ -5,14 +5,14 @@ namespace MusicVideoJukebox.Core.Navigation
     public class NavigationService : INavigationService//, INotifyPropertyChanged
     {
         private readonly IServiceProvider _serviceProvider;
-        private BaseViewModel? _currentViewModel;
+        private AsyncInitializeableViewModel? _currentViewModel;
 
         public NavigationService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public BaseViewModel? CurrentViewModel
+        public AsyncInitializeableViewModel? CurrentViewModel
         {
             get => _currentViewModel;
             private set
@@ -21,13 +21,14 @@ namespace MusicVideoJukebox.Core.Navigation
             }
         }
 
-        public void NavigateTo<TViewModel>() where TViewModel : BaseViewModel
+        public async Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel
         {
             var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
             if (viewModel == null)
             {
                 throw new InvalidOperationException($"Unable to resolve ViewModel of type {typeof(TViewModel).Name}");
             }
+            await viewModel.Initialize();
             CurrentViewModel = viewModel;
         }
 

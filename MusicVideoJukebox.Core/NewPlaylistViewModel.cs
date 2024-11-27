@@ -1,6 +1,11 @@
-﻿namespace MusicVideoJukebox.Core
+﻿
+namespace MusicVideoJukebox.Core
 {
-    public class NewPlaylistViewModel : BaseViewModel
+    public class NewPlaylistViewModel : AsyncInitializeableViewModel
     {
+        public override Task Initialize()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,10 @@
-﻿namespace MusicVideoJukebox.Core
+﻿
+namespace MusicVideoJukebox.Core
 {
-    public class MetadataEditViewModel : BaseViewModel
+    public class MetadataEditViewModel : AsyncInitializeableViewModel
     {
+        public override async Task Initialize()
+        {
+        }
     }
 }

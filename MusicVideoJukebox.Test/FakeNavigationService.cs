@@ -5,19 +5,19 @@ namespace MusicVideoJukebox.Test
 {
     internal class FakeNavigationService : INavigationService
     {
-        BaseViewModel? viewModel;
-        public Dictionary<Type, BaseViewModel> ViewModelsToGenerate = [];
+        AsyncInitializeableViewModel? viewModel;
+        public Dictionary<Type, AsyncInitializeableViewModel> ViewModelsToGenerate = [];
 
-        public BaseViewModel? CurrentViewModel => viewModel;
-
-        public void NavigateTo<TViewModel>() where TViewModel : BaseViewModel
-        {
-            viewModel = ViewModelsToGenerate[typeof(TViewModel)];
-        }
+        public AsyncInitializeableViewModel? CurrentViewModel => viewModel;
 
         public void NavigateToNothing()
         {
             viewModel = null;
+        }
+
+        async Task INavigationService.NavigateTo<TViewModel>()
+        {
+            viewModel = ViewModelsToGenerate[typeof(TViewModel)];
         }
     }
 }

@@ -7,8 +7,10 @@ namespace MusicVideoJukebox.Test
         FakeNavigationService navigationService;
         NewMainWindowViewModel dut;
         FakeInterfaceFader interfaceFader;
+        FakeLibrarySetRepo librarySetRepo;
         public NewMainWindowViewModelTest()
         {
+            librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();
             dut = new NewMainWindowViewModel(navigationService);
@@ -26,7 +28,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedLibraryEnableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
         }
@@ -34,7 +36,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void IfSelectedLibraryAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(dut.IsLibrarySelected);
             dut.NavigateLibraryCommand.Execute(null);
@@ -70,7 +72,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void DontFadeWhenInLibraryView()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.False(interfaceFader.FadingEnabled);
         }
@@ -78,7 +80,7 @@ namespace MusicVideoJukebox.Test
         [Fact]
         public void FadeWhenExitedLibraryView()
         {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel();
+            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(librarySetRepo);
             dut.NavigateLibraryCommand.Execute(null);
             dut.NavigateLibraryCommand.Execute(null);
             Assert.True(interfaceFader.FadingEnabled);

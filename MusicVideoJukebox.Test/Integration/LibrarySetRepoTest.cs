@@ -24,7 +24,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                //conn.Execute(@"DELETE FROM workout_set;");
+                conn.Execute(@"DELETE FROM library;");
                 //conn.Execute(@"DELETE FROM workout_session;");
                 //conn.Execute(@"DELETE FROM exercise;");
                 //conn.Execute(@"DELETE FROM routine;");
@@ -40,6 +40,27 @@ namespace MusicVideoJukebox.Test.Integration
             {
                 await conn.ExecuteAsync(@"SELECT * FROM library;");
                 conn.Close();
+            }
+        }
+
+        [Fact]
+        public async Task CanGetLibraries()
+        {
+            await dut.Initialize();
+            WithLibrary();
+            var result = await dut.GetAllLibraries();
+            Assert.Single(result);
+            Assert.Equal(@"c:\foo\bar", result[0].FolderPath);
+            Assert.Equal("libraryfoo", result[0].Name);
+        }
+
+        int WithLibrary()
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO library (folder_path, name) values ('c:\foo\bar', 'libraryfoo') RETURNING library_id");
+                conn.Close();
+                return id;
             }
         }
     }

@@ -2,8 +2,8 @@
 {
     public interface INavigationService
     {
-        BaseViewModel? CurrentViewModel { get; }
-        void NavigateTo<TViewModel>() where TViewModel : BaseViewModel;
+        AsyncInitializeableViewModel? CurrentViewModel { get; }
+        Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel;
         void NavigateToNothing();
     }
 }

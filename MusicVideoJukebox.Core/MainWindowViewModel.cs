@@ -15,6 +15,11 @@ namespace MusicVideoJukebox.Core
         }
     }
 
+    public abstract class AsyncInitializeableViewModel : BaseViewModel
+    {
+        public abstract Task Initialize();
+    }
+
     public class MainWindowViewModel : BaseViewModel
     {
         private IMediaPlayer mediaPlayer = null!;

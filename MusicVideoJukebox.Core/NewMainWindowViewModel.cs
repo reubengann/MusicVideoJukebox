@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Navigation;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
@@ -18,7 +19,7 @@ namespace MusicVideoJukebox.Core
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
-        public BaseViewModel? CurrentViewModel => navigationService.CurrentViewModel;
+        public AsyncInitializeableViewModel? CurrentViewModel => navigationService.CurrentViewModel;
 
         public NewMainWindowViewModel(INavigationService navigationService)
         {
@@ -28,7 +29,7 @@ namespace MusicVideoJukebox.Core
             this.navigationService = navigationService;
         }
 
-        private void NavigateToLibrary()
+        private async void NavigateToLibrary()
         {
             if (IsLibrarySelected) 
             {
@@ -37,13 +38,13 @@ namespace MusicVideoJukebox.Core
             }
             else
             {
-                navigationService.NavigateTo<LibraryViewModel>();
+                await navigationService.NavigateTo<LibraryViewModel>();
                 interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
 
-        private void NavigateToPlaylist()
+        private async void NavigateToPlaylist()
         {
             if (IsPlaylistSelected)
             {
@@ -52,13 +53,13 @@ namespace MusicVideoJukebox.Core
             }
             else
             {
-                navigationService.NavigateTo<NewPlaylistViewModel>();
+                await navigationService.NavigateTo<NewPlaylistViewModel>();
                 interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
 
-        private void NavigateToMetadata()
+        private async void NavigateToMetadata()
         {
             if (IsMetadataSelected) 
             {
@@ -67,7 +68,7 @@ namespace MusicVideoJukebox.Core
             }
             else
             {
-                navigationService.NavigateTo<MetadataEditViewModel>();
+                await navigationService.NavigateTo<MetadataEditViewModel>();
                 interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));

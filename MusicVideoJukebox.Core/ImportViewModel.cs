@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core
 {
-    public class ImportViewModel : BaseViewModel 
+    public class ImportViewModel : AsyncInitializeableViewModel 
     {
         public ObservableCollection<string> SelectedFiles { get; } = new();
         public int SelectedFilesCount => SelectedFiles.Count;
@@ -66,6 +66,11 @@ namespace MusicVideoJukebox.Core
             // Get the metadata
             // Add it to the database
             // Add it to the "all songs" playlist
+        }
+
+        public override async Task Initialize()
+        {
+            
         }
     }
 }

@@ -13,6 +13,18 @@ namespace MusicVideoJukebox.Core.Libraries
             this.connectionString = connectionString;
         }
 
+        public async Task<List<LibraryItem>> GetAllLibraries()
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                var result = await conn.QueryAsync<LibraryItem>(@"
+                    SELECT library_id, folder_path, name from library;");
+                conn.Close();
+                return result.ToList();
+            }
+        }
+
         public async Task Initialize()
         {
             using (var conn = new SQLiteConnection(connectionString))
@@ -20,6 +32,7 @@ namespace MusicVideoJukebox.Core.Libraries
                 await conn.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS library (
                     library_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     folder_path TEXT NOT NULL,
+                    name TEXT NOT NULL,
                     song_count INT NULL,
                     playlist_count INT NULL
                 );");
