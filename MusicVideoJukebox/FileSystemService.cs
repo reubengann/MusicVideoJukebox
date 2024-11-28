@@ -6,6 +6,11 @@ namespace MusicVideoJukebox
 {
     public class FileSystemService : IFileSystemService
     {
+        public bool FileExists(string filepath)
+        {
+            return File.Exists(filepath);
+        }
+
         public bool FolderExists(string path)
         {
             return Directory.Exists(path);

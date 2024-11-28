@@ -32,32 +32,41 @@ namespace MusicVideoJukebox.Core.Metadata
     public class MetadataManagerFactory : IMetadataManagerFactory
     {
         private readonly IVideoRepoFactory videoRepoFactory;
+        private readonly IFileSystemService fileSystemService;
 
-        public MetadataManagerFactory(IVideoRepoFactory videoRepoFactory)
+        public MetadataManagerFactory(IVideoRepoFactory videoRepoFactory, IFileSystemService fileSystemService)
         {
             this.videoRepoFactory = videoRepoFactory;
+            this.fileSystemService = fileSystemService;
         }
 
         public IMetadataManager Create(string folderPath)
         {
-            return new MetadataManager(folderPath, videoRepoFactory.Create(folderPath));
+            return new MetadataManager(folderPath, videoRepoFactory.Create(folderPath), fileSystemService);
         }
     }
 
     public class MetadataManager : IMetadataManager
     {
-        private readonly string folderPath;
+        private readonly string filepath;
         private readonly IVideoRepo videoRepo;
+        private readonly IFileSystemService fileSystemService;
 
-        public MetadataManager(string folderPath, IVideoRepo videoRepo)
+        public MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService)
         {
-            this.folderPath = folderPath;
+            this.filepath = Path.Combine(folderPath, "meta.db");
             this.videoRepo = videoRepo;
+            this.fileSystemService = fileSystemService;
         }
 
-        public Task<bool> EnsureCreated()
+        public async Task<bool> EnsureCreated()
         {
-            throw new NotImplementedException();
+            if (fileSystemService.FileExists(filepath))
+            {
+                return true;
+            }
+            await videoRepo.CreateTables();
+            return true;
         }
     }
 }

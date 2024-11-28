@@ -1,6 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
 
-namespace MusicVideoJukebox.Test.Unit
+namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeMetadataManager : IMetadataManager
     {
