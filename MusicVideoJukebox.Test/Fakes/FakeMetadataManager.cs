@@ -13,11 +13,10 @@ namespace MusicVideoJukebox.Test.Fakes
             this.folderPath = folderPath;
         }
 
-        public async Task<bool> EnsureCreated()
+        public async Task EnsureCreated()
         {
             await Task.CompletedTask;
             CreatedMetadataFolders.Add(folderPath);
-            return true;
         }
     }
 }

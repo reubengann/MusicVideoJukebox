@@ -7,10 +7,12 @@ namespace MusicVideoJukebox.Test.Fakes
         public bool TablesCreated = false;
 
         public IEnumerable<char>? FolderPath { get; internal set; }
+        public List<BasicInfo> BasicRowsCreated { get; internal set; } = [];
 
         public Task AddBasicInfos(List<BasicInfo> basicInfos)
         {
-            throw new NotImplementedException();
+            BasicRowsCreated.AddRange(basicInfos);
+            return Task.CompletedTask;
         }
 
         public async Task CreateTables()

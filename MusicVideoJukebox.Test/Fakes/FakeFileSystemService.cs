@@ -25,7 +25,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public List<string> ListMp4Files(string folderPath)
         {
-            throw new NotImplementedException();
+            return ExistingFiles.Where(x => x.EndsWith(".mp4")).ToList();
         }
     }
 }

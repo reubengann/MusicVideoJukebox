@@ -50,12 +50,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 {
                     ArgumentNullException.ThrowIfNull(result.Path);
                     var metadataManager = metadataManagerFactory.Create(result.Path);
-                    var success = await metadataManager.EnsureCreated();
-                    if (!success)
-                    {
-                        dialogService.ShowError($"Didn't find metadata in {result.Path}, and could not create it");
-                        return;
-                    }
+                    await metadataManager.EnsureCreated();
                     // store in library
                 }
             }

@@ -17,7 +17,8 @@ namespace MusicVideoJukebox.Test.Integration
 
         public void Dispose()
         {
-
+            using var conn = new SQLiteConnection(connectionString);
+            conn.Execute("DELETE FROM video");
         }
 
         [Fact]
