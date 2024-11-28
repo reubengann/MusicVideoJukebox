@@ -35,8 +35,7 @@ namespace MusicVideoJukebox
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "music_video_libraries.db");
-            var connectionString = $"Data Source={dbPath};Pooling=False;";
-            services.AddSingleton<ILibrarySetRepo>(x => new LibrarySetRepo(connectionString));
+            services.AddSingleton<ILibrarySetRepo>(x => new LibrarySetRepo(dbPath));
 
             services.AddSingleton<NewMainWindow>();
             services.AddSingleton<NewMainWindowViewModel>();

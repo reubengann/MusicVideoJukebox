@@ -8,9 +8,9 @@ namespace MusicVideoJukebox.Core.Libraries
     {
         private string connectionString;
 
-        public LibrarySetRepo(string connectionString)
+        public LibrarySetRepo(string dbPath)
         {
-            this.connectionString = connectionString;
+            connectionString = $"Data Source={dbPath};Pooling=False;";
         }
 
         public async Task<List<LibraryItem>> GetAllLibraries()

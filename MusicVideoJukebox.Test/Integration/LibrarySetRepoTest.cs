@@ -17,7 +17,7 @@ namespace MusicVideoJukebox.Test.Integration
         public LibrarySetRepoTest()
         {
             using var conn = new SQLiteConnection(connectionString);
-            dut = new LibrarySetRepo(connectionString);
+            dut = new LibrarySetRepo(@"c:\repos\librarytest.db");
         }
 
         public void Dispose()
