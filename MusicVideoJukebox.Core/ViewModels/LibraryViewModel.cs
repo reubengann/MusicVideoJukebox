@@ -53,6 +53,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     var metadataManager = metadataManagerFactory.Create(result.Path);
                     await metadataManager.EnsureCreated();
                     await librarySetRepo.AddLibrary(new LibraryItemAdd { FolderPath = result.Path, Name = result.Name});
+                    await ReloadLibraries();
                 }
             }
             else
@@ -67,6 +68,11 @@ namespace MusicVideoJukebox.Core.ViewModels
         }
 
         override public async Task Initialize()
+        {
+            await ReloadLibraries();
+        }
+
+        private async Task ReloadLibraries()
         {
             Items.Clear();
             var libs = await librarySetRepo.GetAllLibraries();

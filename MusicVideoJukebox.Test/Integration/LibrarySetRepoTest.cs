@@ -1,11 +1,6 @@
 ﻿using Dapper;
 using MusicVideoJukebox.Core.Libraries;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Integration
 {
@@ -91,7 +86,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO library (folder_path, name) values (@path, @name) RETURNING library_id", 
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO library (folder_path, name) values (@path, @name) RETURNING library_id",
                     new { path, name });
                 conn.Close();
                 return id;

@@ -1,10 +1,5 @@
 ﻿using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -36,6 +31,18 @@ namespace MusicVideoJukebox.Test.Unit
             dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
             Assert.Contains("nonexisting", metadataManagerFactory.ToReturn.CreatedMetadataFolders);
             Assert.Single(librarySetRepo.LibraryItems);
+        }
+
+        [Fact]
+        public async Task WhenCreatingRefreshTheList()
+        {
+            await dut.Initialize();
+            metadataManagerFactory.ToReturn.CreatedMetadataFolders.Add("existing");
+            windowLauncher.ToReturn.Name = "Test";
+            windowLauncher.ToReturn.Path = "nonexisting";
+            windowLauncher.ToReturn.Accepted = true;
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
+            Assert.Equal(2, dut.Items.Count);
         }
     }
 }
