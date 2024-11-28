@@ -7,16 +7,10 @@ using System;
 
 namespace MusicVideoJukebox
 {
-    public class WindowLauncher : IWindowLauncher
+    public class WindowLauncher(IDialogService dialogService, ILibrarySetRepo librarySetRepo) : IWindowLauncher
     {
-        private readonly IDialogService dialogService;
-        private readonly ILibrarySetRepo librarySetRepo;
-
-        public WindowLauncher(IDialogService dialogService, ILibrarySetRepo librarySetRepo)
-        {
-            this.dialogService = dialogService;
-            this.librarySetRepo = librarySetRepo;
-        }
+        private readonly IDialogService dialogService = dialogService;
+        private readonly ILibrarySetRepo librarySetRepo = librarySetRepo;
 
         public AddLibraryDialogResult LaunchAddLibraryDialog()
         {

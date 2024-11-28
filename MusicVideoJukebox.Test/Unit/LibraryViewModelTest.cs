@@ -35,6 +35,7 @@ namespace MusicVideoJukebox.Test.Unit
             windowLauncher.ToReturn.Accepted = true;
             dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
             Assert.Contains("nonexisting", metadataManagerFactory.ToReturn.CreatedMetadataFolders);
+            Assert.Single(librarySetRepo.LibraryItems);
         }
     }
 }

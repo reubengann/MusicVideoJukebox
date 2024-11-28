@@ -6,6 +6,12 @@ namespace MusicVideoJukebox.Test.Fakes
     {
         public List<LibraryItem> LibraryItems { get; set; } = [];
 
+        public Task AddLibrary(LibraryItemAdd libraryItem)
+        {
+            LibraryItems.Add(new LibraryItem { FolderPath = libraryItem.FolderPath, Name = libraryItem.Name, LibraryId = LibraryItems.Count + 1 });
+            return Task.CompletedTask;
+        }
+
         public async Task<List<LibraryItem>> GetAllLibraries()
         {
             await Task.CompletedTask;

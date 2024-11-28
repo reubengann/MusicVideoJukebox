@@ -76,6 +76,17 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(result, ["folder1", "folder2"]);
         }
 
+        [Fact]
+        public async Task CanInsertNewLibrary()
+        {
+            await dut.Initialize();
+            await dut.AddLibrary(new LibraryItemAdd { FolderPath = "foo", Name = "bar" });
+            using var conn = new SQLiteConnection(connectionString);
+            var result = (await conn.QueryAsync<string>("SELECT folder_path FROM library")).ToList();
+            Assert.Single(result);
+            Assert.Equal("foo", result[0]);
+        }
+
         int WithLibrary(string path, string name)
         {
             using (var conn = new SQLiteConnection(connectionString))

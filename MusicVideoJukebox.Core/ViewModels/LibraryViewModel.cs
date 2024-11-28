@@ -49,9 +49,10 @@ namespace MusicVideoJukebox.Core.ViewModels
                 if (result.Accepted)
                 {
                     ArgumentNullException.ThrowIfNull(result.Path);
+                    ArgumentNullException.ThrowIfNull(result.Name);
                     var metadataManager = metadataManagerFactory.Create(result.Path);
                     await metadataManager.EnsureCreated();
-                    // store in library
+                    await librarySetRepo.AddLibrary(new LibraryItemAdd { FolderPath = result.Path, Name = result.Name});
                 }
             }
             else

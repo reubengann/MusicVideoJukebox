@@ -13,6 +13,12 @@ namespace MusicVideoJukebox.Core.Libraries
             connectionString = $"Data Source={dbPath};Pooling=False;";
         }
 
+        public async Task AddLibrary(LibraryItemAdd libraryItem)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("INSERT INTO library (folder_path, name) VALUES (@FolderPath, @Name)", libraryItem);
+        }
+
         public async Task<List<LibraryItem>> GetAllLibraries()
         {
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
