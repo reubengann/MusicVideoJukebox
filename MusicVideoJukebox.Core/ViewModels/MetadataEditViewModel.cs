@@ -1,5 +1,4 @@
-﻿
-namespace MusicVideoJukebox.Core
+﻿namespace MusicVideoJukebox.Core.ViewModels
 {
     public class MetadataEditViewModel : AsyncInitializeableViewModel
     {

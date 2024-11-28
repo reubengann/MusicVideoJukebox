@@ -4,6 +4,7 @@ using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;
+using MusicVideoJukebox.Core.ViewModels;
 using System;
 using System.IO;
 using System.Windows;

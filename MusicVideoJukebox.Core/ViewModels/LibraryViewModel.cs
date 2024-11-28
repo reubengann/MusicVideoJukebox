@@ -5,7 +5,7 @@ using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.ViewModels
 {
     public class LibraryItemViewModel
     {
@@ -26,8 +26,8 @@ namespace MusicVideoJukebox.Core
         public ICommand EditLibraryCommand { get; }
         public ICommand SelectLibraryCommand { get; }
 
-        public LibraryViewModel(ILibrarySetRepo librarySetRepo, 
-            IWindowLauncher windowLauncher, 
+        public LibraryViewModel(ILibrarySetRepo librarySetRepo,
+            IWindowLauncher windowLauncher,
             IMetadataManagerFactory metadataManagerFactory,
             IDialogService dialogService)
         {

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox"
         xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-        xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
+        xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
         xmlns:views="clr-namespace:MusicVideoJukebox.Views"
         MouseMove="Window_MouseMove"
         mc:Ignorable="d"
         Title="Music Video Jukebox" Height="450" Width="800"
-        d:DataContext="{d:DesignInstance core:NewMainWindowViewModel, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance vms:NewMainWindowViewModel, IsDesignTimeCreatable=False}"
         >
     <Window.Resources>
         <local:BoolToBrushConverter x:Key="BoolToBrushConverter" TrueBrush="Yellow" FalseBrush="Transparent"/>
@@ -82,13 +82,13 @@
                     </Style>
                 </ContentControl.Style>
                 <ContentControl.Resources>
-                    <DataTemplate DataType="{x:Type core:LibraryViewModel}">
+                    <DataTemplate DataType="{x:Type vms:LibraryViewModel}">
                         <views:LibrariesView />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type core:NewPlaylistViewModel}">
+                    <DataTemplate DataType="{x:Type vms:NewPlaylistViewModel}">
                         <views:PlaylistsView />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type core:MetadataEditViewModel}">
+                    <DataTemplate DataType="{x:Type vms:MetadataEditViewModel}">
                         <views:MetadataEditView />
                     </DataTemplate>
                 </ContentControl.Resources>

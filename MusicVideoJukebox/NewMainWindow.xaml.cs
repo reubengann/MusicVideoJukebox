@@ -1,4 +1,4 @@
-﻿using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core.ViewModels;
 using System.Windows;
 
 namespace MusicVideoJukebox

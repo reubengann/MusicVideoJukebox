@@ -2,7 +2,7 @@
 using Prism.Commands;
 using System.Windows.Input;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.ViewModels
 {
     public class AddLibraryDialogViewModel : BaseViewModel
     {
@@ -38,12 +38,12 @@ namespace MusicVideoJukebox.Core
 
         public event Action<bool>? RequestClose;
 
-        
+
 
         private async void Save()
         {
             // Verify this is good data
-            if (!Directory.Exists(FolderPath)) 
+            if (!Directory.Exists(FolderPath))
             {
                 dialogService.ShowError($"Folder {FolderPath} does not exist.");
                 return;
@@ -63,7 +63,7 @@ namespace MusicVideoJukebox.Core
             // If so, we request close and verify we're good
             RequestClose?.Invoke(true);
         }
-        
+
 
         private void Cancel()
         {

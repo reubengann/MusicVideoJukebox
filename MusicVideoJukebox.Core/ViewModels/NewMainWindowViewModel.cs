@@ -3,7 +3,7 @@ using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.ViewModels
 {
     public class NewMainWindowViewModel : BaseViewModel
     {
@@ -30,7 +30,7 @@ namespace MusicVideoJukebox.Core
 
         private async void NavigateToLibrary()
         {
-            if (IsLibrarySelected) 
+            if (IsLibrarySelected)
             {
                 navigationService.NavigateToNothing();
                 interfaceFader.EnableFading();
@@ -60,7 +60,7 @@ namespace MusicVideoJukebox.Core
 
         private async void NavigateToMetadata()
         {
-            if (IsMetadataSelected) 
+            if (IsMetadataSelected)
             {
                 navigationService.NavigateToNothing();
                 interfaceFader.EnableFading();
