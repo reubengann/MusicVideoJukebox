@@ -45,14 +45,15 @@ namespace MusicVideoJukebox
             services.AddSingleton<MetadataEditViewModel>();
             services.AddSingleton<NewPlaylistViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
-            services.AddSingleton<IMetadataManager, MetadataManager>();
+            services.AddSingleton<IMetadataManagerFactory, MetadataManagerFactory>();
+            services.AddSingleton<IVideoRepoFactory, VideoRepoFactory>();
             //services.AddSingleton<MainWindow>();
             //services.AddSingleton<SettingsWindow>();
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ImportViewModel>();
             //services.AddSingleton<SettingsWindowViewModel>();
             //services.AddSingleton<VideoLibraryStore>();
-            //services.AddSingleton<IFileSystemService, FileSystemService>();
+            services.AddSingleton<IFileSystemService, FileSystemService>();
             //services.AddSingleton<IAppSettingsFactory, FileAppSettingsFactory>();
             //services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();
             //services.AddSingleton<IVideoLibraryBuilder, SqliteVideoLibraryBuilder>();

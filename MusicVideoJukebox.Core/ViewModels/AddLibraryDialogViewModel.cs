@@ -11,8 +11,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         private string folderPath = "";
 
         public ICommand BrowseFolderCommand { get; }
-        public ICommand SaveCommand;
-        public ICommand CancelCommand;
+        public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
 
         public AddLibraryDialogViewModel(IDialogService dialogService, ILibrarySetRepo librarySetRepo)
         {
