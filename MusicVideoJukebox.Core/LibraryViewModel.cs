@@ -19,7 +19,7 @@ namespace MusicVideoJukebox.Core
     {
         private readonly ILibrarySetRepo librarySetRepo;
         private readonly IWindowLauncher windowLauncher;
-        private readonly IMetadataManager metadataManager;
+        private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly IDialogService dialogService;
 
         public ObservableCollection<LibraryItemViewModel> Items { get; } = new ObservableCollection<LibraryItemViewModel>();
@@ -28,18 +28,18 @@ namespace MusicVideoJukebox.Core
 
         public LibraryViewModel(ILibrarySetRepo librarySetRepo, 
             IWindowLauncher windowLauncher, 
-            IMetadataManager metadataManager,
+            IMetadataManagerFactory metadataManagerFactory,
             IDialogService dialogService)
         {
             EditLibraryCommand = new DelegateCommand<LibraryItemViewModel>(EditLibrary);
             SelectLibraryCommand = new DelegateCommand<LibraryItemViewModel>(SelectLibrary);
             this.librarySetRepo = librarySetRepo;
             this.windowLauncher = windowLauncher;
-            this.metadataManager = metadataManager;
+            this.metadataManagerFactory = metadataManagerFactory;
             this.dialogService = dialogService;
         }
 
-        private void SelectLibrary(LibraryItemViewModel library)
+        private async void SelectLibrary(LibraryItemViewModel library)
         {
             if (library == null) return;
 
@@ -49,16 +49,13 @@ namespace MusicVideoJukebox.Core
                 if (result.Accepted)
                 {
                     ArgumentNullException.ThrowIfNull(result.Path);
-                    if (!metadataManager.HasMetadata(result.Path))
+                    var metadataManager = metadataManagerFactory.Create(result.Path);
+                    var success = await metadataManager.EnsureCreated();
+                    if (!success)
                     {
-                        var success = metadataManager.CreateMetadata(result.Path);
-                        if (!success)
-                        {
-                            dialogService.ShowError("Didn't find metadata in {result.Path}, and could not create it");
-                            return;
-                        }
+                        dialogService.ShowError($"Didn't find metadata in {result.Path}, and could not create it");
+                        return;
                     }
-                    // create at least a basic metadata
                     // store in library
                 }
             }

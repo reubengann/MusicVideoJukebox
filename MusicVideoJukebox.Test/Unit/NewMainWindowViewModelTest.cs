@@ -10,13 +10,13 @@ namespace MusicVideoJukebox.Test.Unit
         FakeInterfaceFader interfaceFader;
         FakeLibrarySetRepo librarySetRepo;
         FakeWindowLauncher windowLauncher;
-        FakeMetadataManager metadataManager;
+        FakeMetadataManagerFactory metadataManager;
         FakeDialogService dialogService;
 
         public NewMainWindowViewModelTest()
         {
             dialogService = new FakeDialogService(); 
-            metadataManager = new FakeMetadataManager();
+            metadataManager = new FakeMetadataManagerFactory();
             librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();

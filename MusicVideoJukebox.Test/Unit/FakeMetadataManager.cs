@@ -4,17 +4,20 @@ namespace MusicVideoJukebox.Test.Unit
 {
     internal class FakeMetadataManager : IMetadataManager
     {
-        public List<string> ExistingMetadataFolders { get; internal set; } = [];
+        public string folderPath;
 
-        public bool CreateMetadata(string folderPath)
+        public List<string> CreatedMetadataFolders { get; internal set; } = [];
+
+        public FakeMetadataManager(string folderPath)
         {
-            ExistingMetadataFolders.Add(folderPath);
-            return true;
+            this.folderPath = folderPath;
         }
 
-        public bool HasMetadata(string folderPath)
+        public async Task<bool> EnsureCreated()
         {
-            return ExistingMetadataFolders.Contains(folderPath);
+            await Task.CompletedTask;
+            CreatedMetadataFolders.Add(folderPath);
+            return true;
         }
     }
 }

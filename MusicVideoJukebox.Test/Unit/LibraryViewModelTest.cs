@@ -13,27 +13,28 @@ namespace MusicVideoJukebox.Test.Unit
         LibraryViewModel dut;
         FakeLibrarySetRepo librarySetRepo;
         FakeWindowLauncher windowLauncher;
-        FakeMetadataManager metadataManager;
         FakeDialogService dialogService;
+        FakeMetadataManagerFactory metadataManagerFactory;
+
 
         public LibraryViewModelTest()
         {
             dialogService = new FakeDialogService();
             librarySetRepo = new FakeLibrarySetRepo();
             windowLauncher = new FakeWindowLauncher();
-            metadataManager = new FakeMetadataManager();
-            dut = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManager, dialogService);
+            metadataManagerFactory = new FakeMetadataManagerFactory();
+            dut = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManagerFactory, dialogService);
         }
 
         [Fact]
         public void WhenMetadataDoesntExistInFolderCreatesIt()
         {
-            metadataManager.ExistingMetadataFolders.Add("existing");
+            metadataManagerFactory.ToReturn.CreatedMetadataFolders.Add("existing");
             windowLauncher.ToReturn.Name = "Test";
             windowLauncher.ToReturn.Path = "nonexisting";
             windowLauncher.ToReturn.Accepted = true;
             dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
-            Assert.Contains("nonexisting", metadataManager.ExistingMetadataFolders);
+            Assert.Contains("nonexisting", metadataManagerFactory.ToReturn.CreatedMetadataFolders);
         }
     }
 }
