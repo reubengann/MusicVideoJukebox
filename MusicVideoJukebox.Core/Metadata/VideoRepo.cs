@@ -14,6 +14,21 @@ namespace MusicVideoJukebox.Core.Metadata
             connectionString = $"Data Source={filepath};Pooling=False;";
         }
 
+        public async Task AddBasicInfos(List<BasicInfo> basicInfos)
+        {
+            const string query = @"
+        INSERT INTO video (filename, title, artist)
+        VALUES (@Filename, @Title, @Artist);";
+
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.OpenAsync();
+            using var transaction = conn.BeginTransaction();
+
+            await conn.ExecuteAsync(query, basicInfos, transaction);
+
+            await transaction.CommitAsync();
+        }
+
         public async Task CreateTables()
         {
             using var conn = new SQLiteConnection(connectionString);
@@ -21,7 +36,7 @@ namespace MusicVideoJukebox.Core.Metadata
                 create table if not exists video (
                 video_id integer primary key autoincrement,
                 filename text NOT NULL,
-                ""year"" integer NULL,
+                release_year integer NULL,
                 title text NOT NULL, 
                 album text NULL, 
                 artist text NOT NULL
@@ -34,7 +49,7 @@ namespace MusicVideoJukebox.Core.Metadata
                 )
                 ");
             await conn.ExecuteAsync(@"
-                create table if not exists playlists_video (
+                create table if not exists playlist_video (
                 playlists_videos_id integer primary key autoincrement,
                 playlist_id integer not null,
                 video_id integer not null,

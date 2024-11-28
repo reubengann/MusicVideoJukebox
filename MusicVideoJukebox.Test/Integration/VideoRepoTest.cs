@@ -27,5 +27,18 @@ namespace MusicVideoJukebox.Test.Integration
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("SELECT * from video");
         }
+
+        [Fact]
+        public async Task CanAddBasicVideoInfo()
+        {
+            await dut.CreateTables();
+            await dut.AddBasicInfos([
+                new BasicInfo { Artist = "artist1", Filename = "path1", Title = "name1" },
+                new BasicInfo { Artist = "artist2", Filename = "path2", Title = "name2" },
+                ]);
+            using var conn = new SQLiteConnection(connectionString);
+            var rowcount = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from video");
+            Assert.Equal(2, rowcount);
+        }
     }
 }

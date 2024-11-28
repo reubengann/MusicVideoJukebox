@@ -8,6 +8,11 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public IEnumerable<char>? FolderPath { get; internal set; }
 
+        public Task AddBasicInfos(List<BasicInfo> basicInfos)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task CreateTables()
         {
             await Task.CompletedTask;

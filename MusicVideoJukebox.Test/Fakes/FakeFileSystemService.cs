@@ -22,5 +22,10 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             return "mydocs";
         }
+
+        public List<string> ListMp4Files(string folderPath)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

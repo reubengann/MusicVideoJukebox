@@ -35,5 +35,13 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.EnsureCreated();
             Assert.False(videoRepo.TablesCreated);
         }
+
+        [Fact]
+        public async Task PopulatesBasicInfo()
+        {
+            await dut.EnsureCreated();
+            Assert.True(videoRepo.TablesCreated);
+
+        }
     }
 }
