@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+             xmlns:foo="clr-namespace:MusicVideoJukebox"
+             xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <foo:StatusToIconConverter x:Key="StatusToIconConverter" />
+        <foo:StatusToBrushConverter x:Key="StatusToBrushConverter" />
+    </UserControl.Resources>
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -13,13 +19,30 @@
         </Grid.RowDefinitions>
 
         <!-- Editable DataGrid -->
-        <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False">
+        <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+                  Padding="5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
                 <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
                 <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
                 <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
                 <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Status">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <mat:MaterialIcon Kind="{Binding Status, Converter={StaticResource StatusToIconConverter}}" 
+                                         Foreground="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" 
+                                         Width="20" Height="20" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
