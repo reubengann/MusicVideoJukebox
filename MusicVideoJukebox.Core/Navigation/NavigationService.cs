@@ -21,6 +21,8 @@ namespace MusicVideoJukebox.Core.Navigation
             }
         }
 
+        public event Action? NavigationChanged;
+
         public async Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel
         {
             var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
@@ -30,11 +32,13 @@ namespace MusicVideoJukebox.Core.Navigation
             }
             await viewModel.Initialize();
             CurrentViewModel = viewModel;
+            NavigationChanged?.Invoke();
         }
 
         public void NavigateToNothing()
         {
             CurrentViewModel = null;
+            NavigationChanged?.Invoke();
         }
     }
 }

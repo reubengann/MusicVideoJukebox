@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
@@ -10,15 +11,19 @@ namespace MusicVideoJukebox.Test.Unit
         FakeWindowLauncher windowLauncher;
         FakeDialogService dialogService;
         FakeMetadataManagerFactory metadataManagerFactory;
-
+        FakeNavigationService navigationService;
+        LibraryStore libraryStore;
 
         public LibraryViewModelTest()
         {
+            navigationService = new FakeNavigationService();
+            libraryStore = new LibraryStore();
             dialogService = new FakeDialogService();
             librarySetRepo = new FakeLibrarySetRepo();
             windowLauncher = new FakeWindowLauncher();
             metadataManagerFactory = new FakeMetadataManagerFactory();
-            dut = new LibraryViewModel(librarySetRepo, windowLauncher, metadataManagerFactory, dialogService);
+
+            dut = new LibraryViewModel(libraryStore, librarySetRepo, windowLauncher, metadataManagerFactory, dialogService, navigationService);
         }
 
         [Fact]
@@ -28,7 +33,7 @@ namespace MusicVideoJukebox.Test.Unit
             windowLauncher.ToReturn.Name = "Test";
             windowLauncher.ToReturn.Path = "nonexisting";
             windowLauncher.ToReturn.Accepted = true;
-            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { LibraryId = null, IsAddNew = true });
             Assert.Contains("nonexisting", metadataManagerFactory.ToReturn.CreatedMetadataFolders);
             Assert.Single(librarySetRepo.LibraryItems);
         }
@@ -41,8 +46,26 @@ namespace MusicVideoJukebox.Test.Unit
             windowLauncher.ToReturn.Name = "Test";
             windowLauncher.ToReturn.Path = "nonexisting";
             windowLauncher.ToReturn.Accepted = true;
-            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = true });
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { LibraryId = null, IsAddNew = true });
             Assert.Equal(2, dut.Items.Count);
+        }
+
+        [Fact]
+        public async Task WhenSelectingSetsTheStore()
+        {
+            await dut.Initialize();
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = false, LibraryId = 1, LibraryItem = new LibraryItem {  FolderPath = "foobar" } });
+            Assert.Equal(1, libraryStore.LibraryId);
+            Assert.Equal("foobar", libraryStore.FolderPath);
+        }
+
+        [Fact]
+        public async Task WhenSelectingNavigatesBackToNothing()
+        {
+            navigationService.viewModel = dut;
+            await dut.Initialize();
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = false, LibraryId = 1, LibraryItem = new LibraryItem { FolderPath = "foobar" } });
+            Assert.Null(navigationService.CurrentViewModel);
         }
     }
 }

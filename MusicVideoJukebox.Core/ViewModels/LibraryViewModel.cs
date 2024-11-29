@@ -13,30 +13,39 @@ namespace MusicVideoJukebox.Core.ViewModels
         public string? Icon { get; set; }
         public bool IsAddNew { get; set; }
         public string Name => IsAddNew ? "Add new" : LibraryItem?.Name ?? "No library";
+
+        required public int? LibraryId { get; set; }
     }
 
     public class LibraryViewModel : AsyncInitializeableViewModel
     {
+        private readonly LibraryStore libraryStore;
         private readonly ILibrarySetRepo librarySetRepo;
         private readonly IWindowLauncher windowLauncher;
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService;
 
         public ObservableCollection<LibraryItemViewModel> Items { get; } = new ObservableCollection<LibraryItemViewModel>();
         public ICommand EditLibraryCommand { get; }
         public ICommand SelectLibraryCommand { get; }
 
-        public LibraryViewModel(ILibrarySetRepo librarySetRepo,
+        public LibraryViewModel(LibraryStore libraryStore,
+            ILibrarySetRepo librarySetRepo,
             IWindowLauncher windowLauncher,
             IMetadataManagerFactory metadataManagerFactory,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            INavigationService navigationService
+            )
         {
             EditLibraryCommand = new DelegateCommand<LibraryItemViewModel>(EditLibrary);
             SelectLibraryCommand = new DelegateCommand<LibraryItemViewModel>(SelectLibrary);
+            this.libraryStore = libraryStore;
             this.librarySetRepo = librarySetRepo;
             this.windowLauncher = windowLauncher;
             this.metadataManagerFactory = metadataManagerFactory;
             this.dialogService = dialogService;
+            this.navigationService = navigationService;
         }
 
         private async void SelectLibrary(LibraryItemViewModel library)
@@ -58,7 +67,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                // Logic to select an existing library
+                ArgumentNullException.ThrowIfNull(library.LibraryItem);
+                libraryStore.LibraryId = library.LibraryId;
+                libraryStore.FolderPath = library.LibraryItem.FolderPath;
+                navigationService.NavigateToNothing();
             }
         }
 
@@ -80,9 +92,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 var metadataManager = metadataManagerFactory.Create(lib.FolderPath);
                 await metadataManager.EnsureCreated();
-                Items.Add(new LibraryItemViewModel { LibraryItem = lib, Icon = "Images/library_music.svg", IsAddNew = false });
+                Items.Add(new LibraryItemViewModel { LibraryId = lib.LibraryId, LibraryItem = lib, Icon = "Images/library_music.svg", IsAddNew = false });
             }
-            Items.Add(new LibraryItemViewModel { LibraryItem = null, Icon = "/Images/library_add.svg", IsAddNew = true });
+            Items.Add(new LibraryItemViewModel { LibraryId = null, LibraryItem = null, Icon = "/Images/library_add.svg", IsAddNew = true });
         }
     }
 }

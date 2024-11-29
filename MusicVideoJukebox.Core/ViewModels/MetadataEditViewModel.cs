@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Metadata;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
 
@@ -28,34 +29,16 @@ namespace MusicVideoJukebox.Core.ViewModels
         public DelegateCommand FetchMetadataCommand { get; }
         public DelegateCommand RefreshDatabaseCommand { get; }
 
-        private readonly IVideoRepo _metadataRepository;
-        private readonly IMetadataProvider _webMetadataService;
+        private readonly IMetadataManagerFactory metadataManagerFactory;
+        private readonly LibraryStore libraryStore;
+        private IMetadataManager metadataManager = null!;
 
-        public MetadataEditViewModel(IVideoRepo metadataRepository, IMetadataProvider webMetadataService)
+        public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore)
         {
-            _metadataRepository = metadataRepository;
-            _webMetadataService = webMetadataService;
-
             FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadataFromWeb());
             RefreshDatabaseCommand = new DelegateCommand(async () => await RefreshDatabase());
-        }
-
-        public async Task LoadMetadata()
-        {
-            var metadata = await _metadataRepository.GetAllMetadata();
-            MetadataEntries.Clear();
-            foreach (var entry in metadata)
-            {
-                MetadataEntries.Add(new MetadataEntry {
-                    VideoId = entry.VideoId, 
-                    Filename = entry.Filename, 
-                    Year = entry.ReleaseYear,
-                    Title = entry.Title, 
-                    Album = entry.Album, 
-                    Artist = entry.Artist, 
-                    Status = entry.Status,
-                });
-            }
+            this.metadataManagerFactory = metadataManagerFactory;
+            this.libraryStore = libraryStore;
         }
 
         private async Task FetchMetadataFromWeb()
@@ -84,7 +67,28 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public override async Task Initialize()
         {
+            if (libraryStore.FolderPath == null) return;
+            metadataManager =  metadataManagerFactory.Create(libraryStore.FolderPath);
             await LoadMetadata();
+        }
+
+        public async Task LoadMetadata()
+        {
+            var metadata = await metadataManager.GetAllMetadata();
+            MetadataEntries.Clear();
+            foreach (var entry in metadata)
+            {
+                MetadataEntries.Add(new MetadataEntry
+                {
+                    VideoId = entry.VideoId,
+                    Filename = entry.Filename,
+                    Year = entry.ReleaseYear,
+                    Title = entry.Title,
+                    Album = entry.Album,
+                    Artist = entry.Artist,
+                    Status = entry.Status,
+                });
+            }
         }
     }
 }

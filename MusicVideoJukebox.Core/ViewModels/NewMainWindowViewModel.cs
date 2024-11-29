@@ -26,6 +26,12 @@ namespace MusicVideoJukebox.Core.ViewModels
             NavigatePlaylistCommand = new DelegateCommand(NavigateToPlaylist);
             NavigateMetadataCommand = new DelegateCommand(NavigateToMetadata);
             this.navigationService = navigationService;
+            navigationService.NavigationChanged += NavigationService_NavigationChanged;
+        }
+
+        private void NavigationService_NavigationChanged()
+        {
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
 
         private async void NavigateToLibrary()

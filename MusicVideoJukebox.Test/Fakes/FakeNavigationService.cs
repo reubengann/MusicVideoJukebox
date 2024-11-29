@@ -5,10 +5,12 @@ namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeNavigationService : INavigationService
     {
-        AsyncInitializeableViewModel? viewModel;
+        public AsyncInitializeableViewModel? viewModel;
         public Dictionary<Type, AsyncInitializeableViewModel> ViewModelsToGenerate = [];
 
         public AsyncInitializeableViewModel? CurrentViewModel => viewModel;
+
+        public event Action? NavigationChanged;
 
         public void NavigateToNothing()
         {

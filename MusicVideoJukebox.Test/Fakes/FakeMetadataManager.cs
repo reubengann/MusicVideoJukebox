@@ -7,6 +7,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public string folderPath;
 
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
+        public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
 
         public FakeMetadataManager(string folderPath)
         {
@@ -17,6 +18,12 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             CreatedMetadataFolders.Add(folderPath);
+        }
+
+        public async Task<List<VideoMetadata>> GetAllMetadata()
+        {
+            await Task.CompletedTask;
+            return MetadataEntries;
         }
     }
 }
