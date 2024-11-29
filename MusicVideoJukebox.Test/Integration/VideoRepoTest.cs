@@ -41,5 +41,25 @@ namespace MusicVideoJukebox.Test.Integration
             var rowcount = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from video");
             Assert.Equal(2, rowcount);
         }
+
+        [Fact]
+        public async Task CanGetBasicVideoInfo()
+        {
+            await dut.CreateTables();
+            WithVideo("file1", "title1", "artist1", MetadataStatus.NotDone);
+            WithVideo("file2", "title2", "artist2", MetadataStatus.NotDone);
+            var result = await dut.GetAllMetadata();
+            Assert.Equal(2, result.Count);
+        }
+
+        int WithVideo(string filename, string title, string artist, MetadataStatus status)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (filename, title, artist, status) values (@filename, @title, @artist, @status) RETURNING video_id",
+                    new { filename, title, artist, status });
+                return id;
+            }
+        }
     }
 }

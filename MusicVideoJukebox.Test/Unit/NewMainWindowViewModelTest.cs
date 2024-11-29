@@ -12,15 +12,20 @@ namespace MusicVideoJukebox.Test.Unit
         FakeWindowLauncher windowLauncher;
         FakeMetadataManagerFactory metadataManager;
         FakeDialogService dialogService;
+        FakeVideoRepo videoRepo;
+        FakeMetadataProvider metadataProvider;
 
         public NewMainWindowViewModelTest()
         {
+            videoRepo = new FakeVideoRepo();
+            metadataProvider = new FakeMetadataProvider();
             dialogService = new FakeDialogService(); 
             metadataManager = new FakeMetadataManagerFactory();
             librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();
             windowLauncher = new FakeWindowLauncher();
+
             dut = new NewMainWindowViewModel(navigationService);
             dut.Initialize(interfaceFader);
         }
@@ -64,7 +69,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedMetadataAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel();
+            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(videoRepo, metadataProvider);
             dut.NavigateMetadataCommand.Execute(null);
             Assert.True(dut.IsMetadataSelected);
             dut.NavigateMetadataCommand.Execute(null);
@@ -105,7 +110,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void DontFadeWhenInMetadataView()
         {
-            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel();
+            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(videoRepo, metadataProvider);
             dut.NavigateMetadataCommand.Execute(null);
             Assert.False(interfaceFader.FadingEnabled);
         }

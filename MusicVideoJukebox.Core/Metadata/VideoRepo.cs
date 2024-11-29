@@ -17,8 +17,8 @@ namespace MusicVideoJukebox.Core.Metadata
         public async Task AddBasicInfos(List<BasicInfo> basicInfos)
         {
             const string query = @"
-        INSERT INTO video (filename, title, artist)
-        VALUES (@Filename, @Title, @Artist);";
+        INSERT INTO video (filename, title, artist, status)
+        VALUES (@Filename, @Title, @Artist, 0);";
 
             using var conn = new SQLiteConnection(connectionString);
             await conn.OpenAsync();
@@ -39,7 +39,8 @@ namespace MusicVideoJukebox.Core.Metadata
                 release_year integer NULL,
                 title text NOT NULL, 
                 album text NULL, 
-                artist text NOT NULL
+                artist text NOT NULL,
+                status integer NOT NULL
                 )
             ");
             await conn.ExecuteAsync(@"
@@ -62,6 +63,13 @@ namespace MusicVideoJukebox.Core.Metadata
                 song_id integer null
                 )
                 ");
+        }
+
+        public async Task<List<VideoMetadata>> GetAllMetadata()
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, artist, status from video")).ToList();
         }
     }
 }

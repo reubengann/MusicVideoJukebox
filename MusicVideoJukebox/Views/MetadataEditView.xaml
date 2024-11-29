@@ -7,8 +7,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-        <Viewbox>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="This is the metadata edit view" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-        </Viewbox>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Editable DataGrid -->
+        <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
+                <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
+                <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
+                <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button Content="Fetch Metadata from Web" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
+            <Button Content="Refresh Database" Command="{Binding RefreshDatabaseCommand}" />
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -5,6 +5,7 @@ namespace MusicVideoJukebox.Test.Fakes
     internal class FakeVideoRepo : IVideoRepo
     {
         public bool TablesCreated = false;
+        public List<VideoMetadata> MetadataEntries = [];
 
         public IEnumerable<char>? FolderPath { get; internal set; }
         public List<BasicInfo> BasicRowsCreated { get; internal set; } = [];
@@ -19,6 +20,12 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             TablesCreated = true;
+        }
+
+        public async Task<List<VideoMetadata>> GetAllMetadata()
+        {
+            await Task.CompletedTask;
+            return MetadataEntries;
         }
     }
 }

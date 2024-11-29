@@ -78,6 +78,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             var libs = await librarySetRepo.GetAllLibraries();
             foreach (var lib in libs)
             {
+                var metadataManager = metadataManagerFactory.Create(lib.FolderPath);
+                await metadataManager.EnsureCreated();
                 Items.Add(new LibraryItemViewModel { LibraryItem = lib, Icon = "Images/library_music.svg", IsAddNew = false });
             }
             Items.Add(new LibraryItemViewModel { LibraryItem = null, Icon = "/Images/library_add.svg", IsAddNew = true });
