@@ -71,5 +71,19 @@ namespace MusicVideoJukebox.Core.Metadata
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, artist, status from video")).ToList();
         }
+
+        public async Task UpdateMetadata(VideoMetadata metadata)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            const string query = @"
+            UPDATE video
+            SET title = @Title,
+            artist = @Artist,
+            album = @Album,
+            release_year = @ReleaseYear,
+            status = @Status
+            WHERE video_id = @VideoId;";
+            await conn.ExecuteAsync(query, metadata);
+        }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Test.Fakes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -44,6 +39,13 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.True(videoRepo.TablesCreated);
             Assert.Equal(2, videoRepo.BasicRowsCreated.Count);
             Assert.Equal(new[] { "artist 1", "artist 2" }.ToHashSet(), videoRepo.BasicRowsCreated.Select(x => x.Artist).ToHashSet());
+        }
+
+        [Fact]
+        public async Task UpdatesMetadataInRepo()
+        {
+            await dut.UpdateVideoMetadata(new VideoMetadata { Artist = "a", Filename = "b", Title = "c" });
+            Assert.Single(videoRepo.UpdatedEntries);
         }
     }
 }

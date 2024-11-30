@@ -6,6 +6,7 @@ namespace MusicVideoJukebox.Core.Metadata
         Task CreateTables();
         Task AddBasicInfos(List<BasicInfo> basicInfos);
         Task<List<VideoMetadata>> GetAllMetadata();
+        Task UpdateMetadata(VideoMetadata metadata);
     }
 
     public class BasicInfo

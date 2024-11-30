@@ -13,6 +13,18 @@ namespace MusicVideoJukebox.Core
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false; // No change, no notification needed
+            }
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true; // Property changed
+        }
     }
 
     public abstract class AsyncInitializeableViewModel : BaseViewModel

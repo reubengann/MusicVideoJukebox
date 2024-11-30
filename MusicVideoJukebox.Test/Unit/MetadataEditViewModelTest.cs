@@ -10,12 +10,14 @@ namespace MusicVideoJukebox.Test.Unit
         MetadataEditViewModel dut;
         FakeMetadataManagerFactory metadataManagerFactory;
         LibraryStore libraryStore;
+        FakeDialogService dialogService;
 
         public MetadataEditViewModelTest()
         {
+            dialogService = new FakeDialogService();
             libraryStore = new LibraryStore();
             metadataManagerFactory = new FakeMetadataManagerFactory();
-            dut = new MetadataEditViewModel(metadataManagerFactory, libraryStore);
+            dut = new MetadataEditViewModel(metadataManagerFactory, libraryStore, dialogService);
         }
 
         [Fact]
@@ -28,5 +30,19 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.Equal(2, dut.MetadataEntries.Count);
         }
 
+        [Fact]
+        public async Task SaveChangedOnes()
+        {
+            libraryStore.FolderPath = "";
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1" });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2" });
+            await dut.Initialize();
+            dut.MetadataEntries[0].Title = "artist1changed";
+            Assert.True(dut.MetadataEntries[0].IsModified);
+            dut.SaveChangesCommand.Execute(null);
+            Assert.False(dialogService.ShowedError);
+            Assert.Single(metadataManagerFactory.ToReturn.MetadataEntriesUpdated);
+            Assert.False(dut.MetadataEntries[0].IsModified);
+        }
     }
 }

@@ -52,6 +52,24 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(2, result.Count);
         }
 
+        [Fact]
+        public async Task CanUpdate()
+        {
+            await dut.CreateTables();
+            var id = WithVideo("file1", "title1", "artist1", MetadataStatus.NotDone);
+            await dut.UpdateMetadata(new VideoMetadata { VideoId = id, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
+            var conn = new SQLiteConnection(connectionString);
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var results = await conn.QueryAsync<VideoMetadata>("select * from video");
+            Assert.Single(results);
+            var result = results.First();
+            Assert.Equal(MetadataStatus.Manual, result.Status);
+            Assert.Equal("artistupdated", result.Artist);
+            Assert.Equal("album", result.Album);
+            Assert.Equal("titleupdated", result.Title);
+            Assert.Equal(1984, result.ReleaseYear);
+        }
+
         int WithVideo(string filename, string title, string artist, MetadataStatus status)
         {
             using (var conn = new SQLiteConnection(connectionString))

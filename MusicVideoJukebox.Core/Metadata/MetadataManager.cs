@@ -37,5 +37,10 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             return await videoRepo.GetAllMetadata();
         }
+
+        public async Task UpdateVideoMetadata(VideoMetadata entry)
+        {
+            await videoRepo.UpdateMetadata(entry);
+        }
     }
 }

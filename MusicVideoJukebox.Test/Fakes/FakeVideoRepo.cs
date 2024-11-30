@@ -6,6 +6,7 @@ namespace MusicVideoJukebox.Test.Fakes
     {
         public bool TablesCreated = false;
         public List<VideoMetadata> MetadataEntries = [];
+        public List<VideoMetadata> UpdatedEntries = [];
 
         public IEnumerable<char>? FolderPath { get; internal set; }
         public List<BasicInfo> BasicRowsCreated { get; internal set; } = [];
@@ -26,6 +27,12 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             return MetadataEntries;
+        }
+
+        public Task UpdateMetadata(VideoMetadata metadata)
+        {
+            UpdatedEntries.Add(metadata);
+            return Task.CompletedTask;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedMetadataAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(metadataManagerFactory, libraryStore);
+            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(metadataManagerFactory, libraryStore, dialogService);
             dut.NavigateMetadataCommand.Execute(null);
             Assert.True(dut.IsMetadataSelected);
             dut.NavigateMetadataCommand.Execute(null);
@@ -113,7 +113,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void DontFadeWhenInMetadataView()
         {
-            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(metadataManagerFactory, libraryStore);
+            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(metadataManagerFactory, libraryStore, dialogService);
             dut.NavigateMetadataCommand.Execute(null);
             Assert.False(interfaceFader.FadingEnabled);
         }
