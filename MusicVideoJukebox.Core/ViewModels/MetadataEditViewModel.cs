@@ -2,12 +2,14 @@
 using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class MetadataEntry : BaseViewModel
+    public class MetadataEntryViewModel : BaseViewModel
     {
         bool settingProgrammatically = false;
 
@@ -29,7 +31,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             return true;
         }
 
-        public MetadataEntry(VideoMetadata videoMetadata)
+        public MetadataEntryViewModel(VideoMetadata videoMetadata)
         {
             this.videoMetadata = videoMetadata;
         }
@@ -70,11 +72,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
     public class MetadataEditViewModel : AsyncInitializeableViewModel
     {
-        public ObservableCollection<MetadataEntry> MetadataEntries { get; } = new ObservableCollection<MetadataEntry>();
+        public ObservableCollection<MetadataEntryViewModel> MetadataEntries { get; } = new ObservableCollection<MetadataEntryViewModel>();
 
         public ICommand FetchMetadataCommand { get; }
         public ICommand RefreshDatabaseCommand { get; }
-        public ICommand SaveChangesCommand { get; }
+        public DelegateCommand SaveChangesCommand { get; }
 
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
@@ -85,10 +87,42 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadataFromWeb());
             RefreshDatabaseCommand = new DelegateCommand(async () => await RefreshDatabase());
-            SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges);
+            SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges, CanSaveChanges);
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             this.dialogService = dialogService;
+            MetadataEntries.CollectionChanged += MetadataEntries_CollectionChanged;
+        }
+
+        private bool CanSaveChanges()
+        {
+            return MetadataEntries.Any(entry => entry.IsModified);
+        }
+
+        private void MetadataEntries_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (MetadataEntryViewModel newItem in e.NewItems)
+                {
+                    newItem.PropertyChanged += MetadataEntry_PropertyChanged;
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach (MetadataEntryViewModel oldItem in e.OldItems)
+                {
+                    oldItem.PropertyChanged -= MetadataEntry_PropertyChanged;
+                }
+            }
+        }
+
+        private void MetadataEntry_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MetadataEntryViewModel.IsModified))
+            {
+                SaveChangesCommand.RaiseCanExecuteChanged();
+            }
         }
 
         private async Task SaveChanges()
@@ -140,11 +174,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             MetadataEntries.Clear();
             foreach (var entry in metadata)
             {
-                MetadataEntries.Add(new MetadataEntry(entry));               
+                MetadataEntries.Add(new MetadataEntryViewModel(entry));               
             }
         }
 
-        private DelegateCommand CreateSafeAsyncCommand(Func<Task> execute)
+        private DelegateCommand CreateSafeAsyncCommand(Func<Task> execute, Func<bool> canExecute = null!)
         {
             return new DelegateCommand(async () =>
             {
@@ -157,7 +191,9 @@ namespace MusicVideoJukebox.Core.ViewModels
                     dialogService.ShowError($"Could not save: {ex.Message}");
                     throw;
                 }
-            });
+            },
+            canExecute ?? (() => true)
+            );
         }
     }
 }
