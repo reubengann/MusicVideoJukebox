@@ -1,13 +1,13 @@
 ﻿namespace MusicVideoJukebox.Core
 {
-    public class VideoLibraryStore
-    {
-        private VideoLibrary videoLibrary = null!;
+    //public class VideoLibraryStore
+    //{
+    //    private VideoLibrary videoLibrary = null!;
 
-        public VideoLibraryStore()
-        {
-        }
+    //    public VideoLibraryStore()
+    //    {
+    //    }
 
-        public VideoLibrary VideoLibrary { get => videoLibrary; set { videoLibrary = value; } }
-    }
+    //    public VideoLibrary VideoLibrary { get => videoLibrary; set { videoLibrary = value; } }
+    //}
 }

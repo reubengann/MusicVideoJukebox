@@ -1,10 +1,11 @@
 ﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Metadata;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
-    internal class FakeMetadataProvider : IMetadataProvider
+    internal class FakeMetadataProvider : IMetadataService
     {
-        public Task<VideoInfo> GetMetadata(string artist, string track)
+        public Task<MetadataFetchResult> GetMetadata(string artist, string track)
         {
             throw new NotImplementedException();
         }

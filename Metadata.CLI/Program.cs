@@ -23,5 +23,5 @@ static async Task HandleShuffled(ShuffledOptions options)
 
 static async Task HandleCreate(CreateOptions options)
 {
-    await BackfillVideoDatabaseBuilder.BuildAsync(options.LibraryPath, Path.Combine(options.FolderPath, "meta.db"));
+    //await BackfillVideoDatabaseBuilder.BuildAsync(options.LibraryPath, Path.Combine(options.FolderPath, "meta.db"));
 }

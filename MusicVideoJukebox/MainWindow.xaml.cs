@@ -11,7 +11,7 @@ namespace MusicVideoJukebox
 {
     public partial class MainWindow : Window, IMediaPlayer
     {
-        readonly MainWindowViewModel vm;
+        //readonly MainWindowViewModel vm;
         private readonly List<UIElement> triggerElements = [];
         private bool fadingOut = false;
         private bool fadingIn = false;
@@ -20,19 +20,19 @@ namespace MusicVideoJukebox
         {
             InitializeComponent();
             triggerElements.Add(player);
-            vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
-            DataContext = vm;
+            //vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
+            //DataContext = vm;
             player.MediaEnded += Player_MediaEnded;
         }
 
         public async Task Initialize()
         {
-            await vm.Initialize(this);
+            //await vm.Initialize(this);
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
-            vm.DonePlaying();
+            //vm.DonePlaying();
         }
 
         public void Pause() => player.Pause();
@@ -58,12 +58,12 @@ namespace MusicVideoJukebox
 
         private void Slider_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            vm.StartScrubbing();
+            //vm.StartScrubbing();
         }
 
         private void Slider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            vm.StopScrubbing();
+            //vm.StopScrubbing();
         }
 
         public double Volume
@@ -83,7 +83,7 @@ namespace MusicVideoJukebox
 
             if (IsTriggerElement(dep) || IsTriggerElement(VisualTreeHelper.GetParent(dep)))
             {
-                vm.ChangeToFullScreenToggled();
+                //vm.ChangeToFullScreenToggled();
             }
         }
 
@@ -103,7 +103,7 @@ namespace MusicVideoJukebox
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            vm.UserInteracted();
+            //vm.UserInteracted();
         }
 
         public void FadeButtonsOut()
