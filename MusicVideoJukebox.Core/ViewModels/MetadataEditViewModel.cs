@@ -74,6 +74,8 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         public ObservableCollection<MetadataEntryViewModel> MetadataEntries { get; } = new ObservableCollection<MetadataEntryViewModel>();
 
+        public bool IsBusy { get => isBusy; set { isBusy = value; SetProperty(ref isBusy, value); } }
+
         public ICommand FetchMetadataCommand { get; }
         public ICommand RefreshDatabaseCommand { get; }
         public DelegateCommand SaveChangesCommand { get; }
@@ -82,6 +84,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly LibraryStore libraryStore;
         private readonly IDialogService dialogService;
         private IMetadataManager metadataManager = null!;
+        private bool isBusy;
 
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
@@ -127,13 +130,25 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private async Task SaveChanges()
         {
-            foreach (var entry in MetadataEntries)
+            IsBusy = true;
+            try
             {
-                if(entry.IsModified)
+                foreach (var entry in MetadataEntries)
                 {
-                    await metadataManager.UpdateVideoMetadata(entry.MetadataObject);
-                    entry.Reset();
+                    if (entry.IsModified)
+                    {
+                        await metadataManager.UpdateVideoMetadata(entry.MetadataObject);
+                        entry.Reset();
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                dialogService.ShowError($"Error: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

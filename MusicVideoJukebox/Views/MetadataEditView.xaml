@@ -7,52 +7,60 @@
              xmlns:foo="clr-namespace:MusicVideoJukebox"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vms:MetadataEditViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <foo:StatusToIconConverter x:Key="StatusToIconConverter" />
         <foo:StatusToBrushConverter x:Key="StatusToBrushConverter" />
+        <foo:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        
     </UserControl.Resources>
-    <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Editable DataGrid -->
-        <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
-                  Padding="5">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-                <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
-                <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
-                <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
-                <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
-                <DataGridTemplateColumn Header="Status">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <mat:MaterialIcon Kind="{Binding Status, Converter={StaticResource StatusToIconConverter}}" 
-                                         Foreground="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" 
-                                         Width="20" Height="20" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            <!-- Editable DataGrid -->
+            <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+                      Padding="5">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
+                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
+                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="Status">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <mat:MaterialIcon Kind="{Binding Status, Converter={StaticResource StatusToIconConverter}}" 
+                                             Foreground="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" 
+                                             Width="20" Height="20" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
 
-        <!-- Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button Content="Fetch Metadata from Web" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
-            <Button Content="Refresh Database" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
-            <Button Content="Save Changes" Command="{Binding SaveChangesCommand}" />
-        </StackPanel>
+            <!-- Buttons -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                <Button Content="Fetch Metadata from Web" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
+                <Button Content="Refresh Database" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
+                <Button Content="Save Changes" Command="{Binding SaveChangesCommand}" />
+            </StackPanel>
+        </Grid>
+        <Grid>
+            <mah:ProgressRing IsActive="{Binding IsBusy}"/>
+        </Grid>
     </Grid>
 </UserControl>
