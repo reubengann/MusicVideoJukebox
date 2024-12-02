@@ -44,7 +44,7 @@
     </Window.Resources>
     <Grid Background="Black">
         <Viewbox Panel.ZIndex="0">
-            <views:PlayingView/>
+            <views:PlayingView x:Name="player"/>
             <!--<MediaElement Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4"/>-->
         </Viewbox>
         <Grid Panel.ZIndex="1">

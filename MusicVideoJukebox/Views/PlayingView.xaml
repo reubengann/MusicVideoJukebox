@@ -6,8 +6,15 @@
              xmlns:local="clr-namespace:MusicVideoJukebox"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920">
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             d:DataContext="{d:DesignInstance Type=vms:VideoPlayingViewModel, IsDesignTimeCreatable=False}"
+             >
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
         <MediaElement Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4"/>
         <!-- Layout Container -->
@@ -27,8 +34,11 @@
                 <Button Command="{Binding SkipPreviousCommand}">
                     <mat:MaterialIcon Kind="SkipPrevious" Width="80" Height="80" Foreground="White" />
                 </Button>
-                <Button Command="{Binding PlayCommand}">
+                <Button Command="{Binding IsPlaying}" Visibility="{Binding IsPlaying, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                     <mat:MaterialIcon Kind="Play" Width="80" Height="80" Foreground="White" />
+                </Button>
+                <Button Command="{Binding IsPlaying}" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <mat:MaterialIcon Kind="Pause" Width="80" Height="80" Foreground="White" />
                 </Button>
                 <Button  Command="{Binding SkipNextCommand}">
                     <mat:MaterialIcon Kind="SkipNext" Width="80" Height="80" Foreground="White" />
