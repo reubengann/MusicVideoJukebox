@@ -39,12 +39,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (IsLibrarySelected)
             {
                 navigationService.NavigateToNothing();
-                interfaceFader.EnableFading();
             }
             else
             {
                 await navigationService.NavigateTo<LibraryViewModel>();
-                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
@@ -54,12 +52,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (IsPlaylistSelected)
             {
                 navigationService.NavigateToNothing();
-                interfaceFader.EnableFading();
             }
             else
             {
                 await navigationService.NavigateTo<NewPlaylistViewModel>();
-                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }
@@ -69,12 +65,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (IsMetadataSelected)
             {
                 navigationService.NavigateToNothing();
-                interfaceFader.EnableFading();
             }
             else
             {
                 await navigationService.NavigateTo<MetadataEditViewModel>();
-                interfaceFader.DisableFading();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }

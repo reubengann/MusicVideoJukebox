@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
+﻿using MusicVideoJukebox.Core.Navigation;
+using MusicVideoJukebox.Core.ViewModels;
 using System.Windows;
 
 namespace MusicVideoJukebox
@@ -8,12 +9,13 @@ namespace MusicVideoJukebox
         private readonly NewMainWindowViewModel vm;
         private readonly InterfaceFader interfaceFader;
 
-        public NewMainWindow(NewMainWindowViewModel vm)
+        public NewMainWindow(NewMainWindowViewModel vm, INavigationService navigationService)
         {
             InitializeComponent();
             this.vm = vm;
             interfaceFader = new InterfaceFader(Sidebar, OpacityProperty);
             vm.Initialize(interfaceFader);
+            navigationService.Initialize(interfaceFader);
             DataContext = vm;
         }
 

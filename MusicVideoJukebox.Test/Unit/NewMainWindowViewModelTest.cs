@@ -84,38 +84,5 @@ namespace MusicVideoJukebox.Test.Unit
         {
             Assert.Null(dut.CurrentViewModel);
         }
-
-        [Fact]
-        public void DontFadeWhenInLibraryView()
-        {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(libraryStore, librarySetRepo, windowLauncher, metadataManagerFactory, dialogService, navigationService);
-            dut.NavigateLibraryCommand.Execute(null);
-            Assert.False(interfaceFader.FadingEnabled);
-        }
-
-        [Fact]
-        public void FadeWhenExitedLibraryView()
-        {
-            navigationService.ViewModelsToGenerate[typeof(LibraryViewModel)] = new LibraryViewModel(libraryStore, librarySetRepo, windowLauncher, metadataManagerFactory, dialogService, navigationService);
-            dut.NavigateLibraryCommand.Execute(null);
-            dut.NavigateLibraryCommand.Execute(null);
-            Assert.True(interfaceFader.FadingEnabled);
-        }
-
-        [Fact]
-        public void DontFadeWhenInPlaylistView()
-        {
-            navigationService.ViewModelsToGenerate[typeof(NewPlaylistViewModel)] = new NewPlaylistViewModel();
-            dut.NavigatePlaylistCommand.Execute(null);
-            Assert.False(interfaceFader.FadingEnabled);
-        }
-
-        [Fact]
-        public void DontFadeWhenInMetadataView()
-        {
-            navigationService.ViewModelsToGenerate[typeof(MetadataEditViewModel)] = new MetadataEditViewModel(metadataManagerFactory, libraryStore, dialogService);
-            dut.NavigateMetadataCommand.Execute(null);
-            Assert.False(interfaceFader.FadingEnabled);
-        }
     }
 }

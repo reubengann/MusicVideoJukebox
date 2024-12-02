@@ -1,4 +1,6 @@
-﻿namespace MusicVideoJukebox.Core.Navigation
+﻿using MusicVideoJukebox.Core.UserInterface;
+
+namespace MusicVideoJukebox.Core.Navigation
 {
     public interface INavigationService
     {
@@ -6,5 +8,6 @@
         Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel;
         void NavigateToNothing();
         event Action? NavigationChanged;
+        void Initialize(IFadesWhenInactive fadesWhenInactive);
     }
 }

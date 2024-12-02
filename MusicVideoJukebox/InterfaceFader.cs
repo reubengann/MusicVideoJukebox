@@ -14,6 +14,7 @@ namespace MusicVideoJukebox
         DispatcherTimer _timer;
         private bool fadingOut = false;
         private bool fadingIn = false;
+        private bool enabled = true;
 
         public InterfaceFader(Border sidebar, DependencyProperty opacityProperty)
         {
@@ -48,17 +49,20 @@ namespace MusicVideoJukebox
 
         public void DisableFading()
         {
+            enabled = false;
             _timer.Stop();
         }
 
         public void EnableFading()
         {
+            enabled = true;
             _timer.Stop();
             _timer.Start();
         }
 
         public void UserInteracted()
         {
+            if (!enabled) return;
             MaybeFadeButtonsIn();
         }
 

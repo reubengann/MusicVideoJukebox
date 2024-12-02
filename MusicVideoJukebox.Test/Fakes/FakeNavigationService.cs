@@ -1,5 +1,6 @@
 ﻿using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Navigation;
+using MusicVideoJukebox.Core.UserInterface;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -11,6 +12,11 @@ namespace MusicVideoJukebox.Test.Fakes
         public AsyncInitializeableViewModel? CurrentViewModel => viewModel;
 
         public event Action? NavigationChanged;
+
+        public void Initialize(IFadesWhenInactive fadesWhenInactive)
+        {
+            throw new NotImplementedException();
+        }
 
         public void NavigateToNothing()
         {
