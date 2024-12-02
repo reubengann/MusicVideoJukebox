@@ -5,6 +5,12 @@ namespace MusicVideoJukebox.Test.Unit
     internal class FakeMediaPlayer2 : IMediaPlayer2
     {
         public bool IsPlaying { get; set; } = false;
+        public double InternalPosition = 0;
+        public double InternalLength = 0;
+
+        public double LengthSeconds => InternalLength;
+
+        public double CurrentTimeSeconds { get => InternalPosition; set { InternalPosition = value; } }
 
         public void Pause()
         {

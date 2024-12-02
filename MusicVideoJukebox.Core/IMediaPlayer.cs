@@ -23,8 +23,8 @@ namespace MusicVideoJukebox.Core
     {
         void Play();
         void Pause();
-        //double LengthSeconds { get; }
-        //double CurrentTimeSeconds { get; set; }
+        double LengthSeconds { get; }
+        double CurrentTimeSeconds { get; set; }
         //void SetSource(Uri source);
         //void SetWindowed();
         //void SetFullScreen();

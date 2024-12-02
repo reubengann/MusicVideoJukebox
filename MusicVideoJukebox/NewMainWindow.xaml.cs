@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Navigation;
+﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.ViewModels;
 using System.Windows;
 
@@ -7,17 +8,19 @@ namespace MusicVideoJukebox
     public partial class NewMainWindow : Window
     {
         private readonly NewMainWindowViewModel vm;
+        private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         private readonly InterfaceFader interfaceFader;
 
-        public NewMainWindow(NewMainWindowViewModel vm, INavigationService navigationService)
+        public NewMainWindow(NewMainWindowViewModel vm, INavigationService navigationService, IUIThreadTimerFactory uIThreadTimerFactory)
         {
             InitializeComponent();
             this.vm = vm;
+            this.uIThreadTimerFactory = uIThreadTimerFactory;
             interfaceFader = new InterfaceFader(Sidebar, OpacityProperty);
             vm.Initialize(interfaceFader);
             navigationService.Initialize(interfaceFader);
             DataContext = vm;
-            player.DataContext = new VideoPlayingViewModel(new MediaElementMediaPlayer(player.media));
+            player.DataContext = new VideoPlayingViewModel(new MediaElementMediaPlayer(player.media), uIThreadTimerFactory);
         }
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)

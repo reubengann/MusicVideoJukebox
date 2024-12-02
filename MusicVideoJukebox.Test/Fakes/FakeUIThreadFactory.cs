@@ -5,8 +5,8 @@ namespace MusicVideoJukebox.Test.Fakes
     internal class FakeUiThreadTimer : IUIThreadTimer
     {
         public event EventHandler? Tick;
-        bool Started = false;
-        bool Stopped = false;
+        public bool Started = false;
+        public bool Stopped = false;
 
         public void Start()
         {
@@ -17,13 +17,23 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             Stopped = true;
         }
+
+        public void Trigger()
+        {
+            Tick?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     internal class FakeUIThreadFactory : IUIThreadTimerFactory
     {
+        public List<FakeUiThreadTimer> ToReturn = [];
+        int index = 0;
+
         public IUIThreadTimer Create(TimeSpan interval)
         {
-            return new FakeUiThreadTimer();
+            var foo = ToReturn[index];
+            index ++;
+            return foo;
         }
     }
 }
