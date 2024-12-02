@@ -17,7 +17,7 @@ namespace MusicVideoJukebox
             vm.Initialize(interfaceFader);
             navigationService.Initialize(interfaceFader);
             DataContext = vm;
-            player.DataContext = new VideoPlayingViewModel();
+            player.DataContext = new VideoPlayingViewModel(new MediaElementMediaPlayer(player.media));
         }
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
