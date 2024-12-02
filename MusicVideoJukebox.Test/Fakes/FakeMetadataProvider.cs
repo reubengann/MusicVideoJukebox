@@ -3,9 +3,9 @@ using MusicVideoJukebox.Core.Metadata;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
-    internal class FakeMetadataProvider : IMetadataService
+    internal class FakeMetadataProvider : IMetadataWebService
     {
-        public Task<MetadataFetchResult> GetMetadata(string artist, string track)
+        public Task<List<MetadataCandidate>> GetMetadataCandidates(string artist, string track)
         {
             throw new NotImplementedException();
         }

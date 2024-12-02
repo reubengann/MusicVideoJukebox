@@ -1,6 +1,6 @@
 ﻿namespace MusicVideoJukebox.Core.Metadata
 {
-    public class MetadataFetchResult
+    public class MetadataGetResult
     {
         public bool Success { get; set; }
         public int? Year { get; set; }
@@ -9,6 +9,6 @@
 
     public interface IMetadataService
     {
-        Task<MetadataFetchResult> GetMetadata(string artist, string track);
+        Task<MetadataGetResult> GetMetadata(string artist, string track);
     }
 }
