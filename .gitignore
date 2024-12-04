@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 *.args.json
 *launchSettings.json
+MusicVideoJukebox/reference.sqlite
