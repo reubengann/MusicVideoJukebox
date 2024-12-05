@@ -21,7 +21,7 @@ namespace MusicVideoJukebox.Core.Metadata
               FROM albums A
               JOIN artists B ON B.artist_id = A.artist_id
               JOIN tracks C ON C.album_id = A.album_id
-              WHERE track_name = @track AND artist_name = @artist",
+              WHERE track_name LIKE @track COLLATE NOCASE AND artist_name LIKE @artist COLLATE NOCASE",
             new { track, artist });
 
             if (maybeMatch != null)

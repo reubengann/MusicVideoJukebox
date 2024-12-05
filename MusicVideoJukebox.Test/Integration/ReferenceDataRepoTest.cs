@@ -35,6 +35,18 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("Diva", md.AlbumTitle);
         }
 
+        [Fact]
+        public async Task CanMatchDifferentCase()
+        {
+            WithTrack("Billie Eilish", "When We All Fall Asleep, Where Do We Go?", "bad guy", 2019);
+            var result = await dut.TryGetExactMatch("Billie Eilish", "Bad Guy");
+            Assert.True(result.Success);
+            Assert.NotNull(result.FetchedMetadata);
+            var md = result.FetchedMetadata;
+            Assert.Equal(2019, md.FirstReleaseDateYear);
+            Assert.Equal("When We All Fall Asleep, Where Do We Go?", md.AlbumTitle);
+        }
+
         void WithTrack(string artist, string album, string track, int releaseYear)
         {
             using var conn = new SQLiteConnection(connectionString);
