@@ -47,6 +47,18 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("When We All Fall Asleep, Where Do We Go?", md.AlbumTitle);
         }
 
+        [Fact]
+        public async Task CanMatchThe()
+        {
+            WithTrack("The Beatles", "Help!", "Yesterday", 1965);
+            var result = await dut.TryGetExactMatch("Beatles", "Yesterday");
+            Assert.True(result.Success);
+            Assert.NotNull(result.FetchedMetadata);
+            var md = result.FetchedMetadata;
+            Assert.Equal(1965, md.FirstReleaseDateYear);
+            Assert.Equal("Help!", md.AlbumTitle);
+        }
+
         void WithTrack(string artist, string album, string track, int releaseYear)
         {
             using var conn = new SQLiteConnection(connectionString);
