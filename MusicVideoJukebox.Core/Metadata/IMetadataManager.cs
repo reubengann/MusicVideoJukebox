@@ -1,7 +1,4 @@
-﻿
-using MusicVideoJukebox.Core.ViewModels;
-
-namespace MusicVideoJukebox.Core.Metadata
+﻿namespace MusicVideoJukebox.Core.Metadata
 {
     public interface IMetadataManager
     {
