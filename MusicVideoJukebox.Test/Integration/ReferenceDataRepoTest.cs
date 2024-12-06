@@ -58,6 +58,14 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(1965, md.FirstReleaseDateYear);
             Assert.Equal("Help!", md.AlbumTitle);
         }
+        
+        [Fact]
+        public async Task CanGetCandidates()
+        {
+            WithTrack("AC/DC", "Dirty Deeds Done Dirty Cheap", "For Those About To Rock (We Salute You)", 1976);
+            var result = await dut.GetCandidates("AC DC", "For those about to rock");
+            Assert.Single(result);
+        }
 
         void WithTrack(string artist, string album, string track, int releaseYear)
         {

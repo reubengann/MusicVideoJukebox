@@ -21,8 +21,9 @@ namespace MusicVideoJukebox.Core.Metadata
               FROM albums A
               JOIN artists B ON B.artist_id = A.artist_id
               JOIN tracks C ON C.album_id = A.album_id
-              WHERE track_name LIKE @track COLLATE NOCASE 
-              AND (artist_name LIKE @artist COLLATE NOCASE OR artist_name LIKE 'the ' || @artist COLLATE NOCASE)",
+              WHERE track_name LIKE @track
+              AND (artist_name LIKE @artist OR artist_name LIKE 'the ' || @artist)
+              LIMIT 1",
             new { track, artist });
 
             if (maybeMatch != null)
@@ -30,6 +31,21 @@ namespace MusicVideoJukebox.Core.Metadata
                 return new MetadataGetResult { FetchedMetadata = maybeMatch, Success = true };
             }
             return new MetadataGetResult { Success = false };
+        }
+
+        public async Task <List<FetchedMetadata>> GetCandidates(string artist, string track)
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            using var conn = new SQLiteConnection(connectionString);
+            var maybeMatch = await conn.QueryAsync<FetchedMetadata>(
+            @"SELECT track_name, artist_name, album_title, first_release_date_year
+              FROM albums A
+              JOIN artists B ON B.artist_id = A.artist_id
+              JOIN tracks C ON C.album_id = A.album_id
+              WHERE track_name LIKE @track
+              AND (artist_name LIKE @artist OR artist_name LIKE 'the ' || @artist)",
+            new { track = track[..2] + "%", artist = artist[..2] + "%" });
+            return maybeMatch.ToList();
         }
     }
 }
