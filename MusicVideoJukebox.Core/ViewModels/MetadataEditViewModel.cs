@@ -19,6 +19,11 @@ namespace MusicVideoJukebox.Core.ViewModels
         public string Artist { get => videoMetadata.Artist; set => SetPropertyForMetadata(videoMetadata.Artist, value, v => videoMetadata.Artist = v); }
         public string? Album { get => videoMetadata.Album; set => SetPropertyForMetadata(videoMetadata.Album, value, v => videoMetadata.Album = v); }
         public int? Year { get => videoMetadata.ReleaseYear; set => SetPropertyForMetadata(videoMetadata.ReleaseYear, value, v => videoMetadata.ReleaseYear = v); }
+        public MetadataStatus Status
+        {
+            get => videoMetadata.Status;
+            set { _status = value; SetPropertyForMetadata(videoMetadata.Status, value, v => videoMetadata.Status = v); }
+        }
 
         private bool SetPropertyForMetadata<T>(T currentValue, T newValue, Action<T> setValue, [CallerMemberName] string propertyName = null!)
         {
@@ -38,8 +43,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private MetadataStatus _status = MetadataStatus.NotDone;
         private readonly VideoMetadata videoMetadata;
+        
+        private bool isModified = false;
 
-        public bool IsModified { get; private set; } = false;
+        public bool IsModified { get => isModified; private set => SetProperty(ref isModified, value); }
+        
         public void StartProgrammaticUpdate() { settingProgrammatically = true; Status = MetadataStatus.Fetching; }
         public void EndProgrammaticUpdate() { settingProgrammatically = false; }
 
@@ -54,12 +62,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 Status = MetadataStatus.Manual;
             }
-        }
-
-        public MetadataStatus Status
-        {
-            get => _status;
-            set { _status = value; OnPropertyChanged(nameof(Status)); }
         }
 
         public VideoMetadata MetadataObject => videoMetadata;
@@ -88,7 +90,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
-            FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadataFromWeb());
+            FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadata());
             RefreshDatabaseCommand = new DelegateCommand(async () => await RefreshDatabase());
             SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges, CanSaveChanges);
             this.metadataManagerFactory = metadataManagerFactory;
@@ -152,19 +154,26 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
         }
 
-        private async Task FetchMetadataFromWeb()
+        private async Task FetchMetadata()
         {
-            //foreach (var entry in MetadataEntries)
-            //{
-            //    var updatedMetadata = await _webMetadataService.FetchMetadataAsync(entry.Filename);
-            //    if (updatedMetadata != null)
-            //    {
-            //        entry.Title = updatedMetadata.Title;
-            //        entry.Artist = updatedMetadata.Artist;
-            //        entry.Album = updatedMetadata.Album;
-            //        entry.Year = updatedMetadata.Year;
-            //    }
-            //}
+            foreach (var entry in MetadataEntries)
+            {
+                if (entry.Status != MetadataStatus.NotDone) continue;
+                entry.StartProgrammaticUpdate();
+                var result = await metadataManager.TryGetAlbumYear(entry.Artist, entry.Title);
+                if (result.Success)
+                {
+                    //entry.Status = MetadataStatus.Done;
+                    entry.Album = result.AlbumTitle;
+                    entry.Year = result.ReleaseYear;
+                }
+                else
+                {
+                    entry.Status = MetadataStatus.NotFound;
+                }
+                entry.EndProgrammaticUpdate();
+            }
+            OnPropertyChanged(); // force an update to enable the save button
         }
 
         private async Task RefreshDatabase()

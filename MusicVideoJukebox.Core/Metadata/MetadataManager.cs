@@ -58,10 +58,10 @@ namespace MusicVideoJukebox.Core.Metadata
             .Select(candidate => new
             {
                 Candidate = candidate,
-                Similarity = GetSimilarity($"{artist} {track}", $"{candidate.Artist} {candidate.Title}")
+                Similarity = GetSimilarity($"{artist} {track}", $"{candidate.ArtistName} {candidate.TrackName}")
             })
-            .Where(x => x.Similarity >= similarityThreshold) // Apply the threshold
-            .OrderByDescending(x => x.Similarity) // Sort by similarity score
+            .Where(x => x.Similarity >= similarityThreshold)
+            .OrderByDescending(x => x.Similarity)
             .FirstOrDefault();
             if (bestMatch != null)
             {

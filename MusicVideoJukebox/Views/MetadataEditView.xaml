@@ -54,7 +54,7 @@
 
             <!-- Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                <Button Content="Fetch Metadata from Web" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
+                <Button Content="Fill Metadata" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
                 <Button Content="Refresh Database" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
                 <Button Content="Save Changes" Command="{Binding SaveChangesCommand}" />
             </StackPanel>

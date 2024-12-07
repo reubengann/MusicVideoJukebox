@@ -9,6 +9,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
+        public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
 
         public FakeMetadataManager(string folderPath)
         {
@@ -33,9 +34,13 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.CompletedTask;
         }
 
-        public Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
+        public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
         {
-            throw new NotImplementedException();
+            if (ReferenceDataToGet.ContainsKey($"{artist} {track}"))
+            {
+                return ReferenceDataToGet[$"{artist} {track}"];
+            }
+            return new GetAlbumYearResult { Success = false };
         }
     }
 }

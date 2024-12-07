@@ -8,8 +8,8 @@
 
     public class FetchedMetadata
     {
-        required public string Title { get; set; }
-        required public string Artist { get; set; }
+        required public string TrackName { get; set; }
+        required public string ArtistName { get; set; }
         required public int FirstReleaseDateYear { get; set; }
         required public string AlbumTitle { get; set; }
     }
