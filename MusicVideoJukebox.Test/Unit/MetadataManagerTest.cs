@@ -8,12 +8,14 @@ namespace MusicVideoJukebox.Test.Unit
         MetadataManager dut;
         FakeVideoRepo videoRepo;
         FakeFileSystemService fileSystemService;
+        FakeReferenceDataRepo referenceDataRepo;
 
         public MetadataManagerTest()
         {
+            referenceDataRepo = new FakeReferenceDataRepo();
             fileSystemService = new FakeFileSystemService();
             videoRepo = new FakeVideoRepo();
-            dut = new MetadataManager("thepath", videoRepo, fileSystemService);
+            dut = new MetadataManager("thepath", videoRepo, fileSystemService, referenceDataRepo);
         }
 
         [Fact]
@@ -46,6 +48,24 @@ namespace MusicVideoJukebox.Test.Unit
         {
             await dut.UpdateVideoMetadata(new VideoMetadata { Artist = "a", Filename = "b", Title = "c" });
             Assert.Single(videoRepo.UpdatedEntries);
+        }
+
+        [Fact]
+        public async Task WhenTryingToGetAlbumYearPrefersExactMatch()
+        {
+            referenceDataRepo.ExactMatches.Add(new FetchedMetadata { AlbumTitle = "foo", Artist = "artist", Title = "title", FirstReleaseDateYear = 1901 });
+            var result = await dut.TryGetAlbumYear("artist", "title");
+            Assert.True(result.Success);
+            Assert.Equal("foo", result.AlbumTitle);
+        }
+
+        [Fact]
+        public async Task WhenNoExactMatchDoFuzzyMatch()
+        {
+            referenceDataRepo.NearMatches.Add(new FetchedMetadata { AlbumTitle = "foo", Artist = "artist", Title = "title", FirstReleaseDateYear = 1901 });
+            var result = await dut.TryGetAlbumYear("artist1", "title");
+            Assert.True(result.Success);
+            Assert.Equal("foo", result.AlbumTitle);
         }
     }
 }

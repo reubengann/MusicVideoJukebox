@@ -43,7 +43,8 @@ namespace MusicVideoJukebox.Core.Metadata
               JOIN artists B ON B.artist_id = A.artist_id
               JOIN tracks C ON C.album_id = A.album_id
               WHERE track_name LIKE @track
-              AND (artist_name LIKE @artist OR artist_name LIKE 'the ' || @artist)",
+              AND (artist_name LIKE @artist OR artist_name LIKE 'the ' || @artist)
+              LIMIT 101",
             new { track = track[..2] + "%", artist = artist[..2] + "%" });
             return maybeMatch.ToList();
         }

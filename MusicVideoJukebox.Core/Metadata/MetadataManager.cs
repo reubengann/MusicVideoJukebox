@@ -1,4 +1,6 @@
-﻿
+﻿using FuzzySharp.PreProcess;
+using FuzzySharp;
+
 namespace MusicVideoJukebox.Core.Metadata
 {
     public class MetadataManager : IMetadataManager
@@ -7,13 +9,17 @@ namespace MusicVideoJukebox.Core.Metadata
         private readonly string folderPath;
         private readonly IVideoRepo videoRepo;
         private readonly IFileSystemService fileSystemService;
+        private readonly IReferenceDataRepo referenceDataRepo;
 
-        public MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService)
+        const int similarityThreshold = 80;
+
+        public MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService, IReferenceDataRepo referenceDataRepo)
         {
             this.folderPath = folderPath;
             filepath = Path.Combine(folderPath, "meta.db");
             this.videoRepo = videoRepo;
             this.fileSystemService = fileSystemService;
+            this.referenceDataRepo = referenceDataRepo;
         }
 
         public async Task EnsureCreated()
@@ -38,9 +44,41 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.GetAllMetadata();
         }
 
+        public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
+        {
+            var maybeExactResult = await referenceDataRepo.TryGetExactMatch(artist, track);
+            if (maybeExactResult.Success)
+            {
+                ArgumentNullException.ThrowIfNull(maybeExactResult.FetchedMetadata);
+                return new GetAlbumYearResult { Success = true, AlbumTitle = maybeExactResult.FetchedMetadata.AlbumTitle, ReleaseYear = maybeExactResult.FetchedMetadata.FirstReleaseDateYear };
+            }
+            // fuzzy match
+            var partialMatches = await referenceDataRepo.GetCandidates(artist, track);
+            var bestMatch = partialMatches
+            .Select(candidate => new
+            {
+                Candidate = candidate,
+                Similarity = GetSimilarity($"{artist} {track}", $"{candidate.Artist} {candidate.Title}")
+            })
+            .Where(x => x.Similarity >= similarityThreshold) // Apply the threshold
+            .OrderByDescending(x => x.Similarity) // Sort by similarity score
+            .FirstOrDefault();
+            if (bestMatch != null)
+            {
+                return new GetAlbumYearResult { Success = true, AlbumTitle = bestMatch.Candidate.AlbumTitle, ReleaseYear = bestMatch.Candidate.FirstReleaseDateYear };
+            }
+            return new GetAlbumYearResult { Success = false };
+        }
+
         public async Task UpdateVideoMetadata(VideoMetadata entry)
         {
             await videoRepo.UpdateMetadata(entry);
+        }
+
+        private int GetSimilarity(string target, string item)
+        {
+            int similarity = Fuzz.WeightedRatio(target, item, PreprocessMode.Full);
+            return similarity;
         }
     }
 }

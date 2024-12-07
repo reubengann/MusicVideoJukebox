@@ -31,4 +31,10 @@
     <Resource Include="Images\library_music.svg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="reference.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

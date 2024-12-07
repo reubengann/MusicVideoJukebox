@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using FuzzySharp;
-using FuzzySharp.PreProcess;
 using MusicVideoJukebox.Core.Metadata;
 using System.Data;
 
@@ -59,24 +57,5 @@ namespace MusicVideoJukebox.Core
         public string artist { get; set; } = null!;
         public string? album { get; set; }
         public string track { get; set; } = null!;
-    }
-
-
-    public class FuzzySearch
-    {
-        public static List<Tuple<string, int>> FuzzySearchStrings(string target, List<string> collection, int threshold)
-        {
-            var results = new List<Tuple<string, int>>();
-
-            foreach (string item in collection)
-            {
-                int similarity = Fuzz.WeightedRatio(target, item, PreprocessMode.Full);
-
-                if (similarity >= threshold)
-                    results.Add(new Tuple<string, int>(item, similarity));
-            }
-
-            return results;
-        }
     }
 }

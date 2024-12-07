@@ -60,6 +60,7 @@ namespace MusicVideoJukebox
             //services.AddSingleton<IVideoLibraryBuilder, SqliteVideoLibraryBuilder>();
             //services.AddSingleton<ISettingsWindowFactory, WindowsSettingsWindowFactory>();
             services.AddSingleton<IDialogService, WindowsDialogService>();
+            services.AddSingleton<IReferenceDataRepo>(s => new ReferenceDataRepo("reference.sqlite"));
         }
     }
 }
