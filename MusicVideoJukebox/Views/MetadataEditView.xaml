@@ -28,11 +28,6 @@
             <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
                       Padding="5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
-                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
-                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
                     <DataGridTemplateColumn Header="Status">
                         <DataGridTemplateColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
@@ -49,6 +44,20 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
+                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+
+                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
 

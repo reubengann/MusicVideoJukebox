@@ -46,17 +46,18 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetBasicVideoInfo()
         {
             await dut.CreateTables();
-            WithVideo("file1", "title1", "artist1", MetadataStatus.NotDone);
-            WithVideo("file2", "title2", "artist2", MetadataStatus.NotDone);
+            WithVideo("file1", "title1", "artist1", "album1", MetadataStatus.NotDone);
+            WithVideo("file2", "title2", "artist2", "album2", MetadataStatus.NotDone);
             var result = await dut.GetAllMetadata();
             Assert.Equal(2, result.Count);
+            Assert.Equal("album1", result[0].Album);
         }
 
         [Fact]
         public async Task CanUpdate()
         {
             await dut.CreateTables();
-            var id = WithVideo("file1", "title1", "artist1", MetadataStatus.NotDone);
+            var id = WithVideo("file1", "title1", "artist1", "album", MetadataStatus.NotDone);
             await dut.UpdateMetadata(new VideoMetadata { VideoId = id, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
             var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -70,12 +71,12 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(1984, result.ReleaseYear);
         }
 
-        int WithVideo(string filename, string title, string artist, MetadataStatus status)
+        int WithVideo(string filename, string title, string artist, string album, MetadataStatus status)
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (filename, title, artist, status) values (@filename, @title, @artist, @status) RETURNING video_id",
-                    new { filename, title, artist, status });
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (filename, title, artist, status, album) values (@filename, @title, @artist, @status, @album) RETURNING video_id",
+                    new { filename, title, artist, status, album });
                 return id;
             }
         }
