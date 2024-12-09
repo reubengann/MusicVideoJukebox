@@ -16,7 +16,8 @@ namespace MusicVideoJukebox
             InitializeComponent();
             this.vm = vm;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
-            interfaceFader = new InterfaceFader(Sidebar, OpacityProperty);
+            var playerControls = player.playerControls as FrameworkElement;
+            interfaceFader = new InterfaceFader([Sidebar, playerControls], OpacityProperty);
             vm.Initialize(interfaceFader);
             navigationService.Initialize(interfaceFader);
             DataContext = vm;

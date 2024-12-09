@@ -1,5 +1,6 @@
 ﻿using MusicVideoJukebox.Core.UserInterface;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -9,21 +10,21 @@ namespace MusicVideoJukebox
 {
     public class InterfaceFader : IFadesWhenInactive
     {
-        private readonly Border sidebar;
+        private readonly List<FrameworkElement> elements;
         private readonly DependencyProperty opacityProperty;
         DispatcherTimer _timer;
         private bool fadingOut = false;
         private bool fadingIn = false;
         private bool enabled = true;
 
-        public InterfaceFader(Border sidebar, DependencyProperty opacityProperty)
+        public InterfaceFader(List<FrameworkElement> elements, DependencyProperty opacityProperty)
         {
             _timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(3)
             };
             _timer.Tick += _timer_Tick;
-            this.sidebar = sidebar;
+            this.elements = elements;
             this.opacityProperty = opacityProperty;
             _timer.Start();
         }
@@ -44,7 +45,10 @@ namespace MusicVideoJukebox
 
             fadeOutAnimation.Completed += (s, e) => fadingOut = false;
             fadingOut = true;
-            sidebar.BeginAnimation(opacityProperty, fadeOutAnimation);
+            foreach (var element in elements)
+            {
+                element.BeginAnimation(opacityProperty, fadeOutAnimation);
+            }
         }
 
         public void DisableFading()
@@ -78,7 +82,10 @@ namespace MusicVideoJukebox
             };
             fadeInAnimation.Completed += (s, e) => fadingIn = false;
             fadingIn = true;
-            sidebar.BeginAnimation(opacityProperty, fadeInAnimation);
+            foreach (var element in elements)
+            {
+                element.BeginAnimation(opacityProperty, fadeInAnimation);
+            }
         }
     }
 }

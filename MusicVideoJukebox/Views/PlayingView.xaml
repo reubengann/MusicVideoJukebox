@@ -18,7 +18,7 @@
     <Grid Background="Black" Width="1920" Height="1080">
         <MediaElement x:Name="media" Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
         <!-- Layout Container -->
-        <Grid>
+        <Grid x:Name="playerControls">
             <!-- Row Definitions -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
