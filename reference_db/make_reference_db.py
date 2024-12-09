@@ -93,7 +93,7 @@ def populate_type_tables(conn):
     conn.execute(
         """
         INSERT INTO secondary_types (secondary_type_id, secondary_type_name)
-        SELECT DISTINCT secondary_type_id, seconary_type_name
+        SELECT DISTINCT secondary_type_id, secondary_type_name
         FROM flat_data
         WHERE secondary_type_id IS NOT NULL;
     """
@@ -220,6 +220,7 @@ def main():
     create_flat_table(sqlite_conn)
     populate_flat_table(sqlite_conn, data)
     print("Creating and populating final tables...")
+    create_type_tables(sqlite_conn)
     create_and_populate_final_tables(sqlite_conn)
     populate_type_tables(sqlite_conn)
     # Drop the flat table
