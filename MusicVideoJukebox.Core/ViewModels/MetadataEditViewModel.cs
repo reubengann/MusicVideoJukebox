@@ -91,7 +91,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
             FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadata());
-            RefreshDatabaseCommand = new DelegateCommand(async () => await RefreshDatabase());
+            RefreshDatabaseCommand = new DelegateCommand(async () => await ReconcileCurrentFolderContents());
             SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges, CanSaveChanges);
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
@@ -176,13 +176,13 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(); // force an update to enable the save button
         }
 
-        private async Task RefreshDatabase()
+        private async Task ReconcileCurrentFolderContents()
         {
-            //var newEntries = await _metadataRepository.RefreshDatabaseAsync();
-            //foreach (var entry in newEntries)
-            //{
-            //    MetadataEntries.Add(entry);
-            //}
+            var changed = await metadataManager.Resync();
+            if (changed)
+            {
+                await LoadMetadata();
+            }
         }
 
         public override async Task Initialize()

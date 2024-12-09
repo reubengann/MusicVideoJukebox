@@ -67,5 +67,40 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.True(result.Success);
             Assert.Equal("foo", result.AlbumTitle);
         }
+
+        [Fact]
+        public async Task NoChangesWhenFileListingMatches()
+        {
+            fileSystemService.ExistingFiles.AddRange(["artist 1 - track 1.mp4", "artist 2 - track 2.mp4"]);
+            videoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist 1", Filename = "artist 1 - track 1.mp4", Title = "track 1" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist 2", Filename = "artist 2 - track 2.mp4", Title = "track 2" });
+            var anyChanges = await dut.Resync();
+            Assert.False(anyChanges);
+        }
+
+        [Fact]
+        public async Task AddsNewFiles()
+        {
+            fileSystemService.ExistingFiles.AddRange(["artist 1 - track 1.mp4", "artist 2 - track 2.mp4"]);
+            videoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist 1", Filename = "artist 1 - track 1.mp4", Title = "track 1" });
+            var anyChanges = await dut.Resync();
+            Assert.True(anyChanges);
+            Assert.Single(videoRepo.BasicRowsCreated);
+            Assert.Equal("track 2", videoRepo.BasicRowsCreated[0].Title);
+            Assert.Equal("artist 2", videoRepo.BasicRowsCreated[0].Artist);
+        }
+
+        [Fact]
+        public async Task RemovesDeletedFiles()
+        {
+            fileSystemService.ExistingFiles.AddRange(["artist 1 - track 1.mp4"]);
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "artist 1 - track 1.mp4", Title = "track 1" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "artist 2 - track 2.mp4", Title = "track 2" });
+            var anyChanges = await dut.Resync();
+            Assert.True(anyChanges);
+            Assert.Empty(videoRepo.BasicRowsCreated);
+            Assert.Single(videoRepo.Removed);
+            Assert.Equal(2, videoRepo.Removed[0]);
+        }
     }
 }

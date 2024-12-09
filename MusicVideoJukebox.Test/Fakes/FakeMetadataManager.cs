@@ -10,6 +10,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
+        public bool SayChangesWereMade = false;
 
         public FakeMetadataManager(string folderPath)
         {
@@ -36,11 +37,17 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
         {
+            await Task.CompletedTask;
             if (ReferenceDataToGet.ContainsKey($"{artist} {track}"))
             {
                 return ReferenceDataToGet[$"{artist} {track}"];
             }
             return new GetAlbumYearResult { Success = false };
+        }
+
+        public Task<bool> Resync()
+        {
+            return Task.FromResult(SayChangesWereMade);
         }
     }
 }

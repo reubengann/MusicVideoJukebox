@@ -1,5 +1,6 @@
 ﻿using FuzzySharp.PreProcess;
 using FuzzySharp;
+using System.Reflection.Metadata;
 
 namespace MusicVideoJukebox.Core.Metadata
 {
@@ -33,11 +34,17 @@ namespace MusicVideoJukebox.Core.Metadata
             List<BasicInfo> infos = [];
             foreach (var row in rows)
             {
-                var (artist, title) = FileNameHelpers.ParseFileNameIntoArtistTitle(row);
-                infos.Add(new BasicInfo { Artist = artist, Title = title, Filename = row });
+                infos.Add(FileNameToBasicInfo(row));
             }
             await videoRepo.AddBasicInfos(infos);
         }
+
+        private static BasicInfo FileNameToBasicInfo(string filename)
+        {
+            var (artist, title) = FileNameHelpers.ParseFileNameIntoArtistTitle(filename);
+            return new BasicInfo { Artist = artist, Title = title, Filename = filename };
+        }
+
 
         public async Task<List<VideoMetadata>> GetAllMetadata()
         {
@@ -79,6 +86,31 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             int similarity = Fuzz.WeightedRatio(target, item, PreprocessMode.Full);
             return similarity;
+        }
+
+        public async Task<bool> Resync()
+        {
+            var anyChanges = false;
+            var filesOnDisk = fileSystemService.ListMp4Files(folderPath).ToHashSet();
+            var metadataInDb = await videoRepo.GetAllMetadata();
+            var filesInDb = metadataInDb.Select(x => x.Filename).ToHashSet();
+            var toAdd = filesOnDisk.Except(filesInDb);
+            
+            if (toAdd.Any())
+            {
+                await videoRepo.AddBasicInfos(toAdd.Select(x => FileNameToBasicInfo(x)).ToList());
+                anyChanges = true;
+            }
+            var toRemove = metadataInDb.Where(x => !filesOnDisk.Contains(x.Filename)).Select(x => x.VideoId).ToList();
+            if (toRemove.Any())
+            {
+                foreach (var id in toRemove)
+                {
+                    await videoRepo.RemoveMetadata(id);
+                }
+                anyChanges = true;
+            }
+            return anyChanges;
         }
     }
 }

@@ -54,7 +54,9 @@ namespace MusicVideoJukebox.Core.Metadata
                 playlists_videos_id integer primary key autoincrement,
                 playlist_id integer not null,
                 video_id integer not null,
-                play_order integer not null
+                play_order integer not null,
+                foreign key (playlist_id) references playlist (playlist_id) on delete cascade,
+                foreign key (video_id) references video (video_id) on delete cascade
                 )
                 ");
             await conn.ExecuteAsync(@"
@@ -70,6 +72,12 @@ namespace MusicVideoJukebox.Core.Metadata
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, album, artist, status from video")).ToList();
+        }
+
+        public async Task RemoveMetadata(int videoId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("DELETE FROM video WHERE video_id = @videoId;", new { videoId });
         }
 
         public async Task UpdateMetadata(VideoMetadata metadata)

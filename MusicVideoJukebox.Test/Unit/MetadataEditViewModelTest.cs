@@ -72,5 +72,17 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.Equal("album1", dut.MetadataEntries[0].Album);
             Assert.True(dut.MetadataEntries.All(x => x.IsModified));
         }
+
+        [Fact]
+        public async Task WhenResyncingReloadTheTable()
+        {
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.SayChangesWereMade = true;
+            await dut.Initialize();
+            metadataManagerFactory.ToReturn.MetadataEntries.RemoveAt(1);
+            dut.RefreshDatabaseCommand.Execute(null);
+            Assert.Single(dut.MetadataEntries);
+        }
     }
 }
