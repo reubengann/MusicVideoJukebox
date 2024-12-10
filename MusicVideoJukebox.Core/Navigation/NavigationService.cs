@@ -1,17 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MusicVideoJukebox.Core.UserInterface;
+using MusicVideoJukebox.Core.ViewModels;
 
 namespace MusicVideoJukebox.Core.Navigation
 {
     public class NavigationService : INavigationService
     {
         private readonly IServiceProvider _serviceProvider;
-        private IFadesWhenInactive fadesWhenInactive = null!;
+        private IFadesWhenInactive fadesWhenInactive;
+        private readonly VideoPlayingViewModel videoPlayingViewModel;
         private AsyncInitializeableViewModel? _currentViewModel;
 
-        public NavigationService(IServiceProvider serviceProvider)
+        public NavigationService(IServiceProvider serviceProvider, IFadesWhenInactive fadesWhenInactive, VideoPlayingViewModel videoPlayingViewModel)
         {
             _serviceProvider = serviceProvider;
+            this.fadesWhenInactive = fadesWhenInactive;
+            this.videoPlayingViewModel = videoPlayingViewModel;
         }
 
         public AsyncInitializeableViewModel? CurrentViewModel
@@ -24,11 +28,6 @@ namespace MusicVideoJukebox.Core.Navigation
         }
 
         public event Action? NavigationChanged;
-
-        public void Initialize(IFadesWhenInactive fadesWhenInactive)
-        {
-            this.fadesWhenInactive = fadesWhenInactive;
-        }
 
         public async Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel
         {
@@ -43,11 +42,12 @@ namespace MusicVideoJukebox.Core.Navigation
             fadesWhenInactive.DisableFading();
         }
 
-        public void NavigateToNothing()
+        public async Task NavigateToNothing()
         {
             CurrentViewModel = null;
             NavigationChanged?.Invoke();
             fadesWhenInactive.EnableFading();
+            await videoPlayingViewModel.Recheck();
         }
     }
 }

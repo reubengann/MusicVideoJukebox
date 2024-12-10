@@ -15,5 +15,10 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             FadingEnabled = true;
         }
+
+        public void UserInteracted()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

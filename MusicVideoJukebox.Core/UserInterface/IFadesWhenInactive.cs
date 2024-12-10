@@ -4,5 +4,6 @@
     {
         void EnableFading();
         void DisableFading();
+        void UserInteracted();
     }
 }

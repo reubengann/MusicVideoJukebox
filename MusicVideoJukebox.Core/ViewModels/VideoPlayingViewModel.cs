@@ -1,4 +1,6 @@
-﻿using Prism.Commands;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
+using Prism.Commands;
 using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
@@ -8,6 +10,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool isPlaying = false;
         private readonly IMediaPlayer2 mediaPlayer;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
+        private readonly IMetadataManagerFactory metadataManagerFactory;
+        private readonly LibraryStore libraryStore;
+        IMetadataManager? metadataManager;
 
         public bool IsPlaying
         {
@@ -31,14 +36,27 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand PauseCommand { get; set; }
         IUIThreadTimer progressUpdateTimer;
 
-        public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, IUIThreadTimerFactory uIThreadTimerFactory)
+        public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, 
+            IUIThreadTimerFactory uIThreadTimerFactory, 
+            IMetadataManagerFactory metadataManagerFactory,
+            LibraryStore libraryStore
+            )
         {
             PlayCommand = new DelegateCommand(Play);
             PauseCommand = new DelegateCommand(Pause);
             this.mediaPlayer = mediaElementMediaPlayer;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
+            this.metadataManagerFactory = metadataManagerFactory;
+            this.libraryStore = libraryStore;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
+        }
+
+        private void LibraryStore_LibraryChanged()
+        {
+            if (libraryStore.FolderPath == null) return;
+            metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
+
         }
 
         private void ProgressTimerTick(object? sender, EventArgs e)
@@ -59,6 +77,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             mediaPlayer.Play();
             IsPlaying = true;
             progressUpdateTimer.Start();
+        }
+
+        public async Task Recheck()
+        {
+            // if the library has changed, or the current track was removed, or anything else that could happen on another pane, we gotta take that into account.
         }
     }
 }

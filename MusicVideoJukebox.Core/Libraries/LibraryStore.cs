@@ -2,7 +2,13 @@
 {
     public class LibraryStore
     {
-        public int? LibraryId { get; set; }
-        public string? FolderPath { get; set; }
+        public int? LibraryId { get; private set; }
+        public string? FolderPath { get; private set; }
+
+        public void SetLibrary(int? libraryId, string? folderPath)
+        {
+            LibraryId = libraryId;
+            FolderPath = folderPath;
+        }
     }
 }

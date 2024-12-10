@@ -25,7 +25,7 @@ namespace MusicVideoJukebox.Core
         void Pause();
         double LengthSeconds { get; }
         double CurrentTimeSeconds { get; set; }
-        //void SetSource(Uri source);
+        void SetSource(Uri source);
         //void SetWindowed();
         //void SetFullScreen();
         //void FadeButtonsOut();

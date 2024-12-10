@@ -7,6 +7,7 @@ namespace MusicVideoJukebox.Test.Unit
         public bool IsPlaying { get; set; } = false;
         public double InternalPosition = 0;
         public double InternalLength = 0;
+        public string FilePlaying = "";
 
         public double LengthSeconds => InternalLength;
 
@@ -20,6 +21,11 @@ namespace MusicVideoJukebox.Test.Unit
         public void Play()
         {
             IsPlaying = true;
+        }
+
+        public void SetSource(Uri source)
+        {
+            FilePlaying = source.OriginalString;
         }
     }
 }

@@ -54,11 +54,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void MaybeTouch()
         {
             IsModified = true;
-            if (settingProgrammatically)
-            {
-                Status = MetadataStatus.Done;
-            }
-            else
+            if (!settingProgrammatically)
             {
                 Status = MetadataStatus.Manual;
             }
@@ -166,6 +162,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     //entry.Status = MetadataStatus.Done;
                     entry.Album = result.AlbumTitle;
                     entry.Year = result.ReleaseYear;
+                    entry.Status = MetadataStatus.Done;
                 }
                 else
                 {

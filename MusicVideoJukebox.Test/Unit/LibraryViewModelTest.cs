@@ -54,7 +54,7 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task WhenSelectingSetsTheStore()
         {
             await dut.Initialize();
-            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = false, LibraryId = 1, LibraryItem = new LibraryItem {  FolderPath = "foobar" } });
+            dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = false, LibraryId = 1, LibraryItem = new LibraryItem {  LibraryId = 1, FolderPath = "foobar" } });
             Assert.Equal(1, libraryStore.LibraryId);
             Assert.Equal("foobar", libraryStore.FolderPath);
         }

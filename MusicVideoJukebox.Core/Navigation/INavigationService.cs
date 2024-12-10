@@ -1,13 +1,10 @@
-﻿using MusicVideoJukebox.Core.UserInterface;
-
-namespace MusicVideoJukebox.Core.Navigation
+﻿namespace MusicVideoJukebox.Core.Navigation
 {
     public interface INavigationService
     {
         AsyncInitializeableViewModel? CurrentViewModel { get; }
         Task NavigateTo<TViewModel>() where TViewModel : AsyncInitializeableViewModel;
-        void NavigateToNothing();
+        Task NavigateToNothing();
         event Action? NavigationChanged;
-        void Initialize(IFadesWhenInactive fadesWhenInactive);
     }
 }

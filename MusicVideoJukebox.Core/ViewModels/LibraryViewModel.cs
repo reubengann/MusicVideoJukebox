@@ -48,11 +48,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.navigationService = navigationService;
         }
 
-        private async void SelectLibrary(LibraryItemViewModel library)
+        private async void SelectLibrary(LibraryItemViewModel libraryvm)
         {
-            if (library == null) return;
+            if (libraryvm == null) return;
 
-            if (library.IsAddNew)
+            if (libraryvm.IsAddNew)
             {
                 var result = windowLauncher.LaunchAddLibraryDialog();
                 if (result.Accepted)
@@ -67,9 +67,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                ArgumentNullException.ThrowIfNull(library.LibraryItem);
-                libraryStore.LibraryId = library.LibraryId;
-                libraryStore.FolderPath = library.LibraryItem.FolderPath;
+                ArgumentNullException.ThrowIfNull(libraryvm.LibraryItem);
+                libraryStore.SetLibrary(libraryvm.LibraryItem.LibraryId, libraryvm.LibraryItem.FolderPath);
                 navigationService.NavigateToNothing();
             }
         }

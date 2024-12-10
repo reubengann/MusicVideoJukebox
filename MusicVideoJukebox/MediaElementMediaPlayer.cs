@@ -14,6 +14,8 @@ namespace MusicVideoJukebox
             this.media = media;
         }
 
+        public void SetSource(Uri source) => media.Source = source;
+
         public void Pause()
         {
             media.Pause();

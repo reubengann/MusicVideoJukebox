@@ -1,5 +1,4 @@
-﻿using MusicVideoJukebox.Core;
-using MusicVideoJukebox.Core.Navigation;
+﻿using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.UserInterface;
 
 namespace MusicVideoJukebox.Test.Fakes
@@ -18,14 +17,16 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public void NavigateToNothing()
-        {
-            viewModel = null;
-        }
-
         async Task INavigationService.NavigateTo<TViewModel>()
         {
+            await Task.CompletedTask;
             viewModel = ViewModelsToGenerate[typeof(TViewModel)];
+        }
+
+        async Task INavigationService.NavigateToNothing()
+        {
+            await Task.CompletedTask;
+            viewModel = null;
         }
     }
 }
