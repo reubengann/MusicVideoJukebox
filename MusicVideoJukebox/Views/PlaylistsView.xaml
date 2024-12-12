@@ -4,11 +4,97 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+             xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="1080" d:DesignWidth="1920">
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-        <Viewbox>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="This is the playlists view" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+        <Viewbox Margin="20">
+            <Grid Width="900" Height="500">
+                <!-- Row Definitions -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Playlist Info -->
+                    <RowDefinition Height="*"/>
+                    <!-- Main Content -->
+                </Grid.RowDefinitions>
+
+                <!-- Playlist Info -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <!-- Playlist List -->
+                        <ColumnDefinition Width="1*"/>
+                        <!-- Name and Controls -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Playlists List -->
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <Label Content="Playlists" FontWeight="Bold" />
+                        <ListBox BorderThickness="2" MinHeight="50" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" />
+                    </StackPanel>
+
+                    <!-- Name and Controls -->
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <DockPanel Margin="0,0,0,10">
+                            <Label Content="Name:" DockPanel.Dock="Left" />
+                            <TextBox Text="{Binding SelectedPlaylist.Name}" IsEnabled="{Binding SelectedPlaylist}" />
+                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Command="{Binding DeletePlaylistCommand}" IsEnabled="{Binding SelectedPlaylist}" Width="40" Height="40" ToolTip="Delete Playlist">
+                                <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
+                            </Button>
+                            <Button Command="{Binding AddPlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
+                                <mat:MaterialIcon Kind="Add" Width="20" Height="20" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Main Content -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <!-- Available Tracks -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Transfer/Add Button -->
+                        <ColumnDefinition Width="1.5*"/>
+                        <!-- Tracks in Playlist -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Available Tracks -->
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <Label Content="Available Tracks" HorizontalAlignment="Center" FontWeight="Bold" />
+                        <DockPanel Margin="0,5,0,10">
+                            <Label DockPanel.Dock="Left" Width="30">
+                                <mat:MaterialIcon Kind="Search" />
+                            </Label>
+                            <TextBox Text="{Binding AvailableTracksFilter}" />
+                        </DockPanel>
+                        <ListBox BorderThickness="2" ItemsSource="{Binding AvailableTracks}" SelectedItem="{Binding SelectedAvailableTrack}" />
+                    </StackPanel>
+
+                    <!-- Add and Delete Buttons -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button Command="{Binding AddTrackToPlaylistCommand}" IsEnabled="{Binding SelectedAvailableTrack}" Height="50" Width="50" ToolTip="Add to Playlist">
+                            <mat:MaterialIcon Kind="ArrowRight" Width="20" Height="20" />
+                        </Button>
+                        <Button Command="{Binding DeleteTrackFromPlaylistCommand}" IsEnabled="{Binding SelectedTrackInPlaylist}" Height="50" Width="50" ToolTip="Remove from Playlist" Margin="0,10,0,0">
+                            <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Tracks in Playlist -->
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Tracks in Playlist" HorizontalAlignment="Center" FontWeight="Bold" />
+                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TracksInPlaylist}" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="#" Binding="{Binding TrackOrder}" Width="30" />
+                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
         </Viewbox>
     </Grid>
 </UserControl>
