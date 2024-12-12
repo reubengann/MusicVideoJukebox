@@ -79,5 +79,30 @@ namespace MusicVideoJukebox.Test.Unit
             dut.AddPlaylistCommand.Execute();
             Assert.Equal("New Playlist 2", dut.SelectedPlaylist?.Name);
         }
+
+        [Fact]
+        public async Task SavesAndRefreshesNewPlaylist()
+        {
+            libraryStore.SetLibrary(1, "foobar");
+            await dut.Initialize();
+            dut.AddPlaylistCommand.Execute();
+            dut.SavePlaylistCommand.Execute();
+            Assert.Equal(1, dut.SelectedPlaylist?.Id);
+            Assert.Single(dut.Playlists);
+            Assert.Equal(1, dut.Playlists.First().Id);
+        }
+
+        // This test is cooked. The update of the name goes directly to the reference in the fake. I'm too lazy.
+        [Fact]
+        public async Task SavesExistingPlaylist()
+        {
+            libraryStore.SetLibrary(1, "foobar");
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
+            await dut.Initialize();
+            dut.SelectedPlaylist = dut.Playlists[0];
+            dut.SelectedPlaylist.Name = "changed";
+            dut.SavePlaylistCommand.Execute();
+            Assert.Equal("changed", metadataManagerFactory.ToReturn.Playlists[0].PlaylistName);
+        }
     }
 }

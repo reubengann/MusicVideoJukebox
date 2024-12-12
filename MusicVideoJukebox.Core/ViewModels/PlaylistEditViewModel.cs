@@ -18,6 +18,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public string Name { get => playlist.PlaylistName; set => SetUnderlyingProperty(playlist.PlaylistName, value, v => { playlist.PlaylistName = v; IsModified = true; }); }
         public int Id { get => playlist.PlaylistId; set => SetUnderlyingProperty(playlist.PlaylistId, value, v => playlist.PlaylistId = v); }
+        public Playlist Playlist => playlist;
     }
 
     public class PlaylistEditViewModel : AsyncInitializeableViewModel
@@ -30,10 +31,17 @@ namespace MusicVideoJukebox.Core.ViewModels
         public DelegateCommand AddPlaylistCommand { get; }
         public DelegateCommand SavePlaylistCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
-        public PlaylistViewModel? SelectedPlaylist { get => selectedPlaylist; set { SetProperty(ref selectedPlaylist, value); AddPlaylistCommand.RaiseCanExecuteChanged(); } }
+        public PlaylistViewModel? SelectedPlaylist { get => selectedPlaylist; set { SetProperty(ref selectedPlaylist, value); RefreshButtons(); OnPropertyChanged(nameof(CanEditTracks)); } }
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
 
         public ObservableCollection<PlaylistViewModel> Playlists { get; set; } = [];
+
+        void RefreshButtons()
+        {
+            AddPlaylistCommand.RaiseCanExecuteChanged();
+            SavePlaylistCommand.RaiseCanExecuteChanged();
+            DeletePlaylistCommand.RaiseCanExecuteChanged();
+        }
 
         public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
         {
@@ -60,13 +68,23 @@ namespace MusicVideoJukebox.Core.ViewModels
             return SelectedPlaylist.IsModified;
         }
 
-        private void SavePlaylist()
+        private async void SavePlaylist()
         {
-            throw new NotImplementedException();
+            if (SelectedPlaylist == null) return;
+            if (SelectedPlaylist.Id == -1)
+            {
+                var id = await metadataManager.SavePlaylist(SelectedPlaylist.Playlist);
+                SelectedPlaylist.Id = id;
+            }
+            else
+            {
+                await metadataManager.UpdatePlaylist(SelectedPlaylist.Playlist);
+            }
         }
 
         private bool CanAddPlaylist()
         {
+            if (libraryStore.FolderPath == null) return false;
             if (SelectedPlaylist == null) return true;
             return !SelectedPlaylist.IsModified;
         }

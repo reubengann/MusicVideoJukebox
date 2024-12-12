@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Metadata;
 using System.Data.SQLite;
 
@@ -55,7 +56,7 @@ namespace MusicVideoJukebox.Test.Integration
         }
 
         [Fact]
-        public async Task CanUpdate()
+        public async Task CanUpdateVideo()
         {
             await dut.CreateTables();
             var id = WithVideo("file1", "title1", "artist1", "album", MetadataStatus.NotDone);
@@ -78,6 +79,31 @@ namespace MusicVideoJukebox.Test.Integration
             WithPlaylist(1, "playlist1");
             var result = await dut.GetPlaylists();
             Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task CanSaveNewPlaylist()
+        {
+            await dut.CreateTables();
+            var id = await dut.SavePlaylist(new Playlist { PlaylistId = -1, PlaylistName = "New Playlist" });
+            using var conn = new SQLiteConnection(connectionString);
+            var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
+            Assert.Equal(1, rows);
+            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist");
+            Assert.Equal("New Playlist", name);
+        }
+
+        [Fact]
+        public async Task CanUpdatePlaylist()
+        {
+            await dut.CreateTables();
+            WithPlaylist(1, "playlist1");
+            await dut.UpdatePlaylist(new Playlist { PlaylistId = 1, PlaylistName = "newname" });
+            using var conn = new SQLiteConnection(connectionString);
+            var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
+            Assert.Equal(1, rows);
+            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist");
+            Assert.Equal("newname", name);
         }
 
         int WithVideo(string filename, string title, string artist, string album, MetadataStatus status)

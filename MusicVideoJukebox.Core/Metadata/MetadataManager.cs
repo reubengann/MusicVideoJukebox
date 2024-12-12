@@ -1,6 +1,5 @@
 ﻿using FuzzySharp.PreProcess;
 using FuzzySharp;
-using System.Reflection.Metadata;
 
 namespace MusicVideoJukebox.Core.Metadata
 {
@@ -102,7 +101,7 @@ namespace MusicVideoJukebox.Core.Metadata
                 anyChanges = true;
             }
             var toRemove = metadataInDb.Where(x => !filesOnDisk.Contains(x.Filename)).Select(x => x.VideoId).ToList();
-            if (toRemove.Any())
+            if (toRemove.Count != 0)
             {
                 foreach (var id in toRemove)
                 {
@@ -116,6 +115,16 @@ namespace MusicVideoJukebox.Core.Metadata
         public Task<List<Playlist>> GetPlaylists()
         {
             return videoRepo.GetPlaylists();
+        }
+
+        public async Task<int> SavePlaylist(Playlist playlist)
+        {
+            return await videoRepo.SavePlaylist(playlist);
+        }
+
+        public async Task UpdatePlaylist(Playlist playlist)
+        {
+            await videoRepo.UpdatePlaylist(playlist);
         }
     }
 }

@@ -42,10 +42,20 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.CompletedTask;
         }
 
+        public Task<int> SavePlaylist(Playlist playlist)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task UpdateMetadata(VideoMetadata metadata)
         {
             UpdatedEntries.Add(metadata);
             return Task.CompletedTask;
+        }
+
+        public Task UpdatePlaylist(Playlist playlist)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -87,6 +87,12 @@ namespace MusicVideoJukebox.Core.Metadata
             await conn.ExecuteAsync("DELETE FROM video WHERE video_id = @videoId;", new { videoId });
         }
 
+        public async Task<int> SavePlaylist(Playlist playlist)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            return await conn.ExecuteScalarAsync<int>("INSERT INTO playlist (playlist_name) VALUES (@playlistName) RETURNING playlist_id", new { playlistName = playlist.PlaylistName });
+        }
+
         public async Task UpdateMetadata(VideoMetadata metadata)
         {
             using var conn = new SQLiteConnection(connectionString);
@@ -99,6 +105,12 @@ namespace MusicVideoJukebox.Core.Metadata
             status = @Status
             WHERE video_id = @VideoId;";
             await conn.ExecuteAsync(query, metadata);
+        }
+
+        public async Task UpdatePlaylist(Playlist playlist)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE playlist SET playlist_name = @playlistName WHERE playlist_id = @playlistId", new { playlistName  = playlist.PlaylistName, playlistId = playlist.PlaylistId });
         }
     }
 }

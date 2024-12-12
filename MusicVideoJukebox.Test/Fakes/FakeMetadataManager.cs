@@ -57,5 +57,25 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             return Task.FromResult(Playlists);
         }
+
+        public async Task<int> SavePlaylist(Playlist playlist)
+        {
+            Playlists.Add(playlist);
+            var id = Playlists.Count;
+            //playlist.PlaylistId = id;
+            return id;
+        }
+
+        public async Task UpdatePlaylist(Playlist playlist)
+        {
+            foreach (var item in Playlists)
+            {
+                if (item.PlaylistId == playlist.PlaylistId)
+                {
+                    item.PlaylistName = playlist.PlaylistName;
+                    return;
+                }
+            }
+        }
     }
 }
