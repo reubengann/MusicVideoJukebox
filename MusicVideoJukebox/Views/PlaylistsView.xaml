@@ -32,7 +32,7 @@
                     <!-- Playlists List -->
                     <StackPanel Grid.Column="0" Margin="0,0,10,0">
                         <Label Content="Playlists" FontWeight="Bold" />
-                        <ListBox BorderThickness="2" MinHeight="50" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" DisplayMemberPath="PlaylistName"/>
+                        <ListBox BorderThickness="2" MinHeight="50" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" DisplayMemberPath="Name"/>
                     </StackPanel>
 
                     <!-- Name and Controls -->
@@ -48,12 +48,15 @@
                             <Button Command="{Binding AddPlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
                                 <mat:MaterialIcon Kind="Add" Width="20" Height="20" />
                             </Button>
+                            <Button Command="{Binding SavePlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
+                                <mat:MaterialIcon Kind="FloppyDisk" Width="20" Height="20" />
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
 
                 <!-- Main Content -->
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" IsEnabled="{Binding CanEditTracks}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1.5*"/>
                         <!-- Available Tracks -->

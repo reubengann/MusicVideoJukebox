@@ -25,6 +25,16 @@ public class BaseViewModel : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true; // Property changed
     }
+
+    protected bool SetUnderlyingProperty<T>(T currentValue, T newValue, Action<T> setValue, [CallerMemberName] string propertyName = null!)
+    {
+        if (EqualityComparer<T>.Default.Equals(currentValue, newValue))
+            return false;
+
+        setValue(newValue); // Update the value in the wrapped object
+        OnPropertyChanged(propertyName); // Notify UI
+        return true;
+    }
 }
 
 public abstract class AsyncInitializeableViewModel : BaseViewModel
