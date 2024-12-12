@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Metadata;
+﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Metadata;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -9,6 +10,8 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
+        public List<Playlist> Playlists = [];
+
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
         public bool SayChangesWereMade = false;
 
@@ -48,6 +51,11 @@ namespace MusicVideoJukebox.Test.Fakes
         public Task<bool> Resync()
         {
             return Task.FromResult(SayChangesWereMade);
+        }
+
+        public Task<List<Playlist>> GetPlaylists()
+        {
+            return Task.FromResult(Playlists);
         }
     }
 }

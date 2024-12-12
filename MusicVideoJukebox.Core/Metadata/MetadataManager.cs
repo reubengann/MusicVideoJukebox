@@ -112,5 +112,10 @@ namespace MusicVideoJukebox.Core.Metadata
             }
             return anyChanges;
         }
+
+        public Task<List<Playlist>> GetPlaylists()
+        {
+            return videoRepo.GetPlaylists();
+        }
     }
 }

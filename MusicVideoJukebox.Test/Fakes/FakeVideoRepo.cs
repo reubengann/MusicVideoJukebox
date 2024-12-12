@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Metadata;
+﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Metadata;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -28,6 +29,11 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             return MetadataEntries;
+        }
+
+        public Task<List<Playlist>> GetPlaylists()
+        {
+            throw new NotImplementedException();
         }
 
         public Task RemoveMetadata(int videoId)

@@ -13,7 +13,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly INavigationService navigationService;
 
         public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
-        public bool IsPlaylistSelected => navigationService.CurrentViewModel is NewPlaylistViewModel;
+        public bool IsPlaylistSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
         public bool IsMetadataSelected => navigationService.CurrentViewModel is MetadataEditViewModel;
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistCommand { get; }
@@ -55,7 +55,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                await navigationService.NavigateTo<NewPlaylistViewModel>();
+                await navigationService.NavigateTo<PlaylistEditViewModel>();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
         }

@@ -62,7 +62,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedPlaylistAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(NewPlaylistViewModel)] = new NewPlaylistViewModel();
+            navigationService.ViewModelsToGenerate[typeof(PlaylistEditViewModel)] = new PlaylistEditViewModel(libraryStore, metadataManagerFactory);
             dut.NavigatePlaylistCommand.Execute(null);
             Assert.True(dut.IsPlaylistSelected);
             dut.NavigatePlaylistCommand.Execute(null);

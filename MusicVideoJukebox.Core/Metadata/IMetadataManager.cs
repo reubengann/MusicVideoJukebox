@@ -14,6 +14,7 @@
         Task<List<VideoMetadata>> GetAllMetadata();
         Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track);
         Task UpdateVideoMetadata(VideoMetadata entry);
+        Task<List<Playlist>> GetPlaylists();
         Task<bool> Resync();
     }
 }

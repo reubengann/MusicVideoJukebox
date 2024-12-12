@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox.Views"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920">
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             d:DataContext="{d:DesignInstance Type=vms:PlaylistEditViewModel, IsDesignTimeCreatable=False}">
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
         <Viewbox Margin="20">
             <Grid Width="900" Height="500">
@@ -30,7 +32,7 @@
                     <!-- Playlists List -->
                     <StackPanel Grid.Column="0" Margin="0,0,10,0">
                         <Label Content="Playlists" FontWeight="Bold" />
-                        <ListBox BorderThickness="2" MinHeight="50" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" />
+                        <ListBox BorderThickness="2" MinHeight="50" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" DisplayMemberPath="PlaylistName"/>
                     </StackPanel>
 
                     <!-- Name and Controls -->

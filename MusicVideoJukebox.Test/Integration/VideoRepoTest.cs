@@ -19,6 +19,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             using var conn = new SQLiteConnection(connectionString);
             conn.Execute("DELETE FROM video");
+            conn.Execute("DELETE FROM playlist");
         }
 
         [Fact]
@@ -71,6 +72,14 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(1984, result.ReleaseYear);
         }
 
+        [Fact]
+        public async Task CanGetPlaylists()
+        {
+            WithPlaylist(1, "playlist1");
+            var result = await dut.GetPlaylists();
+            Assert.Single(result);
+        }
+
         int WithVideo(string filename, string title, string artist, string album, MetadataStatus status)
         {
             using (var conn = new SQLiteConnection(connectionString))
@@ -78,6 +87,15 @@ namespace MusicVideoJukebox.Test.Integration
                 var id = conn.ExecuteScalar<int>(@"INSERT INTO video (filename, title, artist, status, album) values (@filename, @title, @artist, @status, @album) RETURNING video_id",
                     new { filename, title, artist, status, album });
                 return id;
+            }
+        }
+
+        void WithPlaylist(int id, string name)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name) values (@id, @name)",
+                    new { id, name });
             }
         }
     }

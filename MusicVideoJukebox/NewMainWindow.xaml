@@ -86,7 +86,7 @@
                     <DataTemplate DataType="{x:Type vms:LibraryViewModel}">
                         <views:LibrariesView />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type vms:NewPlaylistViewModel}">
+                    <DataTemplate DataType="{x:Type vms:PlaylistEditViewModel}">
                         <views:PlaylistsView />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vms:MetadataEditViewModel}">

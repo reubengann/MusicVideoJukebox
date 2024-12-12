@@ -43,7 +43,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<LibraryViewModel>();
             services.AddSingleton<MetadataEditViewModel>();
-            services.AddSingleton<NewPlaylistViewModel>();
+            services.AddSingleton<PlaylistEditViewModel>();
             services.AddSingleton<VideoPlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
             services.AddSingleton<IMetadataManagerFactory, MetadataManagerFactory>();
