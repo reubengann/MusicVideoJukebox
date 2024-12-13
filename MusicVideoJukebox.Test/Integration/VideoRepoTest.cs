@@ -19,8 +19,8 @@ namespace MusicVideoJukebox.Test.Integration
         public void Dispose()
         {
             using var conn = new SQLiteConnection(connectionString);
-            conn.Execute("DELETE FROM video");
-            conn.Execute("DELETE FROM playlist");
+            conn.Execute("DROP table video");
+            conn.Execute("DROP table playlist");
         }
 
         [Fact]
@@ -76,9 +76,10 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanGetPlaylists()
         {
-            WithPlaylist(1, "playlist1");
+            await dut.CreateTables();
+            WithPlaylist(2, "playlist1");
             var result = await dut.GetPlaylists();
-            Assert.Single(result);
+            Assert.Equal(2, result.Count);
         }
 
         [Fact]
@@ -88,8 +89,8 @@ namespace MusicVideoJukebox.Test.Integration
             var id = await dut.SavePlaylist(new Playlist { PlaylistId = -1, PlaylistName = "New Playlist" });
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
-            Assert.Equal(1, rows);
-            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist");
+            Assert.Equal(2, rows);
+            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist where is_all = 0");
             Assert.Equal("New Playlist", name);
         }
 
@@ -97,12 +98,12 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanUpdatePlaylist()
         {
             await dut.CreateTables();
-            WithPlaylist(1, "playlist1");
-            await dut.UpdatePlaylist(1, "newname" );
+            WithPlaylist(2, "playlist1");
+            await dut.UpdatePlaylist(2, "newname" );
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
-            Assert.Equal(1, rows);
-            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist");
+            Assert.Equal(2, rows);
+            var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist WHERE is_all = 0");
             Assert.Equal("newname", name);
         }
 

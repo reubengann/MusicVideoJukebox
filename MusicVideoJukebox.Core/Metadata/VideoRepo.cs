@@ -66,6 +66,9 @@ namespace MusicVideoJukebox.Core.Metadata
                 song_id integer null
                 )
                 ");
+            await conn.ExecuteAsync(@"
+                insert into playlist (playlist_name, is_all) VALUES ('All songs', 1)
+                ");
         }
 
         public async Task<List<VideoMetadata>> GetAllMetadata()
