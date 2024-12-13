@@ -108,10 +108,10 @@ namespace MusicVideoJukebox.Core.Metadata
             await conn.ExecuteAsync(query, metadata);
         }
 
-        public async Task UpdatePlaylist(Playlist playlist)
+        public async Task UpdatePlaylist(int id, string name)
         {
             using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync("UPDATE playlist SET playlist_name = @playlistName WHERE playlist_id = @playlistId", new { playlistName  = playlist.PlaylistName, playlistId = playlist.PlaylistId });
+            await conn.ExecuteAsync("UPDATE playlist SET playlist_name = @name WHERE playlist_id = @id", new { id, name });
         }
     }
 }

@@ -16,7 +16,7 @@
         Task UpdateVideoMetadata(VideoMetadata entry);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylist(Playlist playlist);
+        Task UpdatePlaylist(int id, string name);
         Task<bool> Resync();
     }
 }

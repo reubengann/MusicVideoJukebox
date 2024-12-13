@@ -98,7 +98,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.CreateTables();
             WithPlaylist(1, "playlist1");
-            await dut.UpdatePlaylist(new Playlist { PlaylistId = 1, PlaylistName = "newname" });
+            await dut.UpdatePlaylist(1, "newname" );
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
             Assert.Equal(1, rows);

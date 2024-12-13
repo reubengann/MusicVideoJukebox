@@ -10,7 +10,7 @@ namespace MusicVideoJukebox.Core.Metadata
         Task RemoveMetadata(int videoId);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylist(Playlist playlist);
+        Task UpdatePlaylist(int id, string name);
     }
 
     public class BasicInfo

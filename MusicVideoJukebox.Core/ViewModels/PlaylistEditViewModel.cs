@@ -135,7 +135,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                await metadataManager.UpdatePlaylist(SelectedPlaylist.Playlist);
+                await metadataManager.UpdatePlaylist(SelectedPlaylist.Id, SelectedPlaylist.Name);
             }
             SelectedPlaylist.IsModified = false;
             RefreshButtons();
