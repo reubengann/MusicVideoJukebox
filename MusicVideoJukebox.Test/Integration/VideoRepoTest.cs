@@ -120,7 +120,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name) values (@id, @name)",
+                conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name, is_all) values (@id, @name, 0)",
                     new { id, name });
             }
         }

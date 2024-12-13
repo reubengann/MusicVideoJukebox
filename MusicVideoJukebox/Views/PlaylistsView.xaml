@@ -75,7 +75,7 @@
                             </Label>
                             <TextBox Text="{Binding AvailableTracksFilter}" />
                         </DockPanel>
-                        <ListBox BorderThickness="2" ItemsSource="{Binding AvailableTracks}" SelectedItem="{Binding SelectedAvailableTrack}" />
+                        <ListBox BorderThickness="2" ItemsSource="{Binding AvailableTracks}" SelectedItem="{Binding SelectedAvailableTrack}" DisplayMemberPath="Name"/>
                     </StackPanel>
 
                     <!-- Add and Delete Buttons -->

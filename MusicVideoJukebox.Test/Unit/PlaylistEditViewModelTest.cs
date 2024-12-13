@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
 
@@ -24,6 +25,16 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "playlist 1"});
             await dut.Initialize();
             Assert.Single(dut.Playlists);
+        }
+
+        [Fact]
+        public async Task LoadsAvailableTracks()
+        {
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
+            libraryStore.SetLibrary(1, "foobar");
+            await dut.Initialize();
+            Assert.Equal(2, dut.AvailableTracks.Count);
         }
 
         [Fact]

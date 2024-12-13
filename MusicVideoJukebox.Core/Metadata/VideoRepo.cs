@@ -46,7 +46,8 @@ namespace MusicVideoJukebox.Core.Metadata
             await conn.ExecuteAsync(@"
                 create table if not exists playlist (
                 playlist_id integer primary key autoincrement,
-                playlist_name text not null
+                playlist_name text not null,
+                is_all boolean not null
                 )
                 ");
             await conn.ExecuteAsync(@"
@@ -90,7 +91,7 @@ namespace MusicVideoJukebox.Core.Metadata
         public async Task<int> SavePlaylist(Playlist playlist)
         {
             using var conn = new SQLiteConnection(connectionString);
-            return await conn.ExecuteScalarAsync<int>("INSERT INTO playlist (playlist_name) VALUES (@playlistName) RETURNING playlist_id", new { playlistName = playlist.PlaylistName });
+            return await conn.ExecuteScalarAsync<int>("INSERT INTO playlist (playlist_name, is_all) VALUES (@playlistName, @isAll) RETURNING playlist_id", new { playlistName = playlist.PlaylistName, isAll = playlist.IsAll });
         }
 
         public async Task UpdateMetadata(VideoMetadata metadata)
