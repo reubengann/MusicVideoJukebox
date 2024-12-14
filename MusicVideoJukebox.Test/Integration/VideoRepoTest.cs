@@ -21,6 +21,7 @@ namespace MusicVideoJukebox.Test.Integration
             using var conn = new SQLiteConnection(connectionString);
             conn.Execute("DROP table video");
             conn.Execute("DROP table playlist");
+            conn.Execute("DROP table playlist_video");
         }
 
         [Fact]
@@ -48,8 +49,8 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetBasicVideoInfo()
         {
             await dut.CreateTables();
-            WithVideo("file1", "title1", "artist1", "album1", MetadataStatus.NotDone);
-            WithVideo("file2", "title2", "artist2", "album2", MetadataStatus.NotDone);
+            WithVideo(1, "file1", "title1", "artist1", "album1", MetadataStatus.NotDone);
+            WithVideo(2, "file2", "title2", "artist2", "album2", MetadataStatus.NotDone);
             var result = await dut.GetAllMetadata();
             Assert.Equal(2, result.Count);
             Assert.Equal("album1", result[0].Album);
@@ -59,7 +60,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanUpdateVideo()
         {
             await dut.CreateTables();
-            var id = WithVideo("file1", "title1", "artist1", "album", MetadataStatus.NotDone);
+            var id = WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
             await dut.UpdateMetadata(new VideoMetadata { VideoId = id, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
             var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -107,12 +108,57 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("newname", name);
         }
 
-        int WithVideo(string filename, string title, string artist, string album, MetadataStatus status)
+        [Fact]
+        public async Task CanRetrievePlaylistVideosForViewmodel()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            WithPlaylist(2, "All Songs");
+            WithPlaylistVideo(1, 2, 1, 1);
+            WithPlaylistVideo(2, 2, 2, 2);
+            WithPlaylistVideo(3, 1, 1, 1); // should not be returned
+            var result = await dut.GetPlaylistTrackForViewmodels(2);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public async Task CanRetrieveTrackCountForPlaylist()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            WithPlaylist(2, "All Songs");
+            WithPlaylistVideo(1, 2, 1, 1);
+            WithPlaylistVideo(2, 2, 2, 2);
+            WithPlaylistVideo(3, 1, 1, 1); // should not be returned
+            var result = await dut.GetTrackCountForPlaylist(2);
+            Assert.Equal(2, result);
+        }
+
+        [Fact]
+        public async Task CanAppendToPlaylist()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            WithPlaylist(2, "All Songs");
+            await dut.AppendSongToPlaylist(2, 2);
+            await dut.AppendSongToPlaylist(2, 3);
+            using var conn = new SQLiteConnection(connectionString);
+            var ids = await conn.QueryAsync<int>("SELECT video_id from playlist_video where playlist_id = 2");
+            Assert.Equal(new List<int> { 2, 3 }.ToHashSet(), ids.ToHashSet());
+        }
+
+        int WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status)
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (filename, title, artist, status, album) values (@filename, @title, @artist, @status, @album) RETURNING video_id",
-                    new { filename, title, artist, status, album });
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (video_id, filename, title, artist, status, album) values (@videoId, @filename, @title, @artist, @status, @album) RETURNING video_id",
+                    new { videoId, filename, title, artist, status, album });
                 return id;
             }
         }
@@ -123,6 +169,15 @@ namespace MusicVideoJukebox.Test.Integration
             {
                 conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name, is_all) values (@id, @name, 0)",
                     new { id, name });
+            }
+        }
+
+        void WithPlaylistVideo(int playlistVideoId, int playlistId, int videoId, int playOrder)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.ExecuteScalar<int>(@"INSERT INTO playlist_video (playlist_video_id, playlist_id, video_id, play_order) values (@playlistVideoId, @playlistId, @videoId, @playOrder)",
+                    new { playlistVideoId, playlistId, videoId, playOrder });
             }
         }
     }

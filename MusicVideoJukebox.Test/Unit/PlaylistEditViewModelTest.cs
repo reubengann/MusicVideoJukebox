@@ -14,6 +14,7 @@ namespace MusicVideoJukebox.Test.Unit
         public PlaylistEditViewModelTest()
         {
             libraryStore = new LibraryStore();
+            libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory = new FakeMetadataManagerFactory();
             dut = new PlaylistEditViewModel(libraryStore, metadataManagerFactory);
         }
@@ -21,7 +22,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task LoadsPlaylists()
         {
-            libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "playlist 1"});
             await dut.Initialize();
             Assert.Single(dut.Playlists);
@@ -32,7 +32,6 @@ namespace MusicVideoJukebox.Test.Unit
         {
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
-            libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             Assert.Equal(2, dut.AvailableTracks.Count);
         }
@@ -40,7 +39,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CannotSaveWithNoChanges()
         {
-            libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
             await dut.Initialize();
             Assert.False(dut.SavePlaylistCommand.CanExecute());
@@ -49,13 +47,13 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task IfNoLibrarySelectedDontCrash()
         {
+            libraryStore.SetLibrary(null, null);
             await dut.Initialize();
         }
 
         [Fact]
         public async Task WhenAddingNewPlaylistDisablesBottomPanelUntilSaved()
         {
-            libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             Assert.NotNull(dut.SelectedPlaylist);
@@ -67,7 +65,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CannotDeleteWhenNothingSelected()
         {
-            libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             Assert.False(dut.DeletePlaylistCommand.CanExecute());
         }
@@ -75,7 +72,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenAddingNewPlaylistCannotAddAnotherUntilSaved()
         {
-            libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             Assert.False(dut.AddPlaylistCommand.CanExecute());
@@ -84,7 +80,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenAddingNewPlaylistDontDuplicateName()
         {
-            libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
@@ -94,7 +89,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task SavesAndRefreshesNewPlaylist()
         {
-            libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             dut.SavePlaylistCommand.Execute();
@@ -103,17 +97,23 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.Equal(1, dut.Playlists.First().Id);
         }
 
-        // This test is cooked. The update of the name goes directly to the reference in the fake. I'm too lazy.
         [Fact]
         public async Task SavesExistingPlaylist()
         {
-            libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
             await dut.Initialize();
             dut.SelectedPlaylist = dut.Playlists[0];
             dut.SelectedPlaylist.Name = "changed";
             dut.SavePlaylistCommand.Execute();
             Assert.Equal("changed", metadataManagerFactory.ToReturn.Playlists[0].PlaylistName);
+        }
+
+        [Fact]
+        public async Task LoadsExistingPlaylistTracksWhenInitializing()
+        {
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "All Songs" });
+            await dut.Initialize();
+            Assert.NotNull(dut.SelectedPlaylist);
         }
     }
 }

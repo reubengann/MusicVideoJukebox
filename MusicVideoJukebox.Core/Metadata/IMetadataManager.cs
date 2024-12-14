@@ -7,6 +7,7 @@
         public int? ReleaseYear { get; set; }
     }
 
+    
 
     public interface IMetadataManager
     {
@@ -16,7 +17,9 @@
         Task UpdateVideoMetadata(VideoMetadata entry);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylist(int id, string name);
+        Task UpdatePlaylistName(int id, string name);
         Task<bool> Resync();
+        Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId);
+        Task AppendSongToPlaylist(int playlistId, int videoId);
     }
 }

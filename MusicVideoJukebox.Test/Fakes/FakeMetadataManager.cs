@@ -13,6 +13,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<Playlist> Playlists = [];
 
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
+        public List<Tuple<int, int>> AddedToPlaylist = [];
         public bool SayChangesWereMade = false;
 
         public FakeMetadataManager(string folderPath)
@@ -66,7 +67,7 @@ namespace MusicVideoJukebox.Test.Fakes
             return id;
         }
 
-        public async Task UpdatePlaylist(int id, string name)
+        public async Task UpdatePlaylistName(int id, string name)
         {
             foreach (var item in Playlists)
             {
@@ -76,6 +77,17 @@ namespace MusicVideoJukebox.Test.Fakes
                     return;
                 }
             }
+        }
+
+        public Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AppendSongToPlaylist(int playlistId, int videoId)
+        {
+            AddedToPlaylist.Add(new Tuple<int, int> (playlistId, videoId));
+            return Task.CompletedTask;
         }
     }
 }

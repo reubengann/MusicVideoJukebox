@@ -8,14 +8,18 @@ namespace MusicVideoJukebox.Test.Fakes
         public bool TablesCreated = false;
         public List<VideoMetadata> MetadataEntries = [];
         public List<VideoMetadata> UpdatedEntries = [];
-        public List<int> Removed = [];
+        public List<Tuple<int, int>> AppendedToPlaylist = [];
 
         public IEnumerable<char>? FolderPath { get; internal set; }
-        public List<BasicInfo> BasicRowsCreated { get; internal set; } = [];
-
         public Task AddBasicInfos(List<BasicInfo> basicInfos)
         {
-            BasicRowsCreated.AddRange(basicInfos);
+            MetadataEntries.AddRange(basicInfos.Select(x => new VideoMetadata { Artist = x.Artist, Filename = x.Filename, Title = x.Title }));
+            return Task.CompletedTask;
+        }
+
+        public Task AppendSongToPlaylist(int playlistId, int videoId)
+        {
+            AppendedToPlaylist.Add(new Tuple<int, int>(playlistId, videoId ));
             return Task.CompletedTask;
         }
 
@@ -36,9 +40,19 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
+        public Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTrackCountForPlaylist(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemoveMetadata(int videoId)
         {
-            Removed.Add(videoId);
+            MetadataEntries.Remove(MetadataEntries.Where(x => x.VideoId == videoId).First());
             return Task.CompletedTask;
         }
 

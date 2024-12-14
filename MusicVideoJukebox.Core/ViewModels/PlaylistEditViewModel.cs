@@ -34,27 +34,29 @@ namespace MusicVideoJukebox.Core.ViewModels
         public VideoMetadata Metadata => meta;
     }
 
-    //public class PlaylistTrackViewModel : BaseViewModel
-    //{
-    //    private readonly PlaylistTrack playlistTrack;
-    //    public bool IsModified { get; set; } = false;
+    
 
-    //    public PlaylistTrackViewModel(PlaylistTrack playlistTrack)
-    //    {
-    //        this.playlistTrack = playlistTrack;
-    //    }
+    public class PlaylistTrackViewModel : BaseViewModel
+    {
+        private readonly PlaylistTrackForViewmodel playlistTrack;
+        public bool IsModified { get; set; } = false;
 
-    //    public int PlaylistOrder
-    //    {
-    //        get => playlistTrack.PlaylistOrder;
-    //        set => SetUnderlyingProperty(playlistTrack.PlaylistOrder, value, v => { playlistTrack.PlaylistOrder = v; IsModified = true; });
-    //    }
+        public PlaylistTrackViewModel(PlaylistTrackForViewmodel playlistTrack)
+        {
+            this.playlistTrack = playlistTrack;
+        }
 
-    //    public string Name => $"{playlistTrack.Metadata.Artist} - {playlistTrack.Metadata.Title}";
-    //    public int VideoId => playlistTrack.Metadata.VideoId;
+        public int PlaylistOrder
+        {
+            get => playlistTrack.PlayOrder;
+            set => SetUnderlyingProperty(playlistTrack.PlayOrder, value, v => { playlistTrack.PlayOrder = v; IsModified = true; });
+        }
 
-    //    public PlaylistTrack PlaylistTrack => playlistTrack;
-    //}
+        public string Name => $"{playlistTrack.Artist} - {playlistTrack.Title}";
+        public int VideoId => playlistTrack.VideoId;
+
+        public PlaylistTrackForViewmodel PlaylistTrack => playlistTrack;
+    }
 
     public class PlaylistEditViewModel : AsyncInitializeableViewModel
     {
@@ -62,31 +64,44 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IMetadataManagerFactory metadataManagerFactory;
         IMetadataManager metadataManager = null!;
         private PlaylistViewModel? selectedPlaylist;
+        public ObservableCollection<PlaylistTrackViewModel> PlaylistTracks { get; set; } = [];
 
         public DelegateCommand AddPlaylistCommand { get; }
         public DelegateCommand SavePlaylistCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
-        public PlaylistViewModel? SelectedPlaylist 
-        { 
-            get => selectedPlaylist; 
-            set 
-            { 
-                SetProperty(ref selectedPlaylist, value); 
-                RefreshButtons(); 
+        public PlaylistViewModel? SelectedPlaylist
+        {
+            get => selectedPlaylist;
+            set
+            {
+                SetProperty(ref selectedPlaylist, value);
+                RefreshButtons();
                 OnPropertyChanged(nameof(CanEditTracks));
-                //LoadTracksForSelectedPlaylist();
-            } 
+
+                if (value != null && value.Id > 0)
+                {
+                    _ = LoadTracksForSelectedPlaylist(); // Fire-and-forget
+                }
+                else
+                {
+                    PlaylistTracks.Clear();
+                }
+            }
         }
 
-        //private void LoadTracksForSelectedPlaylist()
-        //{
-        //    PlaylistTracks.Clear();
-
-        //    if (SelectedPlaylist == null || SelectedPlaylist.Id == -1)
-        //    {
-        //        return; // Nothing to load for new or null playlists
-        //    }
-        //}
+        private async Task LoadTracksForSelectedPlaylist()
+        {
+            PlaylistTracks.Clear();
+            if (SelectedPlaylist == null || SelectedPlaylist.Id == -1)
+            {
+                return; // Nothing to load for new or null playlists
+            }
+            var tracks = await metadataManager.GetPlaylistTracksForViewmodel(SelectedPlaylist.Id);
+            foreach (var track in tracks.OrderBy(x => x.PlayOrder))
+            {
+                PlaylistTracks.Add(new PlaylistTrackViewModel(track));
+            }
+        }
 
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
 
@@ -135,7 +150,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                await metadataManager.UpdatePlaylist(SelectedPlaylist.Id, SelectedPlaylist.Name);
+                await metadataManager.UpdatePlaylistName(SelectedPlaylist.Id, SelectedPlaylist.Name);
             }
             SelectedPlaylist.IsModified = false;
             RefreshButtons();
@@ -183,6 +198,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 AvailableTracks.Add(new AvailableTrackViewModel(a));
             }
+            // there should be at least one playlist, but you never know.
+            if (Playlists.Count == 0) return;
+            SelectedPlaylist = Playlists[0];
         }
 
         private string GenerateUniquePlaylistName(string baseName)

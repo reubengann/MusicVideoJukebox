@@ -36,6 +36,11 @@ namespace MusicVideoJukebox.Core.Metadata
                 infos.Add(FileNameToBasicInfo(row));
             }
             await videoRepo.AddBasicInfos(infos);
+            var added = await videoRepo.GetAllMetadata();
+            foreach (var row in added)
+            {
+                await videoRepo.AppendSongToPlaylist(1, row.VideoId);
+            }
         }
 
         private static BasicInfo FileNameToBasicInfo(string filename)
@@ -122,9 +127,19 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.SavePlaylist(playlist);
         }
 
-        public async Task UpdatePlaylist(int id, string name)
+        public async Task UpdatePlaylistName(int id, string name)
         {
             await videoRepo.UpdatePlaylist(id, name);
+        }
+
+        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
+        {
+            return await videoRepo.GetPlaylistTrackForViewmodels(playlistId);
+        }
+
+        public async Task AppendSongToPlaylist(int playlistId, int videoId)
+        {
+            await videoRepo.AppendSongToPlaylist(playlistId, videoId);
         }
     }
 }

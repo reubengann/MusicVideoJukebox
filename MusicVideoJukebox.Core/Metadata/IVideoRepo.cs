@@ -11,6 +11,19 @@ namespace MusicVideoJukebox.Core.Metadata
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
         Task UpdatePlaylist(int id, string name);
+        Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId);
+        Task AppendSongToPlaylist(int playlistId, int videoId);
+        Task<int> GetTrackCountForPlaylist(int playlistId);
+    }
+
+    public class PlaylistTrackForViewmodel
+    {
+        public int PlaylistVideoId { get; set; }
+        public int PlaylistId { get; set; }
+        public int VideoId { get; set; }
+        public int PlayOrder { get; set; }
+        required public string Artist { get; set; }
+        required public string Title { get; set; }
     }
 
     public class BasicInfo

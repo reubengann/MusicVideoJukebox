@@ -39,8 +39,17 @@ namespace MusicVideoJukebox.Test.Unit
             fileSystemService.ExistingFiles.AddRange(["artist 1 - track1.mp4", "artist 2 - track 2.mp4"]);
             await dut.EnsureCreated();
             Assert.True(videoRepo.TablesCreated);
-            Assert.Equal(2, videoRepo.BasicRowsCreated.Count);
-            Assert.Equal(new[] { "artist 1", "artist 2" }.ToHashSet(), videoRepo.BasicRowsCreated.Select(x => x.Artist).ToHashSet());
+            Assert.Equal(2, videoRepo.MetadataEntries.Count);
+            Assert.Equal(new[] { "artist 1", "artist 2" }.ToHashSet(), videoRepo.MetadataEntries.Select(x => x.Artist).ToHashSet());
+        }
+
+        [Fact]
+        public async Task AddsAllTracksToTheMainPlaylist()
+        {
+            fileSystemService.ExistingFiles.AddRange(["artist 1 - track1.mp4", "artist 2 - track 2.mp4"]);
+            await dut.EnsureCreated();
+            Assert.True(videoRepo.TablesCreated);
+            Assert.Equal(2, videoRepo.AppendedToPlaylist.Count);
         }
 
         [Fact]
@@ -85,9 +94,9 @@ namespace MusicVideoJukebox.Test.Unit
             videoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist 1", Filename = "artist 1 - track 1.mp4", Title = "track 1" });
             var anyChanges = await dut.Resync();
             Assert.True(anyChanges);
-            Assert.Single(videoRepo.BasicRowsCreated);
-            Assert.Equal("track 2", videoRepo.BasicRowsCreated[0].Title);
-            Assert.Equal("artist 2", videoRepo.BasicRowsCreated[0].Artist);
+            Assert.Equal(2, videoRepo.MetadataEntries.Count);
+            Assert.Equal("track 2", videoRepo.MetadataEntries[1].Title);
+            Assert.Equal("artist 2", videoRepo.MetadataEntries[1].Artist);
         }
 
         [Fact]
@@ -98,9 +107,7 @@ namespace MusicVideoJukebox.Test.Unit
             videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "artist 2 - track 2.mp4", Title = "track 2" });
             var anyChanges = await dut.Resync();
             Assert.True(anyChanges);
-            Assert.Empty(videoRepo.BasicRowsCreated);
-            Assert.Single(videoRepo.Removed);
-            Assert.Equal(2, videoRepo.Removed[0]);
+            Assert.Single(videoRepo.MetadataEntries);
         }
     }
 }

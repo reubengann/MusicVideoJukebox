@@ -29,6 +29,23 @@ namespace MusicVideoJukebox.Core.Metadata
             await transaction.CommitAsync();
         }
 
+        public async Task AppendSongToPlaylist(int playlistId, int videoId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+
+            await conn.ExecuteAsync(
+                @"INSERT INTO playlist_video (playlist_id, video_id, play_order)
+          VALUES (
+              @playlistId,
+              @videoId,
+              COALESCE(
+                  (SELECT MAX(play_order) + 1 FROM playlist_video WHERE playlist_id = @playlistId),
+                  1
+              )
+          )",
+                new { playlistId, videoId });
+        }
+
         public async Task CreateTables()
         {
             using var conn = new SQLiteConnection(connectionString);
@@ -52,7 +69,7 @@ namespace MusicVideoJukebox.Core.Metadata
                 ");
             await conn.ExecuteAsync(@"
                 create table if not exists playlist_video (
-                playlists_videos_id integer primary key autoincrement,
+                playlist_video_id integer primary key autoincrement,
                 playlist_id integer not null,
                 video_id integer not null,
                 play_order integer not null,
@@ -83,6 +100,27 @@ namespace MusicVideoJukebox.Core.Metadata
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name from playlist")).ToList();
+        }
+
+        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var rows = await conn.QueryAsync<PlaylistTrackForViewmodel>(@"
+SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title
+FROM playlist_video A
+JOIN video B
+on A.video_id = B.video_id
+WHERE playlist_id = @playlistId
+", new { playlistId });
+
+            return rows.ToList();
+        }
+
+        public async Task<int> GetTrackCountForPlaylist(int playlistId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            return await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM playlist_video WHERE playlist_id = @playlistId", new { playlistId });
         }
 
         public async Task RemoveMetadata(int videoId)
