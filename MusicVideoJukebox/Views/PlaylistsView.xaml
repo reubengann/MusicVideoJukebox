@@ -91,10 +91,10 @@
                     <!-- Tracks in Playlist -->
                     <StackPanel Grid.Column="2">
                         <Label Content="Tracks in Playlist" HorizontalAlignment="Center" FontWeight="Bold" />
-                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TracksInPlaylist}" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2">
+                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding PlaylistTracks}" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="#" Binding="{Binding TrackOrder}" Width="30" />
-                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
+                                <DataGridTextColumn Header="#" Binding="{Binding PlaylistOrder}" Width="30" />
+                                <DataGridTextColumn Header="Title" Binding="{Binding Name}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>

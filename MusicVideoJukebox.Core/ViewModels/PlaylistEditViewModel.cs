@@ -64,8 +64,16 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IMetadataManagerFactory metadataManagerFactory;
         IMetadataManager metadataManager = null!;
         private PlaylistViewModel? selectedPlaylist;
-        public ObservableCollection<PlaylistTrackViewModel> PlaylistTracks { get; set; } = [];
-
+        private ObservableCollection<PlaylistTrackViewModel> playlistTracks = new ObservableCollection<PlaylistTrackViewModel>();
+        public ObservableCollection<PlaylistTrackViewModel> PlaylistTracks
+        {
+            get => playlistTracks;
+            set
+            {
+                playlistTracks = value;
+                OnPropertyChanged(nameof(PlaylistTracks));
+            }
+        }
         public DelegateCommand AddPlaylistCommand { get; }
         public DelegateCommand SavePlaylistCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
@@ -97,10 +105,9 @@ namespace MusicVideoJukebox.Core.ViewModels
                 return; // Nothing to load for new or null playlists
             }
             var tracks = await metadataManager.GetPlaylistTracksForViewmodel(SelectedPlaylist.Id);
-            foreach (var track in tracks.OrderBy(x => x.PlayOrder))
-            {
-                PlaylistTracks.Add(new PlaylistTrackViewModel(track));
-            }
+            PlaylistTracks = new ObservableCollection<PlaylistTrackViewModel>(
+            tracks.OrderBy(x => x.PlayOrder).Select(track => new PlaylistTrackViewModel(track))
+    );
         }
 
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
