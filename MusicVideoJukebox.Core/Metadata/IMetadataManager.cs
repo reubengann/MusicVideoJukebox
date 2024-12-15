@@ -23,5 +23,6 @@
         Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId);
         Task AppendSongToPlaylist(int playlistId, int videoId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
+        Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
     }
 }

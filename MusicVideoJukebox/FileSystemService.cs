@@ -18,16 +18,19 @@ namespace MusicVideoJukebox
             return Directory.Exists(path);
         }
 
-        public string GetMyDocuments()
-        {
-            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        }
+        //public string GetMyDocuments()
+        //{
+        //    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //}
 
         public List<string> ListMp4Files(string folderPath)
         {
-            var files = Directory.GetFiles(folderPath, "*.*", SearchOption.TopDirectoryOnly)
-                     .Where(file => string.Equals(Path.GetExtension(file), ".mp4", StringComparison.OrdinalIgnoreCase));
-            return new List<string>(files);
+            var files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
+                 .Where(file => string.Equals(Path.GetExtension(file), ".mp4", StringComparison.OrdinalIgnoreCase));
+
+            var relativePaths = files.Select(file => Path.GetRelativePath(folderPath, file)).ToList();
+
+            return relativePaths;
         }
     }
 }

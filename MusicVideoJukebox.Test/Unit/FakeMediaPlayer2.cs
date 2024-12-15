@@ -27,5 +27,10 @@ namespace MusicVideoJukebox.Test.Unit
         {
             FilePlaying = source.OriginalString;
         }
+
+        public void Stop()
+        {
+            IsPlaying = false;
+        }
     }
 }

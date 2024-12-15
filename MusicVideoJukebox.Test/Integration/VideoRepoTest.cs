@@ -130,20 +130,20 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("newname", name);
         }
 
-        [Fact]
-        public async Task CanRetrievePlaylistVideosForViewmodel()
-        {
-            await dut.CreateTables();
-            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
-            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
-            WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
-            WithPlaylist(2, "All Songs");
-            WithPlaylistVideo(1, 2, 1, 1);
-            WithPlaylistVideo(2, 2, 2, 2);
-            WithPlaylistVideo(3, 1, 1, 1); // should not be returned
-            var result = await dut.GetPlaylistTrackForViewmodels(2);
-            Assert.Equal(2, result.Count);
-        }
+        //[Fact]
+        //public async Task CanRetrievePlaylistVideosForViewmodel()
+        //{
+        //    await dut.CreateTables();
+        //    WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
+        //    WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+        //    WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+        //    WithPlaylist(2, "All Songs");
+        //    WithPlaylistVideo(1, 2, 1, 1);
+        //    WithPlaylistVideo(2, 2, 2, 2);
+        //    WithPlaylistVideo(3, 1, 1, 1); // should not be returned
+        //    var result = await dut.GetPlaylistTrackForViewmodels(2);
+        //    Assert.Equal(2, result.Count);
+        //}
 
         [Fact]
         public async Task CanRetrieveTrackCountForPlaylist()
@@ -192,12 +192,33 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal([2, 1, 3], ids);
         }
 
-        int WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status)
+        [Fact]
+        public async Task CanGetPlaylistTracks()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "video3.mp4", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            await dut.AppendSongToPlaylist(1, 1);
+            await dut.AppendSongToPlaylist(1, 2);
+            await dut.AppendSongToPlaylist(1, 3);
+            var tracks = await dut.GetPlaylistTracks(1);
+            Assert.Equal(3, tracks.Count);
+            Assert.Equal("album 1", tracks[0].Album);
+            Assert.Equal(1, tracks[0].PlaylistId);
+            Assert.Equal(1962, tracks[0].ReleaseYear);
+            Assert.Equal("artist 2", tracks[1].Artist);
+            Assert.Equal(2, tracks[1].VideoId);
+            Assert.Equal(1, tracks[1].PlaylistId);
+            Assert.Equal("video3.mp4", tracks[2].FileName);
+        }
+
+        int WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status, int? year = null)
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (video_id, filename, title, artist, status, album) values (@videoId, @filename, @title, @artist, @status, @album) RETURNING video_id",
-                    new { videoId, filename, title, artist, status, album });
+                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (video_id, filename, title, artist, status, album, release_year) values (@videoId, @filename, @title, @artist, @status, @album, @year) RETURNING video_id",
+                    new { videoId, filename, title, artist, status, album, year });
                 return id;
             }
         }

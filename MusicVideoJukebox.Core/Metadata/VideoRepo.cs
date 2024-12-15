@@ -1,8 +1,5 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using System.Data.SQLite;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
 
 namespace MusicVideoJukebox.Core.Metadata
 {
@@ -118,20 +115,20 @@ namespace MusicVideoJukebox.Core.Metadata
             return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name, is_all from playlist")).ToList();
         }
 
-        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
-        {
-            using var conn = new SQLiteConnection(connectionString);
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            var rows = await conn.QueryAsync<PlaylistTrackForViewmodel>(@"
-SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title
-FROM playlist_video A
-JOIN video B
-on A.video_id = B.video_id
-WHERE playlist_id = @playlistId
-", new { playlistId });
+//        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
+//        {
+//            using var conn = new SQLiteConnection(connectionString);
+//            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+//            var rows = await conn.QueryAsync<PlaylistTrackForViewmodel>(@"
+//SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title
+//FROM playlist_video A
+//JOIN video B
+//on A.video_id = B.video_id
+//WHERE playlist_id = @playlistId
+//", new { playlistId });
 
-            return rows.ToList();
-        }
+//            return rows.ToList();
+//        }
 
         public async Task<int> GetTrackCountForPlaylist(int playlistId)
         {
@@ -249,6 +246,21 @@ WHERE playlist_id = @playlistId
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("UPDATE playlist_video SET play_order = @order WHERE video_id = @videoId and playlist_id = @playlistId", new { playlistId, videoId, order });
+        }
+
+        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            using var conn = new SQLiteConnection(connectionString);
+            var rows = await conn.QueryAsync<PlaylistTrack>(@"
+                SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title, B.album, B.release_year, B.filename
+                FROM playlist_video A
+                JOIN video B
+                on A.video_id = B.video_id
+                WHERE playlist_id = @playlistId
+                ORDER by A.play_order
+                ", new { playlistId });
+            return rows.ToList();
         }
     }
 }

@@ -26,6 +26,11 @@ namespace MusicVideoJukebox
             media.Play();
         }
 
+        public void Stop()
+        {
+            media.Stop();
+        }
+
         public double LengthSeconds
         {
             get

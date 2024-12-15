@@ -134,7 +134,13 @@ namespace MusicVideoJukebox.Core.Metadata
 
         public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
         {
-            return await videoRepo.GetPlaylistTrackForViewmodels(playlistId);
+            var tracks = await videoRepo.GetPlaylistTracks(playlistId);
+            return tracks.Select(x => new PlaylistTrackForViewmodel { Artist =  x.Artist, Title = x.Title, PlaylistId = playlistId, PlaylistVideoId = x.PlaylistVideoId, PlayOrder = x.PlayOrder, VideoId = x.VideoId }).ToList();
+        }
+
+        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        {
+            return await videoRepo.GetPlaylistTracks(playlistId);
         }
 
         public async Task AppendSongToPlaylist(int playlistId, int videoId)
@@ -144,7 +150,7 @@ namespace MusicVideoJukebox.Core.Metadata
 
         public async Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)
         {
-            var tracks = await videoRepo.GetPlaylistTrackForViewmodels(playlistId);
+            var tracks = await GetPlaylistTracksForViewmodel(playlistId);
             var shuffledTracks = tracks.OrderBy(_ => Guid.NewGuid()).ToList();
 
             int order = 1;

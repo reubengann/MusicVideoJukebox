@@ -4,7 +4,7 @@
     {
         bool FileExists(string filepath);
         bool FolderExists(string path);
-        string GetMyDocuments();
+        //string GetMyDocuments();
         List<string> ListMp4Files(string folderPath);
     }
 }

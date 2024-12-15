@@ -50,6 +50,11 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
+        public Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<int> GetTrackCountForPlaylist(int playlistId)
         {
             throw new NotImplementedException();
