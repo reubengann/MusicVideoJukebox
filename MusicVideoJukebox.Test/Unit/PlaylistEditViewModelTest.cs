@@ -144,6 +144,7 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             Assert.Equal(2, dut.FilteredAvailableTracks.Count);
             dut.AvailableTracksFilter = "2";
+            Assert.Single(dut.FilteredAvailableTracks);
         }
     }
 }
