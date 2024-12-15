@@ -99,7 +99,7 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name from playlist")).ToList();
+            return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name, is_all from playlist")).ToList();
         }
 
         public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)

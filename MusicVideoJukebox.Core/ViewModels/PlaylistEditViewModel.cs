@@ -17,6 +17,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public string Name { get => playlist.PlaylistName; set => SetUnderlyingProperty(playlist.PlaylistName, value, v => { playlist.PlaylistName = v; IsModified = true; }); }
         public int Id { get => playlist.PlaylistId; set => SetUnderlyingProperty(playlist.PlaylistId, value, v => playlist.PlaylistId = v); }
+        public bool IsAll => playlist.IsAll;
         public Playlist Playlist => playlist;
     }
 
@@ -77,13 +78,15 @@ namespace MusicVideoJukebox.Core.ViewModels
         public DelegateCommand AddPlaylistCommand { get; }
         public DelegateCommand SavePlaylistCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
+        public DelegateCommand AddTrackToPlaylistCommand { get; }
+        public DelegateCommand DeleteTrackFromPlaylistCommand { get; }
+        public DelegateCommand ShufflePlaylistCommand { get; }
         public PlaylistViewModel? SelectedPlaylist
         {
             get => selectedPlaylist;
             set
             {
                 SetProperty(ref selectedPlaylist, value);
-                RefreshButtons();
                 OnPropertyChanged(nameof(CanEditTracks));
 
                 if (value != null && value.Id > 0)
@@ -94,6 +97,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 {
                     PlaylistTracks.Clear();
                 }
+                RefreshButtons();
             }
         }
 
@@ -120,6 +124,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             AddPlaylistCommand.RaiseCanExecuteChanged();
             SavePlaylistCommand.RaiseCanExecuteChanged();
             DeletePlaylistCommand.RaiseCanExecuteChanged();
+            AddTrackToPlaylistCommand.RaiseCanExecuteChanged();
+            DeleteTrackFromPlaylistCommand.RaiseCanExecuteChanged();
         }
 
         public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
@@ -129,6 +135,41 @@ namespace MusicVideoJukebox.Core.ViewModels
             AddPlaylistCommand = new DelegateCommand(AddPlaylist, CanAddPlaylist);
             SavePlaylistCommand = new DelegateCommand(SavePlaylist, CanSavePlaylist);
             DeletePlaylistCommand = new DelegateCommand(DeletePlaylist, CanDeletePlaylist);
+            AddTrackToPlaylistCommand = new DelegateCommand(AddTrackToPlaylist, CanAddTrackToPlaylist);
+            DeleteTrackFromPlaylistCommand = new DelegateCommand(DeleteTrackFromPlaylist, CanDeleteTrackFromPlaylist);
+            ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist, CanShufflePlaylist);
+        }
+
+        private bool CanShufflePlaylist()
+        {
+            return true;
+        }
+
+        private void ShufflePlaylist()
+        {
+            
+        }
+
+        private bool CanDeleteTrackFromPlaylist()
+        {
+            if (SelectedPlaylist == null || SelectedPlaylist.IsAll) return false;
+            return true;
+        }
+
+        private void DeleteTrackFromPlaylist()
+        {
+            
+        }
+
+        private bool CanAddTrackToPlaylist()
+        {
+            if (SelectedPlaylist == null || SelectedPlaylist.IsAll) return false;
+            return true;
+        }
+
+        private void AddTrackToPlaylist()
+        {
+            
         }
 
         private bool CanDeletePlaylist()

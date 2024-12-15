@@ -115,5 +115,15 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             Assert.NotNull(dut.SelectedPlaylist);
         }
+
+        [Fact]
+        public async Task WhenOnAllPlaylistCannotAddOrDelete()
+        {
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
+            await dut.Initialize();
+            dut.SelectedPlaylist = dut.Playlists.First();
+            Assert.False(dut.AddTrackToPlaylistCommand.CanExecute());
+            Assert.False(dut.DeleteTrackFromPlaylistCommand.CanExecute());
+        }
     }
 }

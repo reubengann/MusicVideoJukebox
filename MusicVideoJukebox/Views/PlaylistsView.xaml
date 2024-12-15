@@ -80,11 +80,14 @@
 
                     <!-- Add and Delete Buttons -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Button Command="{Binding AddTrackToPlaylistCommand}" IsEnabled="{Binding SelectedAvailableTrack}" Height="50" Width="50" ToolTip="Add to Playlist">
+                        <Button Command="{Binding AddTrackToPlaylistCommand}" Height="50" Width="50" ToolTip="Add to Playlist">
                             <mat:MaterialIcon Kind="ArrowRight" Width="20" Height="20" />
                         </Button>
-                        <Button Command="{Binding DeleteTrackFromPlaylistCommand}" IsEnabled="{Binding SelectedTrackInPlaylist}" Height="50" Width="50" ToolTip="Remove from Playlist" Margin="0,10,0,0">
+                        <Button Command="{Binding DeleteTrackFromPlaylistCommand}" Height="50" Width="50" ToolTip="Remove from Playlist" Margin="0,10,0,0">
                             <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
+                        </Button>
+                        <Button Command="{Binding ShufflePlaylistCommand}" Height="50" Width="50" ToolTip="Shuffle Playlist" Margin="0,10,0,0">
+                            <mat:MaterialIcon Kind="Shuffle" Width="20" Height="20" />
                         </Button>
                     </StackPanel>
 
