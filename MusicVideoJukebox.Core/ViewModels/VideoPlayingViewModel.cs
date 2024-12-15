@@ -14,6 +14,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly LibraryStore libraryStore;
         IMetadataManager? metadataManager;
         int? currentLibraryId;
+        PlaylistNavigator? playlistNavigator;
 
         public bool IsPlaying
         {
@@ -89,7 +90,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             // if the library has changed, or the current track was removed, or anything else that could happen on another pane, we gotta take that into account.
             metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
             var playlists = await metadataManager.GetPlaylists();
-            if (!playlists.Any())
+            if (playlists.Count == 0)
             {
                 // No playlists exist in the current library
                 mediaPlayer.Stop();
@@ -99,50 +100,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
             //TEMP
             var firstPlaylist = playlists.Where(x => x.IsAll).First();
+            var tracks = await metadataManager.GetPlaylistTracks(firstPlaylist.PlaylistId);
+            if (tracks.Count == 0) return;
+            playlistNavigator = new PlaylistNavigator(tracks);
 
-        }
-    }
 
-    public class PlaylistNavigator
-    {
-        private readonly List<PlaylistTrack> tracks;
-        private int currentIndex = -1;
-
-        public PlaylistNavigator(List<PlaylistTrack> tracks)
-        {
-            this.tracks = tracks;
-        }
-
-        public PlaylistTrack? CurrentTrack => (currentIndex >= 0 && currentIndex < tracks.Count)
-                                               ? tracks[currentIndex]
-                                               : null;
-
-        public bool HasNext => currentIndex + 1 < tracks.Count;
-        public bool HasPrevious => currentIndex - 1 >= 0;
-
-        public PlaylistTrack? Next()
-        {
-            if (HasNext)
-            {
-                currentIndex++;
-                return CurrentTrack;
-            }
-            return null;
-        }
-
-        public PlaylistTrack? Previous()
-        {
-            if (HasPrevious)
-            {
-                currentIndex--;
-                return CurrentTrack;
-            }
-            return null;
-        }
-
-        public void Reset()
-        {
-            currentIndex = -1;
         }
     }
 }
