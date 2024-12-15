@@ -2,64 +2,9 @@
 using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class PlaylistViewModel : BaseViewModel
-    {
-        private readonly Playlist playlist;
-        public bool IsModified { get; set; } = false;
-
-        public PlaylistViewModel(Playlist playlist)
-        {
-            this.playlist = playlist;
-        }
-
-        public string Name { get => playlist.PlaylistName; set => SetUnderlyingProperty(playlist.PlaylistName, value, v => { playlist.PlaylistName = v; IsModified = true; }); }
-        public int Id { get => playlist.PlaylistId; set => SetUnderlyingProperty(playlist.PlaylistId, value, v => playlist.PlaylistId = v); }
-        public bool IsAll => playlist.IsAll;
-        public Playlist Playlist => playlist;
-    }
-
-    public class AvailableTrackViewModel : BaseViewModel
-    {
-        private readonly VideoMetadata meta;
-        public bool IsModified { get; set; } = false;
-
-        public AvailableTrackViewModel(VideoMetadata meta)
-        {
-            this.meta = meta;
-        }
-
-        public string Name => $"{meta.Artist} - {meta.Title}";
-        public VideoMetadata Metadata => meta;
-    }
-
-    
-
-    public class PlaylistTrackViewModel : BaseViewModel
-    {
-        private readonly PlaylistTrackForViewmodel playlistTrack;
-        public bool IsModified { get; set; } = false;
-
-        public PlaylistTrackViewModel(PlaylistTrackForViewmodel playlistTrack)
-        {
-            this.playlistTrack = playlistTrack;
-        }
-
-        public int PlaylistOrder
-        {
-            get => playlistTrack.PlayOrder;
-            set => SetUnderlyingProperty(playlistTrack.PlayOrder, value, v => { playlistTrack.PlayOrder = v; IsModified = true; });
-        }
-
-        public string Name => $"{playlistTrack.Artist} - {playlistTrack.Title}";
-        public int VideoId => playlistTrack.VideoId;
-
-        public PlaylistTrackForViewmodel PlaylistTrack => playlistTrack;
-    }
-
     public class PlaylistEditViewModel : AsyncInitializeableViewModel
     {
         private readonly LibraryStore libraryStore;
