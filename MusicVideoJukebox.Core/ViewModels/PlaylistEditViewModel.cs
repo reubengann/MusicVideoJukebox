@@ -66,7 +66,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IMetadataManagerFactory metadataManagerFactory;
         IMetadataManager metadataManager = null!;
         private PlaylistViewModel? selectedPlaylist;
-        private ObservableCollection<PlaylistTrackViewModel> playlistTracks = new ObservableCollection<PlaylistTrackViewModel>();
+        private ObservableCollection<PlaylistTrackViewModel> playlistTracks = [];
         public ObservableCollection<PlaylistTrackViewModel> PlaylistTracks
         {
             get => playlistTracks;
@@ -119,6 +119,48 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public ObservableCollection<PlaylistViewModel> Playlists { get; set; } = [];
         public ObservableCollection<AvailableTrackViewModel> AvailableTracks { get; set; } = [];
+        public ObservableCollection<AvailableTrackViewModel> FilteredAvailableTracks { get; set; } = [];
+
+        private string availableTracksFilter = string.Empty;
+        public string AvailableTracksFilter
+        {
+            get => availableTracksFilter;
+            set
+            {
+                if (SetProperty(ref availableTracksFilter, value))
+                {
+                    ApplyAvailableTracksFilter();
+                }
+            }
+        }
+
+        private void ApplyAvailableTracksFilter()
+        {
+            if (string.IsNullOrWhiteSpace(AvailableTracksFilter))
+            {
+                // No filter applied; show all tracks
+                FilteredAvailableTracks.Clear();
+                foreach (var track in AvailableTracks)
+                {
+                    FilteredAvailableTracks.Add(track);
+                }
+            }
+            else
+            {
+                // Apply filter (case-insensitive matching against title or artist)
+                var filtered = AvailableTracks
+                    .Where(track => track.Metadata.Artist.Contains(AvailableTracksFilter, StringComparison.OrdinalIgnoreCase) ||
+                                    track.Metadata.Title.Contains(AvailableTracksFilter, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                // Update the filtered collection
+                FilteredAvailableTracks.Clear();
+                foreach (var track in filtered)
+                {
+                    FilteredAvailableTracks.Add(track);
+                }
+            }
+        }
 
         void RefreshButtons()
         {
@@ -251,6 +293,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 AvailableTracks.Add(new AvailableTrackViewModel(a));
             }
+            ApplyAvailableTracksFilter();
             // there should be at least one playlist, but you never know.
             if (Playlists.Count == 0) return;
             SelectedPlaylist = Playlists[0];

@@ -134,5 +134,16 @@ namespace MusicVideoJukebox.Test.Unit
             dut.ShufflePlaylistCommand.Execute();
             Assert.True(metadataManagerFactory.ToReturn.WasShuffled);
         }
+
+        [Fact]
+        public async Task WhenFilteringShowCorrectTracks()
+        {
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
+            await dut.Initialize();
+            Assert.Equal(2, dut.FilteredAvailableTracks.Count);
+            dut.AvailableTracksFilter = "2";
+        }
     }
 }

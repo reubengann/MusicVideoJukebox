@@ -73,9 +73,10 @@
                             <Label DockPanel.Dock="Left" Width="30">
                                 <mat:MaterialIcon Kind="Search" />
                             </Label>
-                            <TextBox Text="{Binding AvailableTracksFilter}" />
+                            <TextBox Text="{Binding AvailableTracksFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
-                        <ListBox BorderThickness="2" ItemsSource="{Binding AvailableTracks}" SelectedItem="{Binding SelectedAvailableTrack}" DisplayMemberPath="Name"/>
+                        <!--SelectedItem="{Binding SelectedAvailableTrack}"-->
+                        <ListBox BorderThickness="2" ItemsSource="{Binding FilteredAvailableTracks}"  DisplayMemberPath="Name"/>
                     </StackPanel>
 
                     <!-- Add and Delete Buttons -->
@@ -92,7 +93,7 @@
                     </StackPanel>
 
                     <!-- Tracks in Playlist -->
-                    <StackPanel Grid.Column="2">
+                    <StackPanel Grid.Column="2" Margin="15,0,0,0">
                         <Label Content="Tracks in Playlist" HorizontalAlignment="Center" FontWeight="Bold" />
                         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding PlaylistTracks}" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2">
                             <DataGrid.Columns>
