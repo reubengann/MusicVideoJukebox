@@ -41,8 +41,30 @@ namespace MusicVideoJukebox.Test.Integration
                 new BasicInfo { Artist = "artist2", Filename = "path2", Title = "name2" },
                 ]);
             using var conn = new SQLiteConnection(connectionString);
-            var rowcount = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from video");
-            Assert.Equal(2, rowcount);
+            var videoRowsCt = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from video");
+            Assert.Equal(2, videoRowsCt);
+            var playlistRowsCt = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist_video WHERE playlist_id = 1");
+            Assert.Equal(2, playlistRowsCt);
+        }
+
+        [Fact]
+        public async Task CanRemoveMetadata()
+        {
+            await dut.CreateTables();
+            await dut.AddBasicInfos([
+                new BasicInfo { Artist = "artist1", Filename = "path1", Title = "name1" },
+                new BasicInfo { Artist = "artist2", Filename = "path2", Title = "name2" },
+                ]);
+            var conn = new SQLiteConnection(connectionString);
+            var id1 = await conn.ExecuteScalarAsync<int>("SELECT video_id from video where artist = 'artist1'");
+            var id2 = await conn.ExecuteScalarAsync<int>("SELECT video_id from video where artist = 'artist2'");
+            var order = await conn.ExecuteScalarAsync<int>("SELECT play_order from playlist_video where video_id = @id1", new { id1 });
+            Assert.Equal(1, order);
+            await dut.RemoveMetadata(id1);
+            var rowCt = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from video where video_id = @id1", new { id1 });
+            Assert.Equal(0, rowCt);
+            var newOrder = await conn.ExecuteScalarAsync<int>("SELECT play_order from playlist_video where video_id = @id2", new { id2 });
+            Assert.Equal(1, newOrder);
         }
 
         [Fact]

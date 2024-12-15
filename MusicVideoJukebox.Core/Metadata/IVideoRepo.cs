@@ -15,6 +15,7 @@ namespace MusicVideoJukebox.Core.Metadata
         Task AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
+        Task DeleteFromPlaylist(int playlistId, int videoId);
     }
 
     public class PlaylistTrackForViewmodel

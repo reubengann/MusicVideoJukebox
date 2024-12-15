@@ -29,6 +29,11 @@ namespace MusicVideoJukebox.Test.Fakes
             TablesCreated = true;
         }
 
+        public Task DeleteFromPlaylist(int playlistId, int videoId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<VideoMetadata>> GetAllMetadata()
         {
             await Task.CompletedTask;

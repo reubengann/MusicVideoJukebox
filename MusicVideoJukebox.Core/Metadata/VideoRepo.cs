@@ -1,6 +1,7 @@
 ﻿
 using Dapper;
 using System.Data.SQLite;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace MusicVideoJukebox.Core.Metadata
@@ -19,13 +20,27 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             const string query = @"
         INSERT INTO video (filename, title, artist, status)
-        VALUES (@Filename, @Title, @Artist, 0);";
+        VALUES (@Filename, @Title, @Artist, 0) RETURNING video_id;";
 
             using var conn = new SQLiteConnection(connectionString);
             await conn.OpenAsync();
             using var transaction = conn.BeginTransaction();
 
-            await conn.ExecuteAsync(query, basicInfos, transaction);
+            foreach (var basicInfo in basicInfos)
+            {
+                var videoId = await conn.ExecuteScalarAsync<int>(query, basicInfo, transaction);
+                await conn.ExecuteAsync(
+                @"INSERT INTO playlist_video (playlist_id, video_id, play_order)
+          VALUES (
+              1,
+              @videoId,
+              COALESCE(
+                  (SELECT MAX(play_order) + 1 FROM playlist_video WHERE playlist_id = 1),
+                  1
+              )
+          )",
+                new { videoId });
+            }
 
             await transaction.CommitAsync();
         }
@@ -124,15 +139,10 @@ WHERE playlist_id = @playlistId
             return await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM playlist_video WHERE playlist_id = @playlistId", new { playlistId });
         }
 
-        public async Task RemoveMetadata(int videoId)
-        {
-            using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync("DELETE FROM video WHERE video_id = @videoId;", new { videoId });
-        }
-
         public async Task<int> SavePlaylist(Playlist playlist)
         {
             using var conn = new SQLiteConnection(connectionString);
+
             return await conn.ExecuteScalarAsync<int>("INSERT INTO playlist (playlist_name, is_all) VALUES (@playlistName, @isAll) RETURNING playlist_id", new { playlistName = playlist.PlaylistName, isAll = playlist.IsAll });
         }
 
@@ -148,6 +158,85 @@ WHERE playlist_id = @playlistId
             status = @Status
             WHERE video_id = @VideoId;";
             await conn.ExecuteAsync(query, metadata);
+        }
+
+        public async Task RemoveMetadata(int videoId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.OpenAsync();
+
+            using var transaction = conn.BeginTransaction();
+            try
+            {
+                // Fetch playlists containing the video
+                var playlistsContainingVideo = await conn.QueryAsync<int>(
+                    @"SELECT playlist_id FROM playlist_video WHERE video_id = @videoId;",
+                    new { videoId }, transaction);
+
+                // Remove the video from each playlist and update play orders
+                foreach (var playlistId in playlistsContainingVideo)
+                {
+                    await DeleteFromPlaylist(conn, playlistId, videoId, transaction);
+                }
+
+                // Remove the video from the video table
+                await conn.ExecuteAsync(
+                    "DELETE FROM video WHERE video_id = @videoId;",
+                    new { videoId }, transaction);
+
+                // Commit the transaction
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                // Rollback the transaction in case of any errors
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task DeleteFromPlaylist(int playlistId, int videoId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.OpenAsync();
+            using var transaction = conn.BeginTransaction();
+            try
+            {
+                await DeleteFromPlaylist(conn, playlistId, videoId, transaction);
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                transaction.Rollback(); throw;
+            }
+        }
+
+        static async Task DeleteFromPlaylist(SQLiteConnection conn, int playlistId, int videoId, SQLiteTransaction transaction)
+        {
+            var playOrders = (await conn.QueryAsync<int>(
+                @"SELECT play_order 
+          FROM playlist_video 
+          WHERE playlist_id = @playlistId AND video_id = @videoId
+          ORDER BY play_order;",
+                new { playlistId, videoId }, transaction)).ToList();
+
+            if (playOrders.Count == 0) return; // If no matching entries, exit early
+
+            foreach (var playOrder in playOrders)
+            {
+                // Remove the specific occurrence of the video
+                await conn.ExecuteAsync(
+                    @"DELETE FROM playlist_video 
+              WHERE playlist_id = @playlistId AND video_id = @videoId AND play_order = @playOrder;",
+                    new { playlistId, videoId, playOrder }, transaction);
+
+                // Adjust the play order for the remaining videos after the deleted one
+                await conn.ExecuteAsync(
+                    @"UPDATE playlist_video
+              SET play_order = play_order - 1
+              WHERE playlist_id = @playlistId AND play_order > @playOrder;",
+                    new { playlistId, playOrder }, transaction);
+            }
         }
 
         public async Task UpdatePlaylistName(int id, string name)
