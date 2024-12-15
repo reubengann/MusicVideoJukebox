@@ -10,6 +10,8 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
+        public bool WasShuffled = false;
+
         public List<Playlist> Playlists = [];
 
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
@@ -88,6 +90,17 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             AddedToPlaylist.Add(new Tuple<int, int> (playlistId, videoId));
             return Task.CompletedTask;
+        }
+
+        public Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)
+        {
+            WasShuffled = true;
+            return Task.FromResult(MetadataEntries.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title }).ToList());
+        }
+
+        public Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
+        {
+            throw new NotImplementedException();
         }
     }
 }

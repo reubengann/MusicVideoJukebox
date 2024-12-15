@@ -125,5 +125,14 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.False(dut.AddTrackToPlaylistCommand.CanExecute());
             Assert.False(dut.DeleteTrackFromPlaylistCommand.CanExecute());
         }
+
+        [Fact]
+        public async Task WhenShufflingDoesIt()
+        {
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
+            await dut.Initialize();
+            dut.ShufflePlaylistCommand.Execute();
+            Assert.True(metadataManagerFactory.ToReturn.WasShuffled);
+        }
     }
 }

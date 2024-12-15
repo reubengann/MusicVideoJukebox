@@ -2,6 +2,7 @@
 using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -145,9 +146,13 @@ namespace MusicVideoJukebox.Core.ViewModels
             return true;
         }
 
-        private void ShufflePlaylist()
+        private async void ShufflePlaylist()
         {
-            
+            if (SelectedPlaylist == null) return;
+            var shuffled = await metadataManager.ShuffleTracks(SelectedPlaylist.Id);
+            PlaylistTracks = new ObservableCollection<PlaylistTrackViewModel>(
+            shuffled.OrderBy(x => x.PlayOrder).Select(track => new PlaylistTrackViewModel(track))
+            );
         }
 
         private bool CanDeleteTrackFromPlaylist()

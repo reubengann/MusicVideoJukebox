@@ -10,10 +10,11 @@ namespace MusicVideoJukebox.Core.Metadata
         Task RemoveMetadata(int videoId);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylist(int id, string name);
+        Task UpdatePlaylistName(int id, string name);
         Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId);
         Task AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
+        Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
     }
 
     public class PlaylistTrackForViewmodel

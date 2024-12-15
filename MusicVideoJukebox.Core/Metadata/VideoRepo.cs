@@ -1,6 +1,7 @@
 ﻿
 using Dapper;
 using System.Data.SQLite;
+using System.Xml.Linq;
 
 namespace MusicVideoJukebox.Core.Metadata
 {
@@ -149,10 +150,16 @@ WHERE playlist_id = @playlistId
             await conn.ExecuteAsync(query, metadata);
         }
 
-        public async Task UpdatePlaylist(int id, string name)
+        public async Task UpdatePlaylistName(int id, string name)
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("UPDATE playlist SET playlist_name = @name WHERE playlist_id = @id", new { id, name });
+        }
+
+        public async Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE playlist_video SET play_order = @order WHERE video_id = @videoId and playlist_id = @playlistId", new { playlistId, videoId, order });
         }
     }
 }

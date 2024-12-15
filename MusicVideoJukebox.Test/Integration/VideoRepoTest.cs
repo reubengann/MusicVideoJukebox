@@ -100,7 +100,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.CreateTables();
             WithPlaylist(2, "playlist1");
-            await dut.UpdatePlaylist(2, "newname" );
+            await dut.UpdatePlaylistName(2, "newname" );
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
             Assert.Equal(2, rows);
@@ -151,6 +151,23 @@ namespace MusicVideoJukebox.Test.Integration
             using var conn = new SQLiteConnection(connectionString);
             var ids = await conn.QueryAsync<int>("SELECT video_id from playlist_video where playlist_id = 2");
             Assert.Equal(new List<int> { 2, 3 }.ToHashSet(), ids.ToHashSet());
+        }
+
+        [Fact]
+        public async Task CanModifyPlaylistOrder()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            await dut.AppendSongToPlaylist(1, 1);
+            await dut.AppendSongToPlaylist(1, 2);
+            await dut.AppendSongToPlaylist(1, 3);
+            await dut.UpdatePlaylistTrackOrder(1, 1, 2);
+            await dut.UpdatePlaylistTrackOrder(1, 2, 1);
+            using var conn = new SQLiteConnection(connectionString);
+            var ids = await conn.QueryAsync<int>("SELECT video_id from playlist_video where playlist_id = 1 order by play_order");
+            Assert.Equal([2, 1, 3], ids);
         }
 
         int WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status)

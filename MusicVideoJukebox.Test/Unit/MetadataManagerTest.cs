@@ -109,5 +109,11 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.True(anyChanges);
             Assert.Single(videoRepo.MetadataEntries);
         }
+
+        [Fact]
+        public async Task CanShuffle()
+        {
+
+        }
     }
 }
