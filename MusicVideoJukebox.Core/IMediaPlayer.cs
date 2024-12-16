@@ -31,8 +31,9 @@ namespace MusicVideoJukebox.Core
         //void SetFullScreen();
         //void FadeButtonsOut();
         //void MaybeFadeButtonsIn();
-        //void ShowInfo();
-        //void HideInfo();
+        void FadeInfoIn();
+        void FadeInfoOut();
+        void HideInfoImmediate();
 
         double Volume { get; set; }
     }

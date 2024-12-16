@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using MusicVideoJukebox.Core;
 
 namespace MusicVideoJukebox
@@ -8,10 +10,14 @@ namespace MusicVideoJukebox
     public class MediaElementMediaPlayer : IMediaPlayer2
     {
         private readonly MediaElement media;
+        private readonly VideoInfoDisplay videoInfoDisplay;
+        private readonly DependencyProperty opacityProperty;
 
-        public MediaElementMediaPlayer(MediaElement media)
+        public MediaElementMediaPlayer(MediaElement media, VideoInfoDisplay videoInfoDisplay, DependencyProperty opacityProperty)
         {
             this.media = media;
+            this.videoInfoDisplay = videoInfoDisplay;
+            this.opacityProperty = opacityProperty;
         }
 
         public void SetSource(Uri source) => media.Source = source;
@@ -29,6 +35,21 @@ namespace MusicVideoJukebox
         public void Stop()
         {
             media.Stop();
+        }
+
+        public void FadeInfoIn()
+        {
+            videoInfoDisplay.BeginAnimation(opacityProperty, new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.25) });
+        }
+
+        public void FadeInfoOut()
+        {
+            videoInfoDisplay.BeginAnimation(opacityProperty, new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.25) });
+        }
+
+        public void HideInfoImmediate()
+        {
+            videoInfoDisplay.Opacity = 0;
         }
 
         public double LengthSeconds

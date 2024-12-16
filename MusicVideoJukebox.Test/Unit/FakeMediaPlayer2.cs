@@ -34,5 +34,20 @@ namespace MusicVideoJukebox.Test.Unit
         {
             IsPlaying = false;
         }
+
+        public void FadeInfoIn()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FadeInfoOut()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void HideInfoImmediate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

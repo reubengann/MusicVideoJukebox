@@ -55,7 +55,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<IReferenceDataRepo>(s => new ReferenceDataRepo("reference.sqlite"));
             var playerControls = player.playerControls as FrameworkElement;
             services.AddSingleton<IFadesWhenInactive>(new InterfaceFader([Sidebar, playerControls], OpacityProperty));
-            services.AddSingleton<IMediaPlayer2>(new MediaElementMediaPlayer(player.media));
+            services.AddSingleton<IMediaPlayer2>(new MediaElementMediaPlayer(player.media, player.VideoInfo, OpacityProperty));
         }
     }
 }

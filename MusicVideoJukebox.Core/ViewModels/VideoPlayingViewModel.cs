@@ -18,7 +18,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         PlaylistNavigator? playlistNavigator;
         bool scrubbedRecently = false;
         bool isScrubbing = false;
+        bool infoDisplayed = false;
 
+        public VideoInfoViewModel? InfoViewModel { get; private set; }
         public double Volume
         {
             get => mediaPlayer.Volume;
@@ -117,6 +119,17 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void ProgressTimerTick(object? sender, EventArgs e)
         {
+            if (isScrubbing) return;
+            if (VideoPositionTime > 3 && !infoDisplayed)
+            {
+                mediaPlayer.FadeInfoIn();
+                infoDisplayed = true;
+            }
+            if (VideoPositionTime > 10 && infoDisplayed)
+            {
+                mediaPlayer.FadeInfoOut();
+                infoDisplayed = false;
+            }
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(VideoLengthSeconds));
         }
@@ -137,10 +150,13 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void SetSource(PlaylistTrack track)
         {
+            mediaPlayer.HideInfoImmediate();
             if (libraryStore.FolderPath == null) return;
             CurrentPlaylistTrack = track;
             mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, track.FileName)));
+            InfoViewModel = new VideoInfoViewModel(track);
             OnPropertyChanged(nameof(VideoPositionTime));
+            OnPropertyChanged(nameof(InfoViewModel));
         }
 
         public async Task Recheck()
@@ -165,5 +181,20 @@ namespace MusicVideoJukebox.Core.ViewModels
             SetSource(playlistNavigator.CurrentTrack);
             Play();
         }
+    }
+
+    public class VideoInfoViewModel : BaseViewModel
+    {
+        private readonly PlaylistTrack playlistTrack;
+
+        public VideoInfoViewModel(PlaylistTrack playlistTrack)
+        {
+            this.playlistTrack = playlistTrack;
+        }
+
+        public string Artist => playlistTrack.Artist;
+        public string Title => $"\"{playlistTrack.Title}\"";
+        public string Album => playlistTrack.Album ?? "";
+        public string Year => playlistTrack.ReleaseYear?.ToString() ?? "";
     }
 }
