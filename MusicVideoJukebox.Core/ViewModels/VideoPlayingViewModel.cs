@@ -26,7 +26,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         }
 
         // TEMP
-        public PlaylistTrack? CurrentPlaylistTrack {  get; private set; }
+        public PlaylistTrack? CurrentPlaylistTrack { get => currentPlaylistTrack; set { if (SetProperty(ref currentPlaylistTrack, value)) { OnPropertyChanged(nameof(ProgressSliderEnabled)); } } }
+
+        public bool ProgressSliderEnabled => CurrentPlaylistTrack != null;
 
         public bool IsPlaying
         {
@@ -51,6 +53,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand SkipNextCommand { get; set; }
         public ICommand SkipPreviousCommand { get; set; }
         IUIThreadTimer progressUpdateTimer;
+        private PlaylistTrack? currentPlaylistTrack;
 
         public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, 
             IUIThreadTimerFactory uIThreadTimerFactory, 
@@ -137,6 +140,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (libraryStore.FolderPath == null) return;
             CurrentPlaylistTrack = track;
             mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, track.FileName)));
+            OnPropertyChanged(nameof(VideoPositionTime));
         }
 
         public async Task Recheck()
