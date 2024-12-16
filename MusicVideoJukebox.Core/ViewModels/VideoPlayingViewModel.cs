@@ -7,6 +7,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 {
     public class VideoPlayingViewModel : BaseViewModel
     {
+        private const int VIDEO_INFO_START_GUTTER = 3;
+        private const int VIDEO_INFO_END_GUTTER = 10;
         private bool isPlaying = false;
         private readonly IMediaPlayer2 mediaPlayer;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
@@ -120,16 +122,21 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void ProgressTimerTick(object? sender, EventArgs e)
         {
             if (isScrubbing) return;
-            if (VideoPositionTime > 3 && !infoDisplayed)
-            {
-                mediaPlayer.FadeInfoIn();
-                infoDisplayed = true;
-            }
-            if (VideoPositionTime > 10 && infoDisplayed)
+
+            bool isInStartGutter = VideoPositionTime > VIDEO_INFO_START_GUTTER && VideoPositionTime < VIDEO_INFO_END_GUTTER;
+            bool isInEndGutter = VideoPositionTime > VideoLengthSeconds - VIDEO_INFO_END_GUTTER && VideoPositionTime < VideoLengthSeconds - VIDEO_INFO_START_GUTTER;
+
+            if (infoDisplayed && !(isInStartGutter || isInEndGutter))
             {
                 mediaPlayer.FadeInfoOut();
                 infoDisplayed = false;
             }
+            else if (!infoDisplayed && (isInStartGutter || isInEndGutter))
+            {
+                mediaPlayer.FadeInfoIn();
+                infoDisplayed = true;
+            }
+
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(VideoLengthSeconds));
         }
