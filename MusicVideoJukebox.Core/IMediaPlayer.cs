@@ -34,6 +34,6 @@ namespace MusicVideoJukebox.Core
         //void ShowInfo();
         //void HideInfo();
 
-        //double Volume { get; set; }
+        double Volume { get; set; }
     }
 }

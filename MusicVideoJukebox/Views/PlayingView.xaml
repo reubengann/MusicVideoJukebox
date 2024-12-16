@@ -65,6 +65,7 @@
             Height="200"
             Maximum="1"
             Minimum="0"
+            SmallChange="0.01" LargeChange="0.1"
             Value="{Binding Volume}" />
         </Grid>
     </Grid>

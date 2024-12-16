@@ -13,6 +13,8 @@ namespace MusicVideoJukebox.Test.Unit
 
         public double CurrentTimeSeconds { get => InternalPosition; set { InternalPosition = value; } }
 
+        public double Volume { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public void Pause()
         {
             IsPlaying = false;

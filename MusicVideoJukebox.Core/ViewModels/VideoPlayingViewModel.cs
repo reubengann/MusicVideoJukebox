@@ -16,6 +16,12 @@ namespace MusicVideoJukebox.Core.ViewModels
         int? currentLibraryId;
         PlaylistNavigator? playlistNavigator;
 
+        public double Volume
+        {
+            get => mediaPlayer.Volume;
+            set => SetUnderlyingProperty(mediaPlayer.Volume, value, v => mediaPlayer.Volume = v);
+        }
+
         // TEMP
         public PlaylistTrack? CurrentPlaylistTrack {  get; private set; }
 
@@ -59,6 +65,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.libraryStore = libraryStore;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
+
+            // TEMP
+            Volume = 1;
         }
 
         private void SkipPrevious()

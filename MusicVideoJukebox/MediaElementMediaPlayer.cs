@@ -46,5 +46,6 @@ namespace MusicVideoJukebox
             get => media.Position.TotalSeconds;
             set => media.Position = TimeSpan.FromSeconds(value);
         }
+        public double Volume { get => media.Volume; set => media.Volume = value; }
     }
 }
