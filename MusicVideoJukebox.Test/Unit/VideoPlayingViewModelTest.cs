@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
 
@@ -53,12 +54,15 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public void ChecksTheLibraryStoreWhenTriggered()
+        public async Task ChecksTheLibraryStoreWhenTriggered()
         {
             Assert.False(dut.IsPlaying);
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake.mp4", Title = "" });
+            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
+            metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             libraryStore.SetLibrary(1, "something");
-            
+            await dut.Recheck();
+            Assert.True(dut.IsPlaying);
         }
     }
 }

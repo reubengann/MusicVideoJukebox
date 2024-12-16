@@ -81,18 +81,20 @@ namespace MusicVideoJukebox.Core.ViewModels
             progressUpdateTimer.Start();
         }
 
+        private void SetSource(string filename)
+        {
+            if (libraryStore.FolderPath == null) return;
+            mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, filename)));
+        }
+
         public async Task Recheck()
         {
-            // Check if the library ID has changed
-            if (libraryStore.LibraryId == currentLibraryId) return;
-            if (libraryStore.FolderPath == null) return;
-            
-            // if the library has changed, or the current track was removed, or anything else that could happen on another pane, we gotta take that into account.
+            if (libraryStore.LibraryId == currentLibraryId || libraryStore.FolderPath == null) return;
+
             metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
             var playlists = await metadataManager.GetPlaylists();
             if (playlists.Count == 0)
             {
-                // No playlists exist in the current library
                 mediaPlayer.Stop();
                 IsPlaying = false;
                 return;
@@ -104,7 +106,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (tracks.Count == 0) return;
             playlistNavigator = new PlaylistNavigator(tracks);
 
-
+            SetSource(playlistNavigator.CurrentTrack.FileName);
+            Play();
         }
     }
 }

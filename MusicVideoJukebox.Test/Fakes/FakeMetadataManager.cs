@@ -13,7 +13,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public bool WasShuffled = false;
 
         public List<Playlist> Playlists = [];
-
+        public List<PlaylistTrack> PlaylistTracks = [];
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
         public List<Tuple<int, int>> AddedToPlaylist = [];
         public bool SayChangesWereMade = false;
@@ -81,9 +81,11 @@ namespace MusicVideoJukebox.Test.Fakes
             }
         }
 
-        public Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
+        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            int i = 0;
+            return PlaylistTracks.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title, PlayOrder = i++ }).ToList();
         }
 
         public Task AppendSongToPlaylist(int playlistId, int videoId)
@@ -103,9 +105,10 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return PlaylistTracks;
         }
     }
 }
