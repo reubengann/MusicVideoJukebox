@@ -21,6 +21,7 @@ namespace MusicVideoJukebox.Test.Unit
             interfaceFader = new FakeInterfaceFader();
             iuiThreadFactory = new FakeUIThreadFactory();
             iuiThreadFactory.ToReturn.Add(new FakeUiThreadTimer());
+            iuiThreadFactory.ToReturn.Add(new FakeUiThreadTimer());
             vm = new VideoPlayingViewModel(new FakeMediaPlayer2(), iuiThreadFactory, new FakeMetadataManagerFactory(), new LibraryStore());
             var serviceProvider = Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
             {

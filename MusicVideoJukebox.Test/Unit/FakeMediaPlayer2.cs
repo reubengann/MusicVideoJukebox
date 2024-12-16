@@ -8,12 +8,13 @@ namespace MusicVideoJukebox.Test.Unit
         public double InternalPosition = 0;
         public double InternalLength = 0;
         public string FilePlaying = "";
+        public bool ShowingInfo = false;
 
         public double LengthSeconds => InternalLength;
 
         public double CurrentTimeSeconds { get => InternalPosition; set { InternalPosition = value; } }
 
-        public double Volume { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public double Volume { get; set; } = 0;
 
         public void Pause()
         {
@@ -37,17 +38,17 @@ namespace MusicVideoJukebox.Test.Unit
 
         public void FadeInfoIn()
         {
-            throw new NotImplementedException();
+            ShowingInfo = true;
         }
 
         public void FadeInfoOut()
         {
-            throw new NotImplementedException();
+            ShowingInfo = false;
         }
 
         public void HideInfoImmediate()
         {
-            throw new NotImplementedException();
+            ShowingInfo = false;
         }
     }
 }

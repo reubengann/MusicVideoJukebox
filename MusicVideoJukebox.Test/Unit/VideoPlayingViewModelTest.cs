@@ -21,6 +21,7 @@ namespace MusicVideoJukebox.Test.Unit
             threadFactory = new FakeUIThreadFactory();
             progressBarTimer = new FakeUiThreadTimer();
             threadFactory.ToReturn.Add(progressBarTimer);
+            threadFactory.ToReturn.Add(new FakeUiThreadTimer());
             mediaPlayer2 = new FakeMediaPlayer2();
             dut = new VideoPlayingViewModel(mediaPlayer2, threadFactory, metadataManagerFactory, libraryStore);
         }
