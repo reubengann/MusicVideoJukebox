@@ -16,6 +16,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         int? currentLibraryId;
         PlaylistNavigator? playlistNavigator;
 
+        // TEMP
+        public PlaylistTrack? CurrentPlaylistTrack {  get; private set; }
+
         public bool IsPlaying
         {
             get => isPlaying;
@@ -36,6 +39,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public ICommand PlayCommand { get; set; }
         public ICommand PauseCommand { get; set; }
+        public ICommand SkipNextCommand { get; set; }
+        public ICommand SkipPreviousCommand { get; set; }
         IUIThreadTimer progressUpdateTimer;
 
         public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, 
@@ -46,12 +51,26 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             PlayCommand = new DelegateCommand(Play);
             PauseCommand = new DelegateCommand(Pause);
+            SkipNextCommand = new DelegateCommand(SkipNext);
+            SkipPreviousCommand = new DelegateCommand(SkipPrevious);
             this.mediaPlayer = mediaElementMediaPlayer;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
+        }
+
+        private void SkipPrevious()
+        {
+            if (playlistNavigator == null) return;
+            SetSource(playlistNavigator.Previous());
+        }
+
+        private void SkipNext()
+        {
+            if (playlistNavigator == null) return;
+            SetSource(playlistNavigator.Next());
         }
 
         private void LibraryStore_LibraryChanged()
@@ -81,10 +100,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             progressUpdateTimer.Start();
         }
 
-        private void SetSource(string filename)
+        private void SetSource(PlaylistTrack track)
         {
             if (libraryStore.FolderPath == null) return;
-            mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, filename)));
+            CurrentPlaylistTrack = track;
+            mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, track.FileName)));
         }
 
         public async Task Recheck()
@@ -106,7 +126,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (tracks.Count == 0) return;
             playlistNavigator = new PlaylistNavigator(tracks);
 
-            SetSource(playlistNavigator.CurrentTrack.FileName);
+            SetSource(playlistNavigator.CurrentTrack);
             Play();
         }
     }
