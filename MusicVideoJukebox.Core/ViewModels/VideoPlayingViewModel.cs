@@ -10,11 +10,14 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool isPlaying = false;
         private readonly IMediaPlayer2 mediaPlayer;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
+        IUIThreadTimer scrubDebounceTimer;
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
         IMetadataManager? metadataManager;
         int? currentLibraryId;
         PlaylistNavigator? playlistNavigator;
+        bool scrubbedRecently = false;
+        bool isScrubbing = false;
 
         public double Volume
         {
@@ -37,8 +40,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             get => mediaPlayer.CurrentTimeSeconds;
             set
             {
-                //if (scrubbedRecently) return;
-                //scrubbedRecently = true;
+                if (scrubbedRecently) return;
+                scrubbedRecently = true;
                 mediaPlayer.CurrentTimeSeconds = value;
             }
         }
@@ -64,10 +67,30 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
+            scrubDebounceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
+            scrubDebounceTimer.Tick += ScrubDebounceTimer_Tick;
 
             // TEMP
             Volume = 1;
+        }
+
+        private void ScrubDebounceTimer_Tick(object? sender, EventArgs e)
+        {
+            scrubbedRecently = false;
+        }
+
+        public void StopScrubbing()
+        {
+            scrubDebounceTimer.Stop();
+            scrubbedRecently = false;
+            isScrubbing = false;
+        }
+
+        public void StartScrubbing()
+        {
+            scrubDebounceTimer.Start();
+            isScrubbing = true;
         }
 
         private void SkipPrevious()

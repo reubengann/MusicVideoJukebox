@@ -44,7 +44,7 @@
                     <mat:MaterialIcon Kind="SkipNext" Width="80" Height="80" Foreground="White" />
                 </Button>
             </StackPanel>
-            <Slider Grid.Row="2"
+            <Slider x:Name="progressSlider" Grid.Row="2"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
                 Margin="150,25,150,50" 
