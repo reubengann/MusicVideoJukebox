@@ -141,6 +141,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(nameof(VideoLengthSeconds));
         }
 
+        public void DonePlaying()
+        {
+            SkipNext();
+        }
+
         private void Pause()
         {
             mediaPlayer.Pause();

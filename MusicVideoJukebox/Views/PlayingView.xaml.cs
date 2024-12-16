@@ -11,9 +11,18 @@ namespace MusicVideoJukebox.Views
         {
             InitializeComponent();
             progressSlider.AddHandler(
-        PreviewMouseLeftButtonDownEvent,
-        new MouseButtonEventHandler(Slider_PreviewMouseLeftButtonDown_Workaround),
-        true);
+                PreviewMouseLeftButtonDownEvent,
+                new MouseButtonEventHandler(Slider_PreviewMouseLeftButtonDown_Workaround),
+                true);
+            media.MediaEnded += Media_MediaEnded;
+        }
+
+        private void Media_MediaEnded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is VideoPlayingViewModel vm)
+            {
+                vm.DonePlaying();
+            }
         }
 
         private void Slider_PreviewMouseLeftButtonDown_Workaround(object sender, MouseButtonEventArgs e)
