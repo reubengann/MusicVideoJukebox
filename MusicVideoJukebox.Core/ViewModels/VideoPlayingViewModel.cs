@@ -1,5 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
 
@@ -14,6 +15,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         IUIThreadTimer scrubDebounceTimer;
         private readonly IMetadataManagerFactory metadataManagerFactory;
+        private readonly IFadesWhenInactive fadesWhenInactive;
         private readonly LibraryStore libraryStore;
         IMetadataManager? metadataManager;
         int? currentLibraryId;
@@ -56,12 +58,20 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand PauseCommand { get; set; }
         public ICommand SkipNextCommand { get; set; }
         public ICommand SkipPreviousCommand { get; set; }
+        public bool IsSidebarVisible 
+        { 
+            get => sidebarVisible; 
+            private set => SetProperty(ref sidebarVisible, value); 
+        }
+
         IUIThreadTimer progressUpdateTimer;
         private PlaylistTrack? currentPlaylistTrack;
+        private bool sidebarVisible;
 
         public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, 
             IUIThreadTimerFactory uIThreadTimerFactory, 
             IMetadataManagerFactory metadataManagerFactory,
+            IFadesWhenInactive fadesWhenInactive,
             LibraryStore libraryStore
             )
         {
@@ -72,14 +82,22 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.mediaPlayer = mediaElementMediaPlayer;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.metadataManagerFactory = metadataManagerFactory;
+            this.fadesWhenInactive = fadesWhenInactive;
             this.libraryStore = libraryStore;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             scrubDebounceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
             scrubDebounceTimer.Tick += ScrubDebounceTimer_Tick;
 
+            fadesWhenInactive.VisibilityChanged += FadesWhenInactive_VisibilityChanged;
+
             // TEMP
             Volume = 1;
+        }
+
+        private void FadesWhenInactive_VisibilityChanged(object? sender, VisibilityChangedEventArgs e)
+        {
+            IsSidebarVisible = e.IsVisible;
         }
 
         private void ScrubDebounceTimer_Tick(object? sender, EventArgs e)

@@ -38,7 +38,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (IsLibrarySelected)
             {
-                navigationService.NavigateToNothing();
+                await navigationService.NavigateToNothing();
             }
             else
             {
@@ -51,7 +51,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (IsPlaylistSelected)
             {
-                navigationService.NavigateToNothing();
+                await navigationService.NavigateToNothing();
             }
             else
             {
@@ -64,7 +64,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (IsMetadataSelected)
             {
-                navigationService.NavigateToNothing();
+                await navigationService.NavigateToNothing();
             }
             else
             {

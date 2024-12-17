@@ -14,12 +14,15 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
+        <local:BoolToMarginConverter x:Key="BoolToMarginConverter" />
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
         
         <MediaElement x:Name="media" Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
-        <Viewbox Margin="40,0,0,40" Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <local:VideoInfoDisplay x:Name="VideoInfo"  Opacity="100" DataContext="{Binding InfoViewModel}"/>
+        <Viewbox Margin="{Binding IsSidebarVisible, 
+                       Converter={StaticResource BoolToMarginConverter}, 
+                       ConverterParameter='100,0,0,40|40,0,0,40'}" Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <local:VideoInfoDisplay x:Name="VideoInfo" Opacity="100" DataContext="{Binding InfoViewModel}" />
         </Viewbox>
         <!-- Layout Container -->
         <Grid x:Name="playerControls">

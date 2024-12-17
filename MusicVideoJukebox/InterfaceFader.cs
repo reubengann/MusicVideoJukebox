@@ -16,6 +16,8 @@ namespace MusicVideoJukebox
         private bool fadingIn = false;
         private bool enabled = true;
 
+        public event EventHandler<VisibilityChangedEventArgs>? VisibilityChanged;
+
         public InterfaceFader(List<FrameworkElement> elements, DependencyProperty opacityProperty)
         {
             _timer = new DispatcherTimer
@@ -42,7 +44,7 @@ namespace MusicVideoJukebox
                 Duration = TimeSpan.FromSeconds(0.5) // Adjust the duration as needed
             };
 
-            fadeOutAnimation.Completed += (s, e) => fadingOut = false;
+            fadeOutAnimation.Completed += (s, e) => { fadingOut = false; VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); };
             fadingOut = true;
             foreach (var element in elements)
             {
@@ -79,6 +81,9 @@ namespace MusicVideoJukebox
                 To = 1,
                 Duration = TimeSpan.FromSeconds(0.25)
             };
+
+            VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(true));
+
             fadeInAnimation.Completed += (s, e) => fadingIn = false;
             fadingIn = true;
             foreach (var element in elements)

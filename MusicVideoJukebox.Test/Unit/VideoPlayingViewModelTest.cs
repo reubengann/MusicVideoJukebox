@@ -13,9 +13,11 @@ namespace MusicVideoJukebox.Test.Unit
         FakeUiThreadTimer progressBarTimer;
         FakeMetadataManagerFactory metadataManagerFactory;
         LibraryStore libraryStore;
+        FakeInterfaceFader fader;
 
         public VideoPlayingViewModelTest()
         {
+            fader = new FakeInterfaceFader();
             libraryStore = new LibraryStore();
             metadataManagerFactory = new FakeMetadataManagerFactory();  
             threadFactory = new FakeUIThreadFactory();
@@ -23,7 +25,7 @@ namespace MusicVideoJukebox.Test.Unit
             threadFactory.ToReturn.Add(progressBarTimer);
             threadFactory.ToReturn.Add(new FakeUiThreadTimer());
             mediaPlayer2 = new FakeMediaPlayer2();
-            dut = new VideoPlayingViewModel(mediaPlayer2, threadFactory, metadataManagerFactory, libraryStore);
+            dut = new VideoPlayingViewModel(mediaPlayer2, threadFactory, metadataManagerFactory, fader, libraryStore);
         }
 
         [Fact]

@@ -6,6 +6,8 @@ namespace MusicVideoJukebox.Test.Fakes
     {
         public bool FadingEnabled = true;
 
+        public event EventHandler<VisibilityChangedEventArgs>? VisibilityChanged;
+
         public void DisableFading()
         {
             FadingEnabled = false;
