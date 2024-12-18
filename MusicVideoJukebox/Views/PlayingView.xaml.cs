@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.ViewModels;
+using System;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -7,6 +8,8 @@ namespace MusicVideoJukebox.Views
 {
     public partial class PlayingView : UserControl
     {
+        public event Action? MediaElementDoubleClicked;
+
         public PlayingView()
         {
             InitializeComponent();
@@ -62,6 +65,11 @@ namespace MusicVideoJukebox.Views
             {
                 vm.StopScrubbing();
             }
+        }
+
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MediaElementDoubleClicked?.Invoke();
         }
     }
 }

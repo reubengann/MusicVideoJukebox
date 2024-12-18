@@ -7,6 +7,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+             MouseDoubleClick="UserControl_MouseDoubleClick"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920"
              d:DataContext="{d:DesignInstance Type=vms:VideoPlayingViewModel, IsDesignTimeCreatable=False}"
@@ -18,7 +19,7 @@
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
         
-        <MediaElement x:Name="media" Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
+        <MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
         <Viewbox Margin="{Binding IsSidebarVisible, 
                        Converter={StaticResource BoolToMarginConverter}, 
                        ConverterParameter='100,0,0,40|40,0,0,40'}" Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
