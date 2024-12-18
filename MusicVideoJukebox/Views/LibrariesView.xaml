@@ -6,10 +6,11 @@
              xmlns:view="clr-namespace:MusicVideoJukebox.Views"
              xmlns:local="clr-namespace:MusicVideoJukebox"
              xmlns:core="clr-namespace:MusicVideoJukebox.Core;assembly=MusicVideoJukebox.Core"
+             xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=core:LibraryViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=vms:LibraryViewModel, IsDesignTimeCreatable=False}"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              >
     <UserControl.Resources>

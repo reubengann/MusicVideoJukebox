@@ -59,9 +59,13 @@
                             <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                                               Opacity="{Binding IsLibrarySelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistPlayCommand}">
                             <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                      Opacity="{Binding IsPlaylistSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                            Opacity="{Binding IsPlaylistPlaySelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistEditCommand}">
+                            <mat:MaterialIcon Kind="PlaylistEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
+                      Opacity="{Binding IsPlaylistEditSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
                         </Button>
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateMetadataCommand}">
                             <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
@@ -88,6 +92,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vms:PlaylistEditViewModel}">
                         <views:PlaylistsView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vms:PlaylistPlayViewModel}">
+                        <views:PlaylistPlayView />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vms:MetadataEditViewModel}">
                         <views:MetadataEditView />

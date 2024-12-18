@@ -37,7 +37,7 @@ namespace MusicVideoJukebox.Test.Unit
         public void NothingIsSelectedInitially()
         {
             Assert.False(dut.IsLibrarySelected);
-            Assert.False(dut.IsPlaylistSelected);
+            Assert.False(dut.IsPlaylistEditSelected);
             Assert.False(dut.IsMetadataSelected);
         }
 
@@ -63,10 +63,10 @@ namespace MusicVideoJukebox.Test.Unit
         public void IfSelectedPlaylistAgainDisableIt()
         {
             navigationService.ViewModelsToGenerate[typeof(PlaylistEditViewModel)] = new PlaylistEditViewModel(libraryStore, metadataManagerFactory);
-            dut.NavigatePlaylistCommand.Execute(null);
-            Assert.True(dut.IsPlaylistSelected);
-            dut.NavigatePlaylistCommand.Execute(null);
-            Assert.False(dut.IsPlaylistSelected);
+            dut.NavigatePlaylistEditCommand.Execute(null);
+            Assert.True(dut.IsPlaylistEditSelected);
+            dut.NavigatePlaylistEditCommand.Execute(null);
+            Assert.False(dut.IsPlaylistEditSelected);
         }
 
         [Fact]

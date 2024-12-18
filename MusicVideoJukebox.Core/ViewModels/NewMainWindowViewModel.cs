@@ -13,20 +13,36 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly INavigationService navigationService;
 
         public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
-        public bool IsPlaylistSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
+        public bool IsPlaylistEditSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
+        public bool IsPlaylistPlaySelected => navigationService.CurrentViewModel is PlaylistPlayViewModel;
         public bool IsMetadataSelected => navigationService.CurrentViewModel is MetadataEditViewModel;
         public ICommand NavigateLibraryCommand { get; }
-        public ICommand NavigatePlaylistCommand { get; }
+        public ICommand NavigatePlaylistEditCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
+        public ICommand NavigatePlaylistPlayCommand { get; }
         public AsyncInitializeableViewModel? CurrentViewModel => navigationService.CurrentViewModel;
 
         public NewMainWindowViewModel(INavigationService navigationService)
         {
             NavigateLibraryCommand = new DelegateCommand(NavigateToLibrary);
-            NavigatePlaylistCommand = new DelegateCommand(NavigateToPlaylist);
+            NavigatePlaylistEditCommand = new DelegateCommand(NavigateToPlaylistEdit);
             NavigateMetadataCommand = new DelegateCommand(NavigateToMetadata);
+            NavigatePlaylistPlayCommand = new DelegateCommand(NavigateToPlaylistPlay);
             this.navigationService = navigationService;
             navigationService.NavigationChanged += NavigationService_NavigationChanged;
+        }
+
+        private async void NavigateToPlaylistPlay()
+        {
+            if (IsPlaylistPlaySelected)
+            {
+                await navigationService.NavigateToNothing();
+            }
+            else
+            {
+                await navigationService.NavigateTo<PlaylistPlayViewModel>();
+            }
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
 
         private void NavigationService_NavigationChanged()
@@ -47,9 +63,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(nameof(CurrentViewModel));
         }
 
-        private async void NavigateToPlaylist()
+        private async void NavigateToPlaylistEdit()
         {
-            if (IsPlaylistSelected)
+            if (IsPlaylistEditSelected)
             {
                 await navigationService.NavigateToNothing();
             }

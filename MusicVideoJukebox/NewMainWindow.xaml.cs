@@ -114,9 +114,12 @@ namespace MusicVideoJukebox
             services.AddSingleton<NewMainWindow>();
             services.AddSingleton<NewMainWindowViewModel>();
             services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<LibraryViewModel>();
-            services.AddSingleton<MetadataEditViewModel>();
-            services.AddSingleton<PlaylistEditViewModel>();
+
+            services.AddTransient<LibraryViewModel>();
+            services.AddTransient<MetadataEditViewModel>();
+            services.AddTransient<PlaylistEditViewModel>();
+            services.AddTransient<PlaylistPlayViewModel>();
+            
             services.AddSingleton<VideoPlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
             services.AddSingleton<IMetadataManagerFactory, MetadataManagerFactory>();
