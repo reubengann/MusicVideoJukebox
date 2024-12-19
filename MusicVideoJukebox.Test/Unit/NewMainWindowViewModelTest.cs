@@ -7,7 +7,7 @@ namespace MusicVideoJukebox.Test.Unit
     public class NewMainWindowViewModelTest
     {
         FakeNavigationService navigationService;
-        NewMainWindowViewModel dut;
+        MainWindowViewModel dut;
         FakeInterfaceFader interfaceFader;
         FakeLibrarySetRepo librarySetRepo;
         FakeWindowLauncher windowLauncher;
@@ -27,7 +27,7 @@ namespace MusicVideoJukebox.Test.Unit
             navigationService = new FakeNavigationService();
             windowLauncher = new FakeWindowLauncher();
 
-            dut = new NewMainWindowViewModel(navigationService);
+            dut = new MainWindowViewModel(navigationService);
             dut.Initialize(interfaceFader);
         }
 

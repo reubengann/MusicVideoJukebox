@@ -2,7 +2,7 @@
 
 namespace MusicVideoJukebox.Core
 {
-    public interface IMediaPlayer2
+    public interface IMediaPlayer
     {
         void Play();
         void Pause();

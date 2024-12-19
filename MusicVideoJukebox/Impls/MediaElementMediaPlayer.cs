@@ -7,7 +7,7 @@ using MusicVideoJukebox.Core;
 
 namespace MusicVideoJukebox
 {
-    public class MediaElementMediaPlayer : IMediaPlayer2
+    public class MediaElementMediaPlayer : IMediaPlayer
     {
         private readonly MediaElement media;
         private readonly VideoInfoDisplay videoInfoDisplay;

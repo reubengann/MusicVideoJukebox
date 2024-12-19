@@ -11,7 +11,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private const int VIDEO_INFO_START_GUTTER = 3;
         private const int VIDEO_INFO_END_GUTTER = 10;
         private bool isPlaying = false;
-        private readonly IMediaPlayer2 mediaPlayer;
+        private readonly IMediaPlayer mediaPlayer;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         IUIThreadTimer scrubDebounceTimer;
         private readonly IMetadataManagerFactory metadataManagerFactory;
@@ -68,7 +68,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private PlaylistTrack? currentPlaylistTrack;
         private bool sidebarVisible;
 
-        public VideoPlayingViewModel(IMediaPlayer2 mediaElementMediaPlayer, 
+        public VideoPlayingViewModel(IMediaPlayer mediaElementMediaPlayer, 
             IUIThreadTimerFactory uIThreadTimerFactory, 
             IMetadataManagerFactory metadataManagerFactory,
             IFadesWhenInactive fadesWhenInactive,

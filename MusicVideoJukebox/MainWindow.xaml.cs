@@ -13,20 +13,20 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox
 {
-    public partial class NewMainWindow : Window
+    public partial class MainWindow : Window
     {
-        private readonly NewMainWindowViewModel vm;
+        private readonly MainWindowViewModel vm;
         private readonly IFadesWhenInactive interfaceFader;
         IServiceProvider serviceProvider;
         IKeyboardHandler keyboardHandler;
         INavigationService navigationService;
         private bool isFullScreen = false;
 
-        public NewMainWindow()
+        public MainWindow()
         {
             InitializeComponent();
             serviceProvider = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build().Services;
-            this.vm = serviceProvider.GetRequiredService<NewMainWindowViewModel>();
+            this.vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             interfaceFader = serviceProvider.GetRequiredService<IFadesWhenInactive>();
             player.DataContext = serviceProvider.GetRequiredService<VideoPlayingViewModel>();
             keyboardHandler = serviceProvider.GetRequiredService<IKeyboardHandler>();
@@ -111,8 +111,8 @@ namespace MusicVideoJukebox
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "music_video_libraries.db");
             services.AddSingleton<ILibrarySetRepo>(x => new LibrarySetRepo(dbPath));
 
-            services.AddSingleton<NewMainWindow>();
-            services.AddSingleton<NewMainWindowViewModel>();
+            services.AddSingleton<MainWindow>();
+            services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<INavigationService, NavigationService>();
 
             services.AddTransient<LibraryViewModel>();
@@ -132,7 +132,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<IReferenceDataRepo>(s => new ReferenceDataRepo("reference.sqlite"));
             var playerControls = player.playerControls as FrameworkElement;
             services.AddSingleton<IFadesWhenInactive>(new InterfaceFader([Sidebar, playerControls], OpacityProperty));
-            services.AddSingleton<IMediaPlayer2>(new MediaElementMediaPlayer(player.media, player.VideoInfo, OpacityProperty));
+            services.AddSingleton<IMediaPlayer>(new MediaElementMediaPlayer(player.media, player.VideoInfo, OpacityProperty));
         }
     }
 }

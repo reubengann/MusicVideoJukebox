@@ -4,10 +4,10 @@ namespace MusicVideoJukebox.Core
 {
     public class KeyboardHandler : IKeyboardHandler
     {
-        private readonly NewMainWindowViewModel newMainWindowViewModel;
+        private readonly MainWindowViewModel newMainWindowViewModel;
         private readonly VideoPlayingViewModel videoPlayingViewModel;
 
-        public KeyboardHandler(NewMainWindowViewModel newMainWindowViewModel, VideoPlayingViewModel videoPlayingViewModel)
+        public KeyboardHandler(MainWindowViewModel newMainWindowViewModel, VideoPlayingViewModel videoPlayingViewModel)
         {
             this.newMainWindowViewModel = newMainWindowViewModel;
             this.videoPlayingViewModel = videoPlayingViewModel;

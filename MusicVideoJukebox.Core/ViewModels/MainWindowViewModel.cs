@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class NewMainWindowViewModel : BaseViewModel
+    public class MainWindowViewModel : BaseViewModel
     {
         private bool isLibrarySelected = false;
         private bool isPlaylistSelected = false;
@@ -22,7 +22,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand NavigatePlaylistPlayCommand { get; }
         public AsyncInitializeableViewModel? CurrentViewModel => navigationService.CurrentViewModel;
 
-        public NewMainWindowViewModel(INavigationService navigationService)
+        public MainWindowViewModel(INavigationService navigationService)
         {
             NavigateLibraryCommand = new DelegateCommand(NavigateToLibrary);
             NavigatePlaylistEditCommand = new DelegateCommand(NavigateToPlaylistEdit);

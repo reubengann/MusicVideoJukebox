@@ -2,7 +2,7 @@
 
 namespace MusicVideoJukebox.Test.Unit
 {
-    internal class FakeMediaPlayer2 : IMediaPlayer2
+    internal class FakeMediaPlayer2 : IMediaPlayer
     {
         public bool IsPlaying { get; set; } = false;
         public double InternalPosition = 0;
