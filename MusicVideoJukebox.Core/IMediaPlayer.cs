@@ -10,10 +10,6 @@ namespace MusicVideoJukebox.Core
         double CurrentTimeSeconds { get; set; }
         void SetSource(Uri source);
         void Stop();
-        //void SetWindowed();
-        //void SetFullScreen();
-        //void FadeButtonsOut();
-        //void MaybeFadeButtonsIn();
         void FadeInfoIn();
         void FadeInfoOut();
         void HideInfoImmediate();

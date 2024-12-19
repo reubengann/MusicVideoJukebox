@@ -14,14 +14,12 @@ namespace MusicVideoJukebox.Test.Unit
         FakeMetadataManagerFactory metadataManagerFactory;
         FakeDialogService dialogService;
         FakeVideoRepo videoRepo;
-        FakeMetadataProvider metadataProvider;
         LibraryStore libraryStore;
 
         public NewMainWindowViewModelTest()
         {
             libraryStore = new LibraryStore();
             videoRepo = new FakeVideoRepo();
-            metadataProvider = new FakeMetadataProvider();
             dialogService = new FakeDialogService(); 
             metadataManagerFactory = new FakeMetadataManagerFactory();
             librarySetRepo = new FakeLibrarySetRepo();
