@@ -1,4 +1,4 @@
-﻿namespace MusicVideoJukebox.Core
+﻿namespace MusicVideoJukebox.Core.Metadata
 {
     public interface IFileSystemService
     {

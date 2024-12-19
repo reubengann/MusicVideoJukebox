@@ -1,4 +1,4 @@
-﻿namespace MusicVideoJukebox.Core
+﻿namespace MusicVideoJukebox.Core.UserInterface
 {
     public class FolderPickerResult
     {

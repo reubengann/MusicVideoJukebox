@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.UserInterface
 {
     public interface IKeyboardHandler
     {

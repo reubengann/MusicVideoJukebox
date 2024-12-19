@@ -1,4 +1,4 @@
-﻿using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core.Metadata;
 using System;
 using System.Collections.Generic;
 using System.IO;

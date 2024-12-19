@@ -61,7 +61,7 @@ namespace MusicVideoJukebox.Test.Unit
         {
             Assert.False(dut.IsPlaying);
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake.mp4", Title = "" });
-            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
@@ -74,7 +74,7 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.False(dut.IsPlaying);
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake.mp4", Title = "" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake2.mp4", Title = "" });
-            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile2.mp4", Title = "" });
             libraryStore.SetLibrary(1, "something");
@@ -90,7 +90,7 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.False(dut.IsPlaying);
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake.mp4", Title = "" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake2.mp4", Title = "" });
-            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile2.mp4", Title = "" });
             libraryStore.SetLibrary(1, "something");

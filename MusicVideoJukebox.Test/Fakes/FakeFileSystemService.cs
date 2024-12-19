@@ -1,4 +1,4 @@
-﻿using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core.Metadata;
 using System.IO;
 
 namespace MusicVideoJukebox.Test.Fakes

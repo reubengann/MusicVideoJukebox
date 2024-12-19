@@ -1,4 +1,6 @@
-﻿namespace MusicVideoJukebox.Core.ViewModels
+﻿using MusicVideoJukebox.Core.Metadata;
+
+namespace MusicVideoJukebox.Core.ViewModels
 {
     public class PlaylistViewModel : BaseViewModel
     {

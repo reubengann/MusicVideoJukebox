@@ -1,6 +1,6 @@
 ﻿using MusicVideoJukebox.Core.ViewModels;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.UserInterface
 {
     public class KeyboardHandler : IKeyboardHandler
     {

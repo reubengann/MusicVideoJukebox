@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.UserInterface;
 using System.Windows;
 
 namespace MusicVideoJukebox

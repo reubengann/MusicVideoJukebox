@@ -1,5 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

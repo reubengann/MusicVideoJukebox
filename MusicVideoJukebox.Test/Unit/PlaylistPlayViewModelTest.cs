@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
 
@@ -21,7 +22,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task OnInitializeLoadPlaylists()
         {
-            metadataManagerFactory.ToReturn.Playlists.Add(new Core.Playlist { IsAll = true, PlaylistId = 1,  PlaylistName = "All songs" });
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1,  PlaylistName = "All songs" });
             await dut.Initialize();
             Assert.Single(dut.Items);
         }

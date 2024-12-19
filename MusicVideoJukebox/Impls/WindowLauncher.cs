@@ -1,6 +1,6 @@
-﻿using MusicVideoJukebox.Core;
-using MusicVideoJukebox.Core.Libraries;
+﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Navigation;
+using MusicVideoJukebox.Core.UserInterface;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Views;
 using System;
