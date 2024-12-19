@@ -16,16 +16,24 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
-        <local:BoolToMarginConverter x:Key="BoolToMarginConverter" />
+        <local:BoolToColumnConverter x:Key="BoolToMarginConverter" />
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
-        
         <MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
-        <Viewbox Margin="{Binding IsSidebarVisible, 
-                       Converter={StaticResource BoolToMarginConverter}, 
-                       ConverterParameter='100,0,0,40|40,0,0,40'}" Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <Grid x:Name="InfoHolder">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*"/>
+                <ColumnDefinition Width="0.1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox Grid.Column="{Binding IsSidebarVisible, 
+           Converter={StaticResource BoolToMarginConverter}}" Grid.ColumnSpan="3"
+                     Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <views:VideoInfoDisplay x:Name="VideoInfo" Opacity="100" DataContext="{Binding InfoViewModel}" />
         </Viewbox>
+        </Grid>
         <!-- Layout Container -->
         <Grid x:Name="playerControls">
             <!-- Row Definitions -->
