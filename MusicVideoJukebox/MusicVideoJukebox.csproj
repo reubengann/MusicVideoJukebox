@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\library_add.svg" />
-    <None Remove="Images\library_music.svg" />
+    <None Remove="Images\library_add.png" />
+    <None Remove="Images\library_music.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\library_add.svg" />
-    <Resource Include="Images\library_music.svg" />
+    <Resource Include="Images\library_add.png" />
+    <Resource Include="Images\library_music.png" />
   </ItemGroup>
 
   <ItemGroup>

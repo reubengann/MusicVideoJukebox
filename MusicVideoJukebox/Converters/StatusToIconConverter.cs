@@ -12,7 +12,7 @@ namespace MusicVideoJukebox
         {
             if (value is not MetadataStatus status)
             {
-                return MaterialIconKind.HelpCircleOutline; // Default icon
+                return MaterialIconKind.HelpCircleOutline;
             }
 
             return status switch

@@ -91,9 +91,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 var metadataManager = metadataManagerFactory.Create(lib.FolderPath);
                 await metadataManager.EnsureCreated();
-                Items.Add(new LibraryItemViewModel { LibraryId = lib.LibraryId, LibraryItem = lib, Icon = "Images/library_music.svg", IsAddNew = false });
+                Items.Add(new LibraryItemViewModel { LibraryId = lib.LibraryId, LibraryItem = lib, Icon = "/Images/library_music.png", IsAddNew = false });
             }
-            Items.Add(new LibraryItemViewModel { LibraryId = null, LibraryItem = null, Icon = "/Images/library_add.svg", IsAddNew = true });
+            Items.Add(new LibraryItemViewModel { LibraryId = null, LibraryItem = null, Icon = "/Images/library_add.png", IsAddNew = true });
         }
     }
 }

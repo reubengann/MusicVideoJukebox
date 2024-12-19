@@ -7,12 +7,12 @@ namespace MusicVideoJukebox
 {
     public class BoolToBrushConverter : IValueConverter
     {
-        public Brush TrueBrush { get; set; }
-        public Brush FalseBrush { get; set; }
+        public Brush? TrueBrush { get; set; }
+        public Brush? FalseBrush { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is bool))
+            if (value is not bool)
                 return null;
 
             bool boolValue = (bool)value;

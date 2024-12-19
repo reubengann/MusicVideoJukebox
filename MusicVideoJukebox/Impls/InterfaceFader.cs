@@ -11,7 +11,7 @@ namespace MusicVideoJukebox
     {
         private readonly List<FrameworkElement> elements;
         private readonly DependencyProperty opacityProperty;
-        DispatcherTimer _timer;
+        private readonly DispatcherTimer _timer;
         private bool fadingOut = false;
         private bool fadingIn = false;
         private bool enabled = true;

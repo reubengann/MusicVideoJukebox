@@ -55,7 +55,7 @@
                                 </Style>
                             </Border.Style>
                             <StackPanel Orientation="Vertical">
-                                <local:MultiFormatImage Source="{Binding Icon}" Width="50" Height="50"/>
+                                <Image Source="{Binding Icon}" Width="50" Height="50"/>
                                 <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" HorizontalAlignment="Center"/>
                                 <!-- Edit Button -->
                                 <Button

@@ -7,18 +7,11 @@ using MusicVideoJukebox.Views;
 
 namespace MusicVideoJukebox
 {
-    public class MediaElementMediaPlayer : IMediaPlayer
+    public class MediaElementMediaPlayer(MediaElement media, VideoInfoDisplay videoInfoDisplay, DependencyProperty opacityProperty) : IMediaPlayer
     {
-        private readonly MediaElement media;
-        private readonly VideoInfoDisplay videoInfoDisplay;
-        private readonly DependencyProperty opacityProperty;
-
-        public MediaElementMediaPlayer(MediaElement media, VideoInfoDisplay videoInfoDisplay, DependencyProperty opacityProperty)
-        {
-            this.media = media;
-            this.videoInfoDisplay = videoInfoDisplay;
-            this.opacityProperty = opacityProperty;
-        }
+        private readonly MediaElement media = media;
+        private readonly VideoInfoDisplay videoInfoDisplay = videoInfoDisplay;
+        private readonly DependencyProperty opacityProperty = opacityProperty;
 
         public void SetSource(Uri source) => media.Source = source;
 
