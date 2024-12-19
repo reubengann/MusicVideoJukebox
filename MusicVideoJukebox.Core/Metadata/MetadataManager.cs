@@ -168,4 +168,31 @@ namespace MusicVideoJukebox.Core.Metadata
             await videoRepo.UpdatePlaylistTrackOrder(playlistId, videoId, order);
         }
     }
+
+    public static class FileNameHelpers
+    {
+        public static (string, string) ParseFileNameIntoArtistTitle(string filename)
+        {
+            var nameOnly = Path.GetFileNameWithoutExtension(filename);
+            if (nameOnly.Contains(" - "))
+            {
+                var parts = nameOnly.Split(" - ");
+                string title;
+                if (parts.Length > 2)
+                {
+                    title = string.Join(" - ", parts.Skip(1));
+                }
+                else
+                {
+                    title = parts[1];
+                }
+                string artist = parts[0];
+                return (artist, title);
+            }
+            else
+            {
+                return ("Unknown", nameOnly);
+            }
+        }
+    }
 }
