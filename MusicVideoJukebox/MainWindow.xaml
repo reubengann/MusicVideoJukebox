@@ -29,6 +29,9 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Highlight}"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -45,7 +48,6 @@
     <Grid Background="Black">
         <Viewbox Panel.ZIndex="0">
             <views:PlayingView x:Name="player"/>
-            <!--<MediaElement Source="C:\\Users\\Reuben\\Videos\\Test Folder\\Radiohead - 15 step [Basement].mp4"/>-->
         </Viewbox>
         <Grid Panel.ZIndex="1">
             <Grid.ColumnDefinitions>
@@ -57,19 +59,19 @@
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
                         <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateLibraryCommand}">
                             <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                                              Opacity="{Binding IsLibrarySelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                                              />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistPlayCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistPlayCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
                             <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                            Opacity="{Binding IsPlaylistPlaySelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                            />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistEditCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistEditCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
                             <mat:MaterialIcon Kind="PlaylistEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                      Opacity="{Binding IsPlaylistEditSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                      />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateMetadataCommand}">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateMetadataCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
                             <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
-                        Opacity="{Binding IsMetadataSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                        />
                         </Button>
                     </StackPanel>
                 </Viewbox>

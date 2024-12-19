@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Navigation;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
@@ -11,6 +12,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool isPlaylistSelected = false;
         private IFadesWhenInactive interfaceFader = null!;
         private readonly INavigationService navigationService;
+        private readonly LibraryStore libraryStore;
+
+        public bool IsThereAValidLibraryActive => libraryStore.LibraryId != null;
 
         public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
         public bool IsPlaylistEditSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
@@ -22,13 +26,14 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand NavigatePlaylistPlayCommand { get; }
         public AsyncInitializeableViewModel? CurrentViewModel => navigationService.CurrentViewModel;
 
-        public MainWindowViewModel(INavigationService navigationService)
+        public MainWindowViewModel(INavigationService navigationService, LibraryStore libraryStore)
         {
             NavigateLibraryCommand = new DelegateCommand(NavigateToLibrary);
             NavigatePlaylistEditCommand = new DelegateCommand(NavigateToPlaylistEdit);
             NavigateMetadataCommand = new DelegateCommand(NavigateToMetadata);
             NavigatePlaylistPlayCommand = new DelegateCommand(NavigateToPlaylistPlay);
             this.navigationService = navigationService;
+            this.libraryStore = libraryStore;
             navigationService.NavigationChanged += NavigationService_NavigationChanged;
         }
 
@@ -48,6 +53,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void NavigationService_NavigationChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
+            OnPropertyChanged(nameof(IsThereAValidLibraryActive));
         }
 
         private async void NavigateToLibrary()
