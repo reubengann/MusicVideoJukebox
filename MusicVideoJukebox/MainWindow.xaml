@@ -57,19 +57,55 @@
             <Border x:Name="Sidebar" Background="#2E0400" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
                 <Viewbox VerticalAlignment="Top">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateLibraryCommand}">
+                        <Button Command="{Binding NavigateLibraryCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLibrarySelected}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <mat:MaterialIcon Kind="LibraryMusic" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                                               />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistPlayCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                        <Button Command="{Binding NavigatePlaylistPlayCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlaylistPlaySelected}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <mat:MaterialIcon Kind="PlaylistPlay" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                             />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigatePlaylistEditCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                        <Button Command="{Binding NavigatePlaylistEditCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlaylistEditSelected}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <mat:MaterialIcon Kind="PlaylistEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                       />
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{Binding NavigateMetadataCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                        <Button Command="{Binding NavigateMetadataCommand}" IsEnabled="{Binding IsThereAValidLibraryActive}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMetadataSelected}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <mat:MaterialIcon Kind="TableEdit" Foreground="White" Style="{StaticResource IconMaterialStyle}"
                         />
                         </Button>

@@ -37,6 +37,14 @@ namespace MusicVideoJukebox.Core.ViewModels
             navigationService.NavigationChanged += NavigationService_NavigationChanged;
         }
 
+        void RefreshButtons()
+        {
+            OnPropertyChanged(nameof(IsLibrarySelected));
+            OnPropertyChanged(nameof(IsPlaylistEditSelected));
+            OnPropertyChanged(nameof(IsPlaylistPlaySelected));
+            OnPropertyChanged(nameof(IsMetadataSelected));
+        }
+
         private async void NavigateToPlaylistPlay()
         {
             if (IsPlaylistPlaySelected)
@@ -54,6 +62,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             OnPropertyChanged(nameof(CurrentViewModel));
             OnPropertyChanged(nameof(IsThereAValidLibraryActive));
+            RefreshButtons();
         }
 
         private async void NavigateToLibrary()
@@ -67,6 +76,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 await navigationService.NavigateTo<LibraryViewModel>();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
+            RefreshButtons();
         }
 
         private async void NavigateToPlaylistEdit()
@@ -80,6 +90,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 await navigationService.NavigateTo<PlaylistEditViewModel>();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
+            RefreshButtons();
         }
 
         private async void NavigateToMetadata()
@@ -93,6 +104,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 await navigationService.NavigateTo<MetadataEditViewModel>();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
+            RefreshButtons();
         }
 
         public void Initialize(IFadesWhenInactive interfaceFader)
