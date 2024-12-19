@@ -1,7 +1,9 @@
 ﻿
 using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
+using Prism.Commands;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -11,12 +13,19 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly LibraryStore libraryStore;
         private readonly IMetadataManagerFactory metadataManagerFactory;
 
+        public ICommand SelectPlaylistCommand { get; }
+
         public ObservableCollection<PlaylistViewModel> Items { get; } = [];
 
         public PlaylistPlayViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
         {
+            SelectPlaylistCommand = new DelegateCommand<PlaylistViewModel>(SelectPlaylist);
             this.libraryStore = libraryStore;
             this.metadataManagerFactory = metadataManagerFactory;
+        }
+
+        private void SelectPlaylist(PlaylistViewModel model)
+        {
         }
 
         public override async Task Initialize()

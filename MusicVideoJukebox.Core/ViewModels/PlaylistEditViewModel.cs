@@ -60,6 +60,16 @@ namespace MusicVideoJukebox.Core.ViewModels
     );
         }
 
+        public bool IsPlaylistMutable
+        { 
+            get 
+            {
+                if (SelectedPlaylist == null) return false;
+                if (SelectedPlaylist.IsAll) return false;
+                return true;
+            } 
+        }
+
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
 
         public ObservableCollection<PlaylistViewModel> Playlists { get; set; } = [];

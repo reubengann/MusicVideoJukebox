@@ -156,8 +156,9 @@ namespace MusicVideoJukebox.Core.Metadata
             int order = 1;
             foreach (var track in shuffledTracks)
             {
-                track.PlayOrder = order++;
-                await UpdatePlaylistTrackOrder(playlistId, track.VideoId, track.PlayOrder);
+                await UpdatePlaylistTrackOrder(playlistId, track.VideoId, order);
+                track.PlayOrder = order;
+                order++;
             }
             return shuffledTracks;
         }

@@ -39,10 +39,10 @@
                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
                         <DockPanel Margin="0,0,0,10">
                             <Label Content="Name:" DockPanel.Dock="Left" />
-                            <TextBox Text="{Binding SelectedPlaylist.Name}" IsEnabled="{Binding SelectedPlaylist}" />
+                            <TextBox Text="{Binding SelectedPlaylist.Name}" IsEnabled="{Binding IsPlaylistMutable}" />
                         </DockPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Command="{Binding DeletePlaylistCommand}" IsEnabled="{Binding SelectedPlaylist}" Width="40" Height="40" ToolTip="Delete Playlist">
+                            <Button Command="{Binding DeletePlaylistCommand}" IsEnabled="{Binding IsPlaylistMutable}" Width="40" Height="40" ToolTip="Delete Playlist">
                                 <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
                             </Button>
                             <Button Command="{Binding AddPlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
@@ -81,10 +81,10 @@
 
                     <!-- Add and Delete Buttons -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Button Command="{Binding AddTrackToPlaylistCommand}" Height="50" Width="50" ToolTip="Add to Playlist">
+                        <Button Command="{Binding AddTrackToPlaylistCommand}" Height="50" Width="50" ToolTip="Add to Playlist" IsEnabled="{Binding IsPlaylistMutable}">
                             <mat:MaterialIcon Kind="ArrowRight" Width="20" Height="20" />
                         </Button>
-                        <Button Command="{Binding DeleteTrackFromPlaylistCommand}" Height="50" Width="50" ToolTip="Remove from Playlist" Margin="0,10,0,0">
+                        <Button Command="{Binding DeleteTrackFromPlaylistCommand}" Height="50" Width="50" ToolTip="Remove from Playlist" Margin="0,10,0,0" IsEnabled="{Binding IsPlaylistMutable}">
                             <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
                         </Button>
                         <Button Command="{Binding ShufflePlaylistCommand}" Height="50" Width="50" ToolTip="Shuffle Playlist" Margin="0,10,0,0">

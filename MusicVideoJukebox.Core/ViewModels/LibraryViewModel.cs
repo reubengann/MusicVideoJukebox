@@ -69,7 +69,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 ArgumentNullException.ThrowIfNull(libraryvm.LibraryItem);
                 libraryStore.SetLibrary(libraryvm.LibraryItem.LibraryId, libraryvm.LibraryItem.FolderPath);
-                navigationService.NavigateToNothing();
+                await navigationService.NavigateToNothing();
             }
         }
 
