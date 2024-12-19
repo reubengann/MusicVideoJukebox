@@ -1,7 +1,7 @@
 ﻿using FuzzySharp;
 using FuzzySharp.PreProcess;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.Metadata
 {
     public class FuzzySearch
     {
