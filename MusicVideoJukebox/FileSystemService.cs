@@ -18,11 +18,6 @@ namespace MusicVideoJukebox
             return Directory.Exists(path);
         }
 
-        //public string GetMyDocuments()
-        //{
-        //    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        //}
-
         public List<string> ListMp4Files(string folderPath)
         {
             var files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)

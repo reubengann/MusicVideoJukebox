@@ -17,10 +17,13 @@ namespace MusicVideoJukebox
                     var isVisible = value is bool b && b;
 
                     // Parse the two Thickness values
-                    var thicknessTrue = (Thickness)new ThicknessConverter().ConvertFromString(parts[0]);
-                    var thicknessFalse = (Thickness)new ThicknessConverter().ConvertFromString(parts[1]);
-
-                    return isVisible ? thicknessTrue : thicknessFalse;
+                    if (isVisible)
+                    {
+                        var thicknessTrue = (Thickness?)new ThicknessConverter().ConvertFromString(parts[0]);
+                        return thicknessTrue ?? new Thickness(0);
+                    }
+                    var thicknessFalse = (Thickness?)new ThicknessConverter().ConvertFromString(parts[1]);
+                    return thicknessFalse ?? new Thickness(0);
                 }
             }
 
