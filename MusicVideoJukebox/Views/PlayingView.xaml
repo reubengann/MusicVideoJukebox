@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox"
+             xmlns:views="clr-namespace:MusicVideoJukebox.Views"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
@@ -23,7 +24,7 @@
         <Viewbox Margin="{Binding IsSidebarVisible, 
                        Converter={StaticResource BoolToMarginConverter}, 
                        ConverterParameter='100,0,0,40|40,0,0,40'}" Width="700" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <local:VideoInfoDisplay x:Name="VideoInfo" Opacity="100" DataContext="{Binding InfoViewModel}" />
+            <views:VideoInfoDisplay x:Name="VideoInfo" Opacity="100" DataContext="{Binding InfoViewModel}" />
         </Viewbox>
         <!-- Layout Container -->
         <Grid x:Name="playerControls">

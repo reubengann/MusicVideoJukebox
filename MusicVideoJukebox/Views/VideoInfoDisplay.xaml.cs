@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicVideoJukebox
+namespace MusicVideoJukebox.Views
 {
     /// <summary>
     /// Interaction logic for VideoInfoDisplay.xaml

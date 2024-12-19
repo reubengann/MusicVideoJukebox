@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Views;
 
 namespace MusicVideoJukebox
 {
