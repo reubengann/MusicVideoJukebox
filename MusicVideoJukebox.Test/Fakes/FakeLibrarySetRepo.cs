@@ -5,6 +5,7 @@ namespace MusicVideoJukebox.Test.Fakes
     internal class FakeLibrarySetRepo : ILibrarySetRepo
     {
         public List<LibraryItem> LibraryItems { get; set; } = [];
+        public CurrentState CurrentState { get; set; } = new();
 
         public Task AddLibrary(LibraryItemAdd libraryItem)
         {
@@ -30,9 +31,21 @@ namespace MusicVideoJukebox.Test.Fakes
             return LibraryItems.Select(x => x.FolderPath).ToList();
         }
 
+        public async Task<CurrentState> GetCurrentState()
+        {
+            await Task.CompletedTask;
+            return CurrentState;
+        }
+
         public async Task Initialize()
         {
             await Task.CompletedTask;
+        }
+
+        public Task UpdateState(CurrentState currentState)
+        {
+            CurrentState = new CurrentState { LibraryId = currentState.LibraryId, LibraryPath = currentState.LibraryPath, PlaylistId = currentState.PlaylistId, VideoId = currentState.VideoId, Volume = currentState.Volume };
+            return Task.CompletedTask;
         }
     }
 }

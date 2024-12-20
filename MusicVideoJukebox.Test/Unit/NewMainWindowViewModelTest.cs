@@ -27,7 +27,7 @@ namespace MusicVideoJukebox.Test.Unit
             navigationService = new FakeNavigationService();
             windowLauncher = new FakeWindowLauncher();
 
-            dut = new MainWindowViewModel(navigationService);
+            dut = new MainWindowViewModel(navigationService, libraryStore);
             dut.Initialize(interfaceFader);
         }
 

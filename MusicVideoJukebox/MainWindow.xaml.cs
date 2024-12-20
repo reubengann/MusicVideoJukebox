@@ -36,6 +36,12 @@ namespace MusicVideoJukebox
             player.MediaElementDoubleClicked += Player_MediaElementDoubleClicked;
         }
 
+        protected override async void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+        }
+
         private void Player_MediaElementDoubleClicked()
         {
             ToggleFullScreen();

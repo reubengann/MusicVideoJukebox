@@ -53,6 +53,13 @@ namespace MusicVideoJukebox.Core.Libraries
             }
         }
 
+        public async Task<CurrentState> GetCurrentState()
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            using var conn = new SQLiteConnection(connectionString);
+            return (await conn.QueryAsync<CurrentState>("SELECT library_id, library_path, playlist_id, video_id, volume FROM app_state")).First();
+        }
+
         public async Task Initialize()
         {
             using (var conn = new SQLiteConnection(connectionString))
@@ -64,8 +71,27 @@ namespace MusicVideoJukebox.Core.Libraries
                     song_count INT NULL,
                     playlist_count INT NULL
                 );");
+                await conn.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS app_state (
+                    library_id INTEGER NULL,
+                    library_path TEXT NULL,
+                    playlist_id INTEGER NULL,
+                    video_id INTEGER NULL,
+                    volume INTEGER NULL
+                );");
+                await conn.ExecuteAsync("INSERT INTO app_state (library_id) VALUES (null)");
                 conn.Close();
             }
+        }
+
+        public async Task UpdateState(CurrentState currentState)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync(@"UPDATE app_state SET 
+  library_id = @LibraryId
+, library_path = @LibraryPath
+, playlist_id = @PlaylistId
+, video_id = @VideoId
+, volume = @Volume", currentState);
         }
     }
 }

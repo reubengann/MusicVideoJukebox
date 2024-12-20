@@ -1,4 +1,8 @@
-﻿namespace MusicVideoJukebox.Core.Libraries
+﻿
+
+
+
+namespace MusicVideoJukebox.Core.Libraries
 {
     public class LibraryItem
     {
@@ -15,6 +19,15 @@
         required public string Name { get; set; }
     }
 
+    public class CurrentState
+    {
+        public int? LibraryId { get; set; }
+        public string? LibraryPath { get; set; }
+        public int? PlaylistId { get; set; }
+        public int? VideoId { get; set; }
+        public int? Volume { get; set; }
+    }
+
     public interface ILibrarySetRepo
     {
         Task Initialize();
@@ -22,5 +35,7 @@
         Task<List<string>> GetAllLibraryPaths();
         Task<List<string>> GetAllLibraryNames();
         Task AddLibrary(LibraryItemAdd libraryItem);
+        Task<CurrentState> GetCurrentState();
+        Task UpdateState(CurrentState currentState);
     }
 }

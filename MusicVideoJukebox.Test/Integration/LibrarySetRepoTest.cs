@@ -19,7 +19,8 @@ namespace MusicVideoJukebox.Test.Integration
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                conn.Execute(@"DELETE FROM library;");
+                conn.Execute(@"DROP TABLE library;");
+                conn.Execute(@"DROP TABLE app_state;");
                 //conn.Execute(@"DELETE FROM workout_session;");
                 //conn.Execute(@"DELETE FROM exercise;");
                 //conn.Execute(@"DELETE FROM routine;");
@@ -80,6 +81,48 @@ namespace MusicVideoJukebox.Test.Integration
             var result = (await conn.QueryAsync<string>("SELECT folder_path FROM library")).ToList();
             Assert.Single(result);
             Assert.Equal("foo", result[0]);
+        }
+
+        [Fact]
+        public async Task CanGetState()
+        {
+            await dut.Initialize();
+            WithState(libraryId: 1, libraryPath: @"c:\foo\bar", playlistId: 2, videoId: 3, volume: 80);
+            var result = await dut.GetCurrentState();
+            Assert.Equal(1, result.LibraryId);
+            Assert.Equal(@"c:\foo\bar", result.LibraryPath);
+            Assert.Equal(2, result.PlaylistId);
+            Assert.Equal(3, result.VideoId);
+            Assert.Equal(80, result.Volume);
+        }
+
+        [Fact]
+        public async Task CanUpdateState()
+        {
+            await dut.Initialize();
+            await dut.UpdateState(new CurrentState { LibraryId = 1 });
+            using var conn = new SQLiteConnection(connectionString);
+            var libraryId = await conn.ExecuteScalarAsync<int>("SELECT library_id from app_state");
+            Assert.Equal(1, libraryId);
+        }
+
+        void WithState(int? libraryId = null, string? libraryPath = null, int? playlistId = null, int? videoId = null, int? volume = null)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            conn.Execute(@"
+UPDATE app_state SET 
+  library_id = @libraryId
+, library_path = @libraryPath
+, playlist_id = @playlistId
+, video_id = @videoId
+, volume = @volume", 
+            new {
+                libraryId,
+                libraryPath,
+                playlistId,
+                videoId,
+                volume
+            });
         }
 
         int WithLibrary(string path, string name)
