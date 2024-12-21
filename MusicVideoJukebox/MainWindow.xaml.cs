@@ -16,6 +16,7 @@ namespace MusicVideoJukebox
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel vm;
+        private readonly VideoPlayingViewModel vpvm;
         private readonly IFadesWhenInactive interfaceFader;
         IServiceProvider serviceProvider;
         IKeyboardHandler keyboardHandler;
@@ -28,7 +29,8 @@ namespace MusicVideoJukebox
             serviceProvider = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build().Services;
             this.vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             interfaceFader = serviceProvider.GetRequiredService<IFadesWhenInactive>();
-            player.DataContext = serviceProvider.GetRequiredService<VideoPlayingViewModel>();
+            vpvm = serviceProvider.GetRequiredService<VideoPlayingViewModel>();
+            player.DataContext = vpvm;
             keyboardHandler = serviceProvider.GetRequiredService<IKeyboardHandler>();
             navigationService = serviceProvider.GetRequiredService<INavigationService>();
             KeyDown += NewMainWindow_KeyDown;
@@ -99,7 +101,16 @@ namespace MusicVideoJukebox
             }
         }
 
-
+        protected override async void OnSourceInitialized(EventArgs e)
+        {
+            var repo = serviceProvider.GetRequiredService<ILibrarySetRepo>();
+            await repo.Initialize();
+            base.OnSourceInitialized(e);
+            var store = serviceProvider.GetRequiredService<LibraryStore>();
+            await store.Initialize();
+            vm.RestoreState();
+            await vpvm.RestoreState();
+        }
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {

@@ -78,7 +78,11 @@ namespace MusicVideoJukebox.Core.Libraries
                     video_id INTEGER NULL,
                     volume INTEGER NULL
                 );");
-                await conn.ExecuteAsync("INSERT INTO app_state (library_id) VALUES (null)");
+                var count = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM app_state;");
+                if (count == 0)
+                {
+                    await conn.ExecuteAsync("INSERT INTO app_state (library_id) VALUES (null)");
+                }
                 conn.Close();
             }
         }

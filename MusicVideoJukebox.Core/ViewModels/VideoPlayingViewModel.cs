@@ -187,11 +187,12 @@ namespace MusicVideoJukebox.Core.ViewModels
             InfoViewModel = new VideoInfoViewModel(track);
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
+            _ = libraryStore.SetVideoId(CurrentPlaylistTrack.VideoId); // fire and forget
         }
 
-        public void RestoreState(CurrentState state)
+        public async Task RestoreState()
         {
-            libraryStore.SetPlaylist(state.PlaylistId);
+            await Recheck();
         }
 
         public async Task Recheck()
@@ -199,19 +200,33 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (libraryStore.CurrentState.LibraryId == currentLibraryId || libraryStore.CurrentState.LibraryPath == null) return;
 
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var playlists = await metadataManager.GetPlaylists();
-            if (playlists.Count == 0)
+
+            int playlistId;
+            if (libraryStore.CurrentState.PlaylistId == null)
             {
-                mediaPlayer.Stop();
-                IsPlaying = false;
-                return;
+                var playlists = await metadataManager.GetPlaylists();
+                var playlist = playlists.Where(x => x.IsAll).First();
+                playlistId = playlist.PlaylistId;
+                await libraryStore.SetPlaylist(playlistId);
+            }
+            else
+            {
+                playlistId = (int)libraryStore.CurrentState.PlaylistId;
             }
 
-            //TEMP
-            var firstPlaylist = playlists.Where(x => x.IsAll).First();
-            var tracks = await metadataManager.GetPlaylistTracks(firstPlaylist.PlaylistId);
+            var tracks = await metadataManager.GetPlaylistTracks(playlistId);
             if (tracks.Count == 0) return;
             playlistNavigator = new PlaylistNavigator(tracks);
+
+            if (libraryStore.CurrentState.VideoId != null)
+            {
+                playlistNavigator.SetCurrentTrack((int)libraryStore.CurrentState.VideoId);
+            }
+            else
+            {
+                playlistNavigator.Next();
+                await libraryStore.SetVideoId(playlistNavigator.CurrentTrack.VideoId);
+            }
 
             SetSource(playlistNavigator.CurrentTrack);
             Play();

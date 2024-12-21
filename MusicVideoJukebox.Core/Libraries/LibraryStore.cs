@@ -1,4 +1,7 @@
-﻿namespace MusicVideoJukebox.Core.Libraries
+﻿
+using MusicVideoJukebox.Core.Metadata;
+
+namespace MusicVideoJukebox.Core.Libraries
 {
     public class LibraryStore
     {
@@ -23,9 +26,16 @@
             await librarySetRepo.UpdateState(CurrentState);
         }
 
-        public void SetPlaylist(int? playlistId)
+        public async Task SetPlaylist(int? playlistId)
         {
             CurrentState.PlaylistId = playlistId;
+            await librarySetRepo.UpdateState(CurrentState);
+        }
+
+        public async Task SetVideoId(int videoId)
+        {
+            CurrentState.VideoId = videoId;
+            await librarySetRepo.UpdateState(CurrentState);
         }
     }
 }
