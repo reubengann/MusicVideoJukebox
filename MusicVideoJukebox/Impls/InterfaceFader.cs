@@ -37,6 +37,7 @@ namespace MusicVideoJukebox
 
         private void FadeButtonsOut()
         {
+            _timer.Stop();
             if (fadingOut) return;
             var fadeOutAnimation = new DoubleAnimation
             {
@@ -44,7 +45,10 @@ namespace MusicVideoJukebox
                 Duration = TimeSpan.FromSeconds(0.5) // Adjust the duration as needed
             };
 
-            fadeOutAnimation.Completed += (s, e) => { fadingOut = false; VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); };
+            fadeOutAnimation.Completed += (s, e) => { 
+                fadingOut = false; 
+                VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); 
+            };
             fadingOut = true;
             foreach (var element in elements)
             {
@@ -75,6 +79,9 @@ namespace MusicVideoJukebox
         {
             if (fadingOut) fadingOut = false;
             if (fadingIn) return;
+
+            _timer.Stop();
+            _timer.Start();
 
             var fadeInAnimation = new DoubleAnimation
             {

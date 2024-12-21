@@ -34,6 +34,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 currentIndex = trackIndex;
             }
+            else
+            {
+                currentIndex = 0;
+            }
         }
     }
 }
