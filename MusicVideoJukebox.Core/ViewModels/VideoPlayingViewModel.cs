@@ -132,8 +132,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void LibraryStore_LibraryChanged()
         {
-            if (libraryStore.FolderPath == null) return;
-            metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
 
         }
 
@@ -181,19 +181,24 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void SetSource(PlaylistTrack track)
         {
             mediaPlayer.HideInfoImmediate();
-            if (libraryStore.FolderPath == null) return;
+            if (libraryStore.CurrentState.LibraryPath == null) return;
             CurrentPlaylistTrack = track;
-            mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.FolderPath, track.FileName)));
+            mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.CurrentState.LibraryPath, track.FileName)));
             InfoViewModel = new VideoInfoViewModel(track);
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
         }
 
+        public void RestoreState(CurrentState state)
+        {
+            libraryStore.SetPlaylist(state.PlaylistId);
+        }
+
         public async Task Recheck()
         {
-            if (libraryStore.LibraryId == currentLibraryId || libraryStore.FolderPath == null) return;
+            if (libraryStore.CurrentState.LibraryId == currentLibraryId || libraryStore.CurrentState.LibraryPath == null) return;
 
-            metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
+            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
             var playlists = await metadataManager.GetPlaylists();
             if (playlists.Count == 0)
             {

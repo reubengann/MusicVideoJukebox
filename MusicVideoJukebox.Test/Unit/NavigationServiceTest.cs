@@ -15,15 +15,17 @@ namespace MusicVideoJukebox.Test.Unit
         FakeInterfaceFader interfaceFader;
         VideoPlayingViewModel vm;
         FakeUIThreadFactory iuiThreadFactory;
+        FakeLibrarySetRepo librarySetRepo;
 
         public NavigationServiceTest()
         {
+            librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             iuiThreadFactory = new FakeUIThreadFactory();
             iuiThreadFactory.ToReturn.Add(new FakeUiThreadTimer());
             iuiThreadFactory.ToReturn.Add(new FakeUiThreadTimer());
 
-            vm = new VideoPlayingViewModel(new FakeMediaPlayer2(), iuiThreadFactory, new FakeMetadataManagerFactory(), interfaceFader, new LibraryStore());
+            vm = new VideoPlayingViewModel(new FakeMediaPlayer2(), iuiThreadFactory, new FakeMetadataManagerFactory(), interfaceFader, new LibraryStore(librarySetRepo));
             var serviceProvider = Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
             {
                 services.AddSingleton<FakeAsyncInitializableViewModel>();

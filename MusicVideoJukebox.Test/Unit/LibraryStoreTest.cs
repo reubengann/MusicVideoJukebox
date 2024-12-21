@@ -1,17 +1,22 @@
-﻿using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Test.Fakes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Unit
 {
-    public class AppStateServiceTest
+    public class LibraryStoreTest
     {
-        AppStateService dut;
+        LibraryStore dut;
         FakeLibrarySetRepo librarySetRepo;
 
-        public AppStateServiceTest()
+        public LibraryStoreTest()
         {
             librarySetRepo = new FakeLibrarySetRepo();
-            dut = new AppStateService(librarySetRepo);
+            dut = new LibraryStore(librarySetRepo);
         }
 
         [Fact]
@@ -27,7 +32,7 @@ namespace MusicVideoJukebox.Test.Unit
         {
             librarySetRepo.CurrentState.LibraryId = 1;
             await dut.Initialize();
-            await dut.UpdateLibraryId(3);
+            await dut.SetLibrary(3, "foo");
             Assert.Equal(3, librarySetRepo.CurrentState.LibraryId);
         }
     }

@@ -36,12 +36,6 @@ namespace MusicVideoJukebox
             player.MediaElementDoubleClicked += Player_MediaElementDoubleClicked;
         }
 
-        protected override async void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-        }
-
         private void Player_MediaElementDoubleClicked()
         {
             ToggleFullScreen();
@@ -125,6 +119,7 @@ namespace MusicVideoJukebox
             services.AddTransient<MetadataEditViewModel>();
             services.AddTransient<PlaylistEditViewModel>();
             services.AddTransient<PlaylistPlayViewModel>();
+            //services.AddSingleton<AppStateService>();
             
             services.AddSingleton<VideoPlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();

@@ -208,7 +208,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private bool CanAddPlaylist()
         {
-            if (libraryStore.FolderPath == null) return false;
+            if (libraryStore.CurrentState.LibraryPath == null) return false;
             if (SelectedPlaylist == null) return true;
             return !SelectedPlaylist.IsModified;
         }
@@ -236,8 +236,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public override async Task Initialize()
         {
-            if (libraryStore.FolderPath == null) return;
-            metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
             var playlists = await metadataManager.GetPlaylists();
             foreach (var pl in playlists)
             {

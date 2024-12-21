@@ -14,11 +14,13 @@ namespace MusicVideoJukebox.Test.Unit
         FakeMetadataManagerFactory metadataManagerFactory;
         LibraryStore libraryStore;
         FakeInterfaceFader fader;
+        FakeLibrarySetRepo librarySetRepo;
 
         public VideoPlayingViewModelTest()
         {
+            librarySetRepo = new FakeLibrarySetRepo();
             fader = new FakeInterfaceFader();
-            libraryStore = new LibraryStore();
+            libraryStore = new LibraryStore(librarySetRepo);
             metadataManagerFactory = new FakeMetadataManagerFactory();  
             threadFactory = new FakeUIThreadFactory();
             progressBarTimer = new FakeUiThreadTimer();
@@ -63,7 +65,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new Core.Metadata.VideoMetadata { Artist = "", Filename = "fake.mp4", Title = "" });
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
-            libraryStore.SetLibrary(1, "something");
+            await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.True(dut.IsPlaying);
         }
@@ -77,7 +79,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile2.mp4", Title = "" });
-            libraryStore.SetLibrary(1, "something");
+            await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
             dut.SkipNextCommand.Execute(null);
@@ -93,7 +95,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile.mp4", Title = "" });
             metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = "", FileName = "c:\\afile2.mp4", Title = "" });
-            libraryStore.SetLibrary(1, "something");
+            await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
             dut.SkipPreviousCommand.Execute(null);

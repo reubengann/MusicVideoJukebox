@@ -2,19 +2,30 @@
 {
     public class LibraryStore
     {
-        public int? LibraryId { get; private set; }
-        public string? FolderPath { get; private set; }
-        public int? PlaylistId { get; private set; }
+        public CurrentState CurrentState { get; set; } = new();
 
-        public void SetLibrary(int? libraryId, string? folderPath)
+        private readonly ILibrarySetRepo librarySetRepo;
+
+        public LibraryStore(ILibrarySetRepo librarySetRepo)
         {
-            LibraryId = libraryId;
-            FolderPath = folderPath;
+            this.librarySetRepo = librarySetRepo;
+        }
+
+        public async Task Initialize()
+        {
+            CurrentState = await librarySetRepo.GetCurrentState();
+        }
+
+        public async Task SetLibrary(int? libraryId, string? folderPath)
+        {
+            CurrentState.LibraryId = libraryId;
+            CurrentState.LibraryPath = folderPath;
+            await librarySetRepo.UpdateState(CurrentState);
         }
 
         public void SetPlaylist(int? playlistId)
         {
-            PlaylistId = playlistId;
+            CurrentState.PlaylistId = playlistId;
         }
     }
 }

@@ -10,11 +10,13 @@ namespace MusicVideoJukebox.Test.Unit
         PlaylistEditViewModel dut;
         LibraryStore libraryStore;
         FakeMetadataManagerFactory metadataManagerFactory;
+        FakeLibrarySetRepo librarySetRepo;
 
         public PlaylistEditViewModelTest()
         {
-            libraryStore = new LibraryStore();
-            libraryStore.SetLibrary(1, "foobar");
+            librarySetRepo = new FakeLibrarySetRepo();
+            libraryStore = new LibraryStore(librarySetRepo);
+            
             metadataManagerFactory = new FakeMetadataManagerFactory();
             dut = new PlaylistEditViewModel(libraryStore, metadataManagerFactory);
         }
@@ -22,6 +24,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task LoadsPlaylists()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1"});
             await dut.Initialize();
             Assert.Single(dut.Playlists);
@@ -30,6 +33,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task LoadsAvailableTracks()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
             await dut.Initialize();
@@ -39,6 +43,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CannotSaveWithNoChanges()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
             await dut.Initialize();
             Assert.False(dut.SavePlaylistCommand.CanExecute());
@@ -47,13 +52,14 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task IfNoLibrarySelectedDontCrash()
         {
-            libraryStore.SetLibrary(null, null);
+            await libraryStore.SetLibrary(null, null);
             await dut.Initialize();
         }
 
         [Fact]
         public async Task WhenAddingNewPlaylistDisablesBottomPanelUntilSaved()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             Assert.NotNull(dut.SelectedPlaylist);
@@ -65,6 +71,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CannotDeleteWhenNothingSelected()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             Assert.False(dut.DeletePlaylistCommand.CanExecute());
         }
@@ -72,6 +79,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenAddingNewPlaylistCannotAddAnotherUntilSaved()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             Assert.False(dut.AddPlaylistCommand.CanExecute());
@@ -80,6 +88,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenAddingNewPlaylistDontDuplicateName()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
@@ -89,6 +98,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task SavesAndRefreshesNewPlaylist()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             await dut.Initialize();
             dut.AddPlaylistCommand.Execute();
             dut.SavePlaylistCommand.Execute();
@@ -100,6 +110,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task SavesExistingPlaylist()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
             await dut.Initialize();
             dut.SelectedPlaylist = dut.Playlists[0];
@@ -111,6 +122,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task LoadsExistingPlaylistTracksWhenInitializing()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "All Songs" });
             await dut.Initialize();
             Assert.NotNull(dut.SelectedPlaylist);
@@ -119,6 +131,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenOnAllPlaylistCannotAddOrDelete()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
             await dut.Initialize();
             dut.SelectedPlaylist = dut.Playlists.First();
@@ -129,6 +142,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenShufflingDoesIt()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
             await dut.Initialize();
             dut.ShufflePlaylistCommand.Execute();
@@ -138,6 +152,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenFilteringShowCorrectTracks()
         {
+            await libraryStore.SetLibrary(1, "foobar");
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });

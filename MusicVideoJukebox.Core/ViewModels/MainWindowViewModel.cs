@@ -14,7 +14,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly INavigationService navigationService;
         private readonly LibraryStore libraryStore;
 
-        public bool IsThereAValidLibraryActive => libraryStore.LibraryId != null;
+        public bool IsThereAValidLibraryActive => libraryStore.CurrentState.LibraryId != null;
 
         public bool IsLibrarySelected => navigationService.CurrentViewModel is LibraryViewModel;
         public bool IsPlaylistEditSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
@@ -35,6 +35,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.navigationService = navigationService;
             this.libraryStore = libraryStore;
             navigationService.NavigationChanged += NavigationService_NavigationChanged;
+        }
+
+        public void RestoreState()
+        {
+            RefreshButtons();
         }
 
         void RefreshButtons()
@@ -105,11 +110,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             OnPropertyChanged(nameof(CurrentViewModel));
             RefreshButtons();
-        }
-
-        public void Initialize(IFadesWhenInactive interfaceFader)
-        {
-            this.interfaceFader = interfaceFader;
         }
     }
 }

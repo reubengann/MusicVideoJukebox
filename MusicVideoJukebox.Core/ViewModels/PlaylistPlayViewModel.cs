@@ -30,8 +30,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public override async Task Initialize()
         {
-            if (libraryStore.FolderPath == null) return;
-            metadataManager = metadataManagerFactory.Create(libraryStore.FolderPath);
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
             var playlists = await metadataManager.GetPlaylists();
             foreach (var playlist in playlists)
             {

@@ -17,9 +17,9 @@ namespace MusicVideoJukebox.Test.Unit
         public LibraryViewModelTest()
         {
             navigationService = new FakeNavigationService();
-            libraryStore = new LibraryStore();
-            dialogService = new FakeDialogService();
             librarySetRepo = new FakeLibrarySetRepo();
+            libraryStore = new LibraryStore(librarySetRepo);
+            dialogService = new FakeDialogService();
             windowLauncher = new FakeWindowLauncher();
             metadataManagerFactory = new FakeMetadataManagerFactory();
 
@@ -55,8 +55,8 @@ namespace MusicVideoJukebox.Test.Unit
         {
             await dut.Initialize();
             dut.SelectLibraryCommand.Execute(new LibraryItemViewModel { IsAddNew = false, LibraryId = 1, LibraryItem = new LibraryItem {  LibraryId = 1, FolderPath = "foobar" } });
-            Assert.Equal(1, libraryStore.LibraryId);
-            Assert.Equal("foobar", libraryStore.FolderPath);
+            Assert.Equal(1, libraryStore.CurrentState.LibraryId);
+            Assert.Equal("foobar", libraryStore.CurrentState.LibraryPath);
         }
 
         [Fact]

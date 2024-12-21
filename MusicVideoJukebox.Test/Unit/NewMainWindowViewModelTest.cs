@@ -18,17 +18,16 @@ namespace MusicVideoJukebox.Test.Unit
 
         public NewMainWindowViewModelTest()
         {
-            libraryStore = new LibraryStore();
+            librarySetRepo = new FakeLibrarySetRepo();
+            libraryStore = new LibraryStore(librarySetRepo);
             videoRepo = new FakeVideoRepo();
             dialogService = new FakeDialogService(); 
             metadataManagerFactory = new FakeMetadataManagerFactory();
-            librarySetRepo = new FakeLibrarySetRepo();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();
             windowLauncher = new FakeWindowLauncher();
 
             dut = new MainWindowViewModel(navigationService, libraryStore);
-            dut.Initialize(interfaceFader);
         }
 
         [Fact]
@@ -81,6 +80,13 @@ namespace MusicVideoJukebox.Test.Unit
         public void NoViewModelInitially()
         {
             Assert.Null(dut.CurrentViewModel);
+        }
+
+        [Fact]
+        public void OnRestoreUpdateLibraryStore()
+        {
+            dut.RestoreState(new CurrentState { LibraryId = 1 });
+            Assert.Equal(1, libraryStore.CurrentState.LibraryId);
         }
     }
 }
