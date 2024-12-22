@@ -21,6 +21,12 @@ namespace MusicVideoJukebox.Core.ViewModels
             return CurrentTrack;
         }
 
+        public PlaylistTrack PlayFirst()
+        {
+            currentIndex = 0;
+            return CurrentTrack;
+        }
+
         public PlaylistTrack Previous()
         {
             currentIndex = (currentIndex - 1 + tracks.Count) % tracks.Count;

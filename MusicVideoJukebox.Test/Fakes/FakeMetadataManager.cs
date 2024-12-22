@@ -16,6 +16,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
         public List<Tuple<int, int>> AddedToPlaylist = [];
         public bool SayChangesWereMade = false;
+        public int? LastPlaylistQueried = null;
 
         public FakeMetadataManager(string folderPath)
         {
@@ -106,6 +107,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
         {
+            LastPlaylistQueried = playlistId;
             await Task.CompletedTask;
             return PlaylistTracks;
         }

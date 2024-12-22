@@ -48,6 +48,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(nameof(IsPlaylistEditSelected));
             OnPropertyChanged(nameof(IsPlaylistPlaySelected));
             OnPropertyChanged(nameof(IsMetadataSelected));
+            OnPropertyChanged(nameof(IsThereAValidLibraryActive));
         }
 
         private async void NavigateToPlaylistPlay()

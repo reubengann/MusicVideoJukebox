@@ -67,6 +67,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         IUIThreadTimer progressUpdateTimer;
         private PlaylistTrack? currentPlaylistTrack;
         private bool sidebarVisible;
+        private int? currentPlaylistId;
 
         public VideoPlayingViewModel(IMediaPlayer mediaElementMediaPlayer, 
             IUIThreadTimerFactory uIThreadTimerFactory, 
@@ -190,31 +191,27 @@ namespace MusicVideoJukebox.Core.ViewModels
             _ = libraryStore.SetVideoId(CurrentPlaylistTrack.VideoId); // fire and forget
         }
 
-        public async Task RestoreState()
-        {
-            await Recheck();
-        }
-
         public async Task Recheck()
         {
-            if (libraryStore.CurrentState.LibraryId == currentLibraryId || libraryStore.CurrentState.LibraryPath == null) return;
+            // if the libraryId is the same and the playlistId is the same, we don't need to do anything.
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            if (libraryStore.CurrentState.LibraryId == currentLibraryId && libraryStore.CurrentState.PlaylistId == currentPlaylistId) return;
 
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
 
-            int playlistId;
-            if (libraryStore.CurrentState.PlaylistId == null)
+            currentLibraryId = libraryStore.CurrentState.LibraryId;
+            currentPlaylistId = libraryStore.CurrentState.PlaylistId;
+
+
+            if (currentPlaylistId == null)
             {
                 var playlists = await metadataManager.GetPlaylists();
                 var playlist = playlists.Where(x => x.IsAll).First();
-                playlistId = playlist.PlaylistId;
-                await libraryStore.SetPlaylist(playlistId);
-            }
-            else
-            {
-                playlistId = (int)libraryStore.CurrentState.PlaylistId;
+                currentPlaylistId = playlist.PlaylistId;
+                await libraryStore.SetPlaylist(currentPlaylistId);
             }
 
-            var tracks = await metadataManager.GetPlaylistTracks(playlistId);
+            var tracks = await metadataManager.GetPlaylistTracks((int)currentPlaylistId);
             if (tracks.Count == 0) return;
             playlistNavigator = new PlaylistNavigator(tracks);
 
@@ -224,7 +221,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             else
             {
-                playlistNavigator.Next();
+                playlistNavigator.PlayFirst();
                 await libraryStore.SetVideoId(playlistNavigator.CurrentTrack.VideoId);
             }
 

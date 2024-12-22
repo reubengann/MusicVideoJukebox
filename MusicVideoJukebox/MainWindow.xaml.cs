@@ -109,7 +109,7 @@ namespace MusicVideoJukebox
             var store = serviceProvider.GetRequiredService<LibraryStore>();
             await store.Initialize();
             vm.RestoreState();
-            await vpvm.RestoreState();
+            await vpvm.Recheck();
         }
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
