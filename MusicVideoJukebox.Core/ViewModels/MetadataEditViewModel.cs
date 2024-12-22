@@ -170,6 +170,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     entry.Status = MetadataStatus.NotFound;
                 }
                 entry.EndProgrammaticUpdate();
+                await Task.Delay(1); // allow a UI update (bleh)
             }
             OnPropertyChanged(); // force an update to enable the save button
         }
