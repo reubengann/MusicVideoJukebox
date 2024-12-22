@@ -27,6 +27,7 @@
 
             <!-- Editable DataGrid -->
             <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+                      SelectedItem="{Binding SelectedItem}"
                       Padding="5">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Status">
@@ -60,7 +61,14 @@
 
                     <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
                 </DataGrid.Columns>
-            </DataGrid>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Header="Launch Match Dialog"
+                      Command="{Binding LaunchMatchDialogCommand}"
+                       />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
 
             <!-- Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">

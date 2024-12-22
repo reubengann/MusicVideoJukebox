@@ -91,5 +91,18 @@ namespace MusicVideoJukebox.Test.Unit
             dut.RefreshDatabaseCommand.Execute(null);
             Assert.Single(dut.MetadataEntries);
         }
+
+        [Fact]
+        public async Task LaunchesDialogOnRightClickSelect()
+        {
+            await libraryStore.SetLibrary(1, "something");
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.SayChangesWereMade = true;
+            await dut.Initialize();
+            dut.SelectedItem = dut.MetadataEntries[0];
+            dut.LaunchMatchDialogCommand.Execute(null);
+            Assert.True(dialogService.ShowedMatchDialog);
+        }
     }
 }

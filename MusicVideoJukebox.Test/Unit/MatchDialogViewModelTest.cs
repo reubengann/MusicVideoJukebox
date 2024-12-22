@@ -39,5 +39,15 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             Assert.Equal(82, dut.Candidates.First().Similarity);
         }
+        
+        [Fact]
+        public async Task CanSearchAgain()
+        {
+            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
+            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            await dut.Initialize();
+            dut.SearchCommand.Execute(null);
+            Assert.Equal(2, metadataManager.SearchCount);
+        }
     }
 }

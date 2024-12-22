@@ -7,7 +7,10 @@
         xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="Match selection" Height="{Binding WindowHeight}" Width="{Binding WindowWidth}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+        Title="Match selection" 
+        Height="{Binding WindowHeight, Mode=TwoWay}" 
+        Width="{Binding WindowWidth, Mode=TwoWay}" 
+        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
         d:DataContext="{d:DesignInstance Type=vms:MatchDialogViewModel, IsDesignTimeCreatable=False}"
         >
 
@@ -42,11 +45,11 @@
                 ItemsSource="{Binding Candidates}"
                       >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" />
-                    <DataGridTextColumn Header="Artist" />
-                    <DataGridTextColumn Header="Album" />
-                    <DataGridTextColumn Header="Year" />
-                    <DataGridTextColumn Header="Score" />
+                    <DataGridTextColumn Header="Title" Binding="{Binding TrackName}" />
+                    <DataGridTextColumn Header="Artist" Binding="{Binding ArtistName}"/>
+                    <DataGridTextColumn Header="Album" Binding="{Binding AlbumTitle}"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding FirstReleaseDateYear}"/>
+                    <DataGridTextColumn Header="Score" Binding="{Binding Similarity}"/>
                 </DataGrid.Columns>
             </DataGrid>
             

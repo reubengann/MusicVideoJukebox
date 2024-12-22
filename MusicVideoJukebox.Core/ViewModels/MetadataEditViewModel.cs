@@ -78,22 +78,33 @@ namespace MusicVideoJukebox.Core.ViewModels
         public ICommand FetchMetadataCommand { get; }
         public ICommand RefreshDatabaseCommand { get; }
         public DelegateCommand SaveChangesCommand { get; }
+        public ICommand LaunchMatchDialogCommand { get; }
 
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
         private readonly IDialogService dialogService;
         private IMetadataManager metadataManager = null!;
         private bool isBusy;
+        private MetadataEntryViewModel? selectedItem;
+
+        public MetadataEntryViewModel? SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
             FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadata());
             RefreshDatabaseCommand = new DelegateCommand(async () => await ReconcileCurrentFolderContents());
             SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges, CanSaveChanges);
+            LaunchMatchDialogCommand = new DelegateCommand(LaunchMatchDialog);
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             this.dialogService = dialogService;
             MetadataEntries.CollectionChanged += MetadataEntries_CollectionChanged;
+        }
+
+        private void LaunchMatchDialog()
+        {
+            if (SelectedItem == null) return;
+            var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(SelectedItem.MetadataObject, metadataManager));
         }
 
         private bool CanSaveChanges()

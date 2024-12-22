@@ -116,6 +116,7 @@ namespace MusicVideoJukebox
 
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            // why is this needed???
             Point currentMousePosition = e.GetPosition(this);
             if (currentMousePosition == _lastMousePosition)
             {

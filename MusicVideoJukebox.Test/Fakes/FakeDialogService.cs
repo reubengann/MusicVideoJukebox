@@ -7,6 +7,8 @@ namespace MusicVideoJukebox.Test.Fakes
     {
         public bool ShowedFolderSelect = false;
         public bool ShowedError = false;
+        public bool ShowedMatchDialog = false;
+        public MetadataMatchDialogResult MatchDialogResultToReturn = new();
         public FolderPickerResult PickResultToReturn = new();
 
         public MultipleFilePickerResult PickMultipleFiles(string filter)
@@ -27,7 +29,8 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public MetadataMatchDialogResult ShowMatchDialog(MatchDialogViewModel vm)
         {
-            throw new NotImplementedException();
+            ShowedMatchDialog = true;
+            return MatchDialogResultToReturn;
         }
 
         public void ShutDownApp()

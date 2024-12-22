@@ -82,17 +82,17 @@ namespace MusicVideoJukebox
         {
             if (fadingOut)
             {
-                Debug.WriteLine("MaybeFadeIn and currently fading out");
+                //Debug.WriteLine("MaybeFadeIn and currently fading out");
                 fadingOut = false;
             }
             if (fadingIn)
             {
-                Debug.WriteLine("Fading in already so ignoring input");
+                //Debug.WriteLine("Fading in already so ignoring input");
                 return;
             }
             if (sidebarShown)
             {
-                Debug.WriteLine("Sidebar already shown so ignoring input");
+                //Debug.WriteLine("Sidebar already shown so ignoring input");
                 return;
             };
 
@@ -111,7 +111,7 @@ namespace MusicVideoJukebox
 
             fadeInAnimation.Completed += (s, e) =>
             {
-                Debug.WriteLine("Completed fade out of sidebar");
+                //Debug.WriteLine("Completed fade out of sidebar");
                 fadingIn = false;
             };
             fadingIn = true;
