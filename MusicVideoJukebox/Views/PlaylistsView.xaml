@@ -104,7 +104,7 @@
                     </StackPanel>
 
                     <!-- Add and Delete Buttons -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
                         <Button Command="{Binding AddTrackToPlaylistCommand}" Height="50" Width="50" ToolTip="Add to Playlist" IsEnabled="{Binding IsPlaylistMutable}">
                             <mat:MaterialIcon Kind="ArrowRight" Width="20" Height="20" />
                         </Button>
@@ -119,7 +119,9 @@
                     <!-- Tracks in Playlist -->
                     <StackPanel Grid.Column="2" Margin="15,0,0,0">
                         <Label Content="Tracks in Playlist" HorizontalAlignment="Center" FontWeight="Bold" />
-                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding PlaylistTracks}" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2">
+                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding PlaylistTracks}" 
+                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2"
+                                  MaxHeight="440" >
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="#" Binding="{Binding PlaylistOrder}" Width="30" />
                                 <DataGridTextColumn Header="Title" Binding="{Binding Name}" Width="*" />
