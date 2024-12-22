@@ -1,6 +1,7 @@
 ﻿using MusicVideoJukebox.Core.UserInterface;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -15,6 +16,7 @@ namespace MusicVideoJukebox
         private bool fadingOut = false;
         private bool fadingIn = false;
         private bool enabled = true;
+        private bool sidebarShown = false;
 
         public event EventHandler<VisibilityChangedEventArgs>? VisibilityChanged;
 
@@ -48,6 +50,7 @@ namespace MusicVideoJukebox
             fadeOutAnimation.Completed += (s, e) => { 
                 fadingOut = false; 
                 VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); 
+                sidebarShown = false;
             };
             fadingOut = true;
             foreach (var element in elements)
@@ -77,8 +80,23 @@ namespace MusicVideoJukebox
 
         private void MaybeFadeButtonsIn()
         {
-            if (fadingOut) fadingOut = false;
-            if (fadingIn) return;
+            if (fadingOut)
+            {
+                Debug.WriteLine("MaybeFadeIn and currently fading out");
+                fadingOut = false;
+            }
+            if (fadingIn)
+            {
+                Debug.WriteLine("Fading in already so ignoring input");
+                return;
+            }
+            if (sidebarShown)
+            {
+                Debug.WriteLine("Sidebar already shown so ignoring input");
+                return;
+            };
+
+            sidebarShown = true;
 
             _timer.Stop();
             _timer.Start();
@@ -91,7 +109,11 @@ namespace MusicVideoJukebox
 
             VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(true));
 
-            fadeInAnimation.Completed += (s, e) => fadingIn = false;
+            fadeInAnimation.Completed += (s, e) =>
+            {
+                Debug.WriteLine("Completed fade out of sidebar");
+                fadingIn = false;
+            };
             fadingIn = true;
             foreach (var element in elements)
             {

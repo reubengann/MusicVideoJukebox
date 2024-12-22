@@ -112,8 +112,16 @@ namespace MusicVideoJukebox
             await vpvm.Recheck();
         }
 
+        private Point _lastMousePosition = new Point(-1, -1); // Initial invalid position
+
         private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            Point currentMousePosition = e.GetPosition(this);
+            if (currentMousePosition == _lastMousePosition)
+            {
+                return;
+            }
+            _lastMousePosition = currentMousePosition;
             interfaceFader.UserInteracted();
         }
 
