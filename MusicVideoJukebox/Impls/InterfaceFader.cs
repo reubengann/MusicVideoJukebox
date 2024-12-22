@@ -51,6 +51,10 @@ namespace MusicVideoJukebox
                 fadingOut = false; 
                 VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); 
                 sidebarShown = false;
+                foreach (var element in elements)
+                {
+                    element.Visibility = Visibility.Collapsed;
+                }
             };
             fadingOut = true;
             foreach (var element in elements)
@@ -101,6 +105,10 @@ namespace MusicVideoJukebox
             _timer.Stop();
             _timer.Start();
 
+            foreach (var element in elements)
+            {
+                element.Visibility = Visibility.Visible;
+            }
             var fadeInAnimation = new DoubleAnimation
             {
                 To = 1,

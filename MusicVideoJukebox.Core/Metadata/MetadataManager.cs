@@ -36,11 +36,6 @@ namespace MusicVideoJukebox.Core.Metadata
                 infos.Add(FileNameToBasicInfo(row));
             }
             await videoRepo.AddBasicInfos(infos);
-            var added = await videoRepo.GetAllMetadata();
-            foreach (var row in added)
-            {
-                await videoRepo.AppendSongToPlaylist(1, row.VideoId);
-            }
         }
 
         private static BasicInfo FileNameToBasicInfo(string filename)

@@ -202,6 +202,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             var playlistChangedOnly = currentPlaylistId != libraryStore.CurrentState.PlaylistId;
 
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+            await metadataManager.EnsureCreated();
 
             currentLibraryId = libraryStore.CurrentState.LibraryId;
             currentPlaylistId = libraryStore.CurrentState.PlaylistId;
