@@ -9,6 +9,8 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
+        public List<ScoredMetadata> ScoredCandidates = [];
+
         public bool WasShuffled = false;
 
         public List<Playlist> Playlists = [];
@@ -110,6 +112,12 @@ namespace MusicVideoJukebox.Test.Fakes
             LastPlaylistQueried = playlistId;
             await Task.CompletedTask;
             return PlaylistTracks;
+        }
+
+        public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)
+        {
+            await Task.CompletedTask;
+            return ScoredCandidates;
         }
     }
 }

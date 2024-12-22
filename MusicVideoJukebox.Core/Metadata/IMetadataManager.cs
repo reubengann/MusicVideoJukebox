@@ -24,5 +24,15 @@
         Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
+        public Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track);
+    }
+
+    public class ScoredMetadata
+    {
+        required public string TrackName { get; set; }
+        required public string ArtistName { get; set; }
+        required public int FirstReleaseDateYear { get; set; }
+        required public string AlbumTitle { get; set; }
+        required public int Similarity { get; set; }
     }
 }

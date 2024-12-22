@@ -160,7 +160,6 @@ namespace MusicVideoJukebox.Core.ViewModels
                 var result = await metadataManager.TryGetAlbumYear(entry.Artist, entry.Title);
                 if (result.Success)
                 {
-                    //entry.Status = MetadataStatus.Done;
                     entry.Album = result.AlbumTitle;
                     entry.Year = result.ReleaseYear;
                     entry.Status = MetadataStatus.Done;

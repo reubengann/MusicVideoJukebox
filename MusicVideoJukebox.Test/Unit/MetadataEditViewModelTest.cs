@@ -59,6 +59,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             await dut.Initialize();
             dut.FetchMetadataCommand.Execute(null);
+            await Task.Delay(5); // overcome the waiting inside the loop :(
             Assert.True(dut.MetadataEntries.All(x => x.Status == MetadataStatus.NotFound));
         }
 
@@ -72,6 +73,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.ReferenceDataToGet["artist2 title2"] = new GetAlbumYearResult { Success = true, AlbumTitle = "album2", ReleaseYear = 1902 };
             await dut.Initialize();
             dut.FetchMetadataCommand.Execute(null);
+            await Task.Delay(5); // overcome the waiting inside the loop :(
             Assert.True(dut.MetadataEntries.All(x => x.Status == MetadataStatus.Done));
             Assert.Equal("album1", dut.MetadataEntries[0].Album);
             Assert.True(dut.MetadataEntries.All(x => x.IsModified));

@@ -1,11 +1,20 @@
 ﻿using Microsoft.Win32;
 using MusicVideoJukebox.Core.UserInterface;
+using MusicVideoJukebox.Core.ViewModels;
+using MusicVideoJukebox.Views;
 using System.Windows;
 
 namespace MusicVideoJukebox
 {
     public class WindowsDialogService : IDialogService
     {
+        private readonly Window parent;
+
+        public WindowsDialogService(Window parent)
+        {
+            this.parent = parent;
+        }
+
         public MultipleFilePickerResult PickMultipleFiles(string filter)
         {
             var dialog = new OpenFileDialog
@@ -39,6 +48,24 @@ namespace MusicVideoJukebox
                 return new FolderPickerResult { Accepted = true, SelectedFolder = dialog.FolderName };
             }
             return new FolderPickerResult { Accepted = false };
+        }
+
+        public MetadataMatchDialogResult ShowMatchDialog(MatchDialogViewModel vm)
+        {
+            vm.WindowHeight = (int)(parent.ActualHeight * 0.8);
+            vm.WindowWidth = (int)(parent.ActualWidth * 0.8);
+            var dialog = new MetadataMatchSelectionDialog(vm);
+            dialog.Owner = parent;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var result = dialog.ShowDialog();
+            if (vm.SelectedPressed)
+            {
+                return new MetadataMatchDialogResult { Accepted = true };
+            }
+            else
+            {
+                return new MetadataMatchDialogResult { Accepted = false };
+            }
         }
 
         public void ShutDownApp()

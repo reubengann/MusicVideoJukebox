@@ -1,4 +1,6 @@
-﻿namespace MusicVideoJukebox.Core.UserInterface
+﻿using MusicVideoJukebox.Core.ViewModels;
+
+namespace MusicVideoJukebox.Core.UserInterface
 {
     public class FolderPickerResult
     {
@@ -12,10 +14,17 @@
         public List<string>? SelectedFiles { get; set; }
     }
 
+    public class MetadataMatchDialogResult
+    {
+        public bool Accepted { get; set; }
+
+    }
+
     public interface IDialogService
     {
         FolderPickerResult ShowFolderSelect(string title, string InitialDirectory);
         MultipleFilePickerResult PickMultipleFiles(string filter);
+        MetadataMatchDialogResult ShowMatchDialog(MatchDialogViewModel vm);
 
         void ShowError(string message);
         void ShutDownApp();

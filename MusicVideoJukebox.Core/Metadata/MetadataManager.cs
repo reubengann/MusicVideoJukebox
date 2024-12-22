@@ -64,21 +64,27 @@ namespace MusicVideoJukebox.Core.Metadata
                 return new GetAlbumYearResult { Success = true, AlbumTitle = maybeExactResult.FetchedMetadata.AlbumTitle, ReleaseYear = maybeExactResult.FetchedMetadata.FirstReleaseDateYear };
             }
             // fuzzy match
-            var partialMatches = await referenceDataRepo.GetCandidates(artist, track);
-            var bestMatch = partialMatches
-            .Select(candidate => new
-            {
-                Candidate = candidate,
-                Similarity = GetSimilarity($"{artist} {track}", $"{candidate.ArtistName} {candidate.TrackName}")
-            })
+            var bestMatch = (await GetScoredCandidates(artist, track))
             .Where(x => x.Similarity >= similarityThreshold)
             .OrderByDescending(x => x.Similarity)
             .FirstOrDefault();
             if (bestMatch != null)
             {
-                return new GetAlbumYearResult { Success = true, AlbumTitle = bestMatch.Candidate.AlbumTitle, ReleaseYear = bestMatch.Candidate.FirstReleaseDateYear };
+                return new GetAlbumYearResult { Success = true, AlbumTitle = bestMatch.AlbumTitle, ReleaseYear = bestMatch.FirstReleaseDateYear };
             }
             return new GetAlbumYearResult { Success = false };
+        }
+
+        public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)
+        {
+            var partialMatches = await referenceDataRepo.GetCandidates(artist, track);
+            return partialMatches.Select(x => new ScoredMetadata { 
+                AlbumTitle = x.AlbumTitle, 
+                ArtistName = x.ArtistName, 
+                FirstReleaseDateYear = x.FirstReleaseDateYear,
+                TrackName = x.TrackName,
+                Similarity = GetSimilarity($"{artist} {track}", $"{x.ArtistName} {x.TrackName}")
+            }).ToList();
         }
 
         public async Task UpdateVideoMetadata(VideoMetadata entry)

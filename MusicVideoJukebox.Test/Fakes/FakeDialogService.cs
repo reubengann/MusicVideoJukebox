@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.UserInterface;
+using MusicVideoJukebox.Core.ViewModels;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -22,6 +23,11 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             ShowedFolderSelect = true;
             return PickResultToReturn;
+        }
+
+        public MetadataMatchDialogResult ShowMatchDialog(MatchDialogViewModel vm)
+        {
+            throw new NotImplementedException();
         }
 
         public void ShutDownApp()

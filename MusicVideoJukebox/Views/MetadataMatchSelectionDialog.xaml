@@ -1,0 +1,56 @@
+﻿<Window x:Class="MusicVideoJukebox.Views.MetadataMatchSelectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+        xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+        mc:Ignorable="d"
+        Title="Match selection" Height="{Binding WindowHeight}" Width="{Binding WindowWidth}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+        d:DataContext="{d:DesignInstance Type=vms:MatchDialogViewModel, IsDesignTimeCreatable=False}"
+        >
+
+    <Viewbox>
+        <Grid Width="640" Height="360">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5" >
+                <Label>Artist</Label>
+                <TextBox Width="200" Text="{Binding SearchArtist, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <Label>Title</Label>
+                <TextBox Width="200" Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            </StackPanel>
+            <Button Grid.Column="1" Margin="5" Command="{Binding SearchCommand}">Search again</Button>
+            
+            <DataGrid
+                AutoGenerateColumns="False" 
+                SelectionMode="Single" 
+                Margin="5" 
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                ItemsSource="{Binding Candidates}"
+                      >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title" />
+                    <DataGridTextColumn Header="Artist" />
+                    <DataGridTextColumn Header="Album" />
+                    <DataGridTextColumn Header="Year" />
+                    <DataGridTextColumn Header="Score" />
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <UniformGrid Rows="1" Grid.Column="1" Grid.Row="2">
+                <Button Margin="5" Command="{Binding SelectCommand}">Select</Button>
+                <Button Margin="5" Command="{Binding CancelCommand}">Cancel</Button>
+            </UniformGrid>
+        </Grid>
+    </Viewbox>
+</Window>
