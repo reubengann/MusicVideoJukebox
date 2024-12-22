@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance Type=vms:PlaylistEditViewModel, IsDesignTimeCreatable=False}">
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
         <Viewbox Margin="20">
-            <Grid Width="900" Height="500">
+            <Grid Width="900" Height="600">
                 <!-- Row Definitions -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -39,7 +39,7 @@
                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
                         <DockPanel Margin="0,0,0,10">
                             <Label Content="Name:" DockPanel.Dock="Left" />
-                            <TextBox Text="{Binding SelectedPlaylist.Name}" IsEnabled="{Binding IsPlaylistMutable}" />
+                            <TextBox Text="{Binding SelectedPlaylist.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPlaylistMutable}" />
                         </DockPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Command="{Binding DeletePlaylistCommand}" IsEnabled="{Binding IsPlaylistMutable}" Width="40" Height="40" ToolTip="Delete Playlist">
@@ -76,7 +76,7 @@
                             <TextBox Text="{Binding AvailableTracksFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
                         <!--SelectedItem="{Binding SelectedAvailableTrack}"-->
-                        <ListBox BorderThickness="2" ItemsSource="{Binding FilteredAvailableTracks}"  DisplayMemberPath="Name"/>
+                        <ListBox MaxHeight="400" BorderThickness="2" ItemsSource="{Binding FilteredAvailableTracks}"  DisplayMemberPath="Name"/>
                     </StackPanel>
 
                     <!-- Add and Delete Buttons -->

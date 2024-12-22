@@ -2,6 +2,7 @@
 using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -32,8 +33,19 @@ namespace MusicVideoJukebox.Core.ViewModels
             get => selectedPlaylist;
             set
             {
+
+                if (selectedPlaylist != null)
+                {
+                    selectedPlaylist.PropertyChanged -= SelectedPlaylist_PropertyChanged;
+                }
+                
                 SetProperty(ref selectedPlaylist, value);
                 OnPropertyChanged(nameof(CanEditTracks));
+
+                if (SelectedPlaylist != null)
+                {
+                    SelectedPlaylist.PropertyChanged += SelectedPlaylist_PropertyChanged;
+                }
 
                 if (value != null && value.Id > 0)
                 {
@@ -44,6 +56,15 @@ namespace MusicVideoJukebox.Core.ViewModels
                     PlaylistTracks.Clear();
                 }
                 RefreshButtons();
+                OnPropertyChanged(nameof(IsPlaylistMutable));
+            }
+        }
+
+        private void SelectedPlaylist_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PlaylistViewModel.Name))
+            {
+                SavePlaylistCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -232,6 +253,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             Playlists.Add(newPlaylistViewModel);
             SelectedPlaylist = newPlaylistViewModel;
             OnPropertyChanged(nameof(SelectedPlaylist));
+            OnPropertyChanged(nameof(IsPlaylistMutable));
+            RefreshButtons();
         }
 
         public override async Task Initialize()
