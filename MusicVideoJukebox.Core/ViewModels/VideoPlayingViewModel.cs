@@ -122,12 +122,14 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void SkipPrevious()
         {
             if (playlistNavigator == null) return;
+            mediaPlayer.HideInfoImmediate();
             SetSource(playlistNavigator.Previous());
         }
 
         private void SkipNext()
         {
             if (playlistNavigator == null) return;
+            mediaPlayer.HideInfoImmediate();
             SetSource(playlistNavigator.Next());
         }
 
@@ -197,6 +199,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (libraryStore.CurrentState.LibraryPath == null) return;
             if (libraryStore.CurrentState.LibraryId == currentLibraryId && libraryStore.CurrentState.PlaylistId == currentPlaylistId) return;
 
+            var playlistChangedOnly = currentPlaylistId != libraryStore.CurrentState.PlaylistId;
+
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
 
             currentLibraryId = libraryStore.CurrentState.LibraryId;
@@ -215,7 +219,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (tracks.Count == 0) return;
             playlistNavigator = new PlaylistNavigator(tracks);
 
-            if (libraryStore.CurrentState.VideoId != null)
+            if (libraryStore.CurrentState.VideoId != null && !playlistChangedOnly)
             {
                 playlistNavigator.SetCurrentTrack((int)libraryStore.CurrentState.VideoId);
             }

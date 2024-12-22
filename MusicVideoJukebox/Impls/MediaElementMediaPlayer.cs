@@ -42,7 +42,7 @@ namespace MusicVideoJukebox
 
         public void HideInfoImmediate()
         {
-            videoInfoDisplay.Opacity = 0;
+            videoInfoDisplay.BeginAnimation(opacityProperty, new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.001) });
         }
 
         public double LengthSeconds

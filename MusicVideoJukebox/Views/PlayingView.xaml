@@ -31,7 +31,7 @@
             <Viewbox Grid.Column="{Binding IsSidebarVisible, 
            Converter={StaticResource BoolToMarginConverter}}" Grid.ColumnSpan="3"
                      Height="300" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,50">
-            <views:VideoInfoDisplay x:Name="VideoInfo" Opacity="100" DataContext="{Binding InfoViewModel}" />
+            <views:VideoInfoDisplay x:Name="VideoInfo" DataContext="{Binding InfoViewModel}" />
         </Viewbox>
         </Grid>
         <!-- Layout Container -->
