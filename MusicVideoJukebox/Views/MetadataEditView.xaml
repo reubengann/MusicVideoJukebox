@@ -18,7 +18,8 @@
         
     </UserControl.Resources>
     <Grid>
-        <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+        <Viewbox>
+            <Grid Height="600" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -68,6 +69,7 @@
                 <Button Content="Save Changes" Command="{Binding SaveChangesCommand}" />
             </StackPanel>
         </Grid>
+        </Viewbox>
         <Grid>
             <mah:ProgressRing IsActive="{Binding IsBusy}"/>
         </Grid>

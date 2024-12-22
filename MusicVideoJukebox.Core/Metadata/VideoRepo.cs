@@ -42,11 +42,11 @@ namespace MusicVideoJukebox.Core.Metadata
             await transaction.CommitAsync();
         }
 
-        public async Task AppendSongToPlaylist(int playlistId, int videoId)
+        public async Task<int> AppendSongToPlaylist(int playlistId, int videoId)
         {
             using var conn = new SQLiteConnection(connectionString);
 
-            await conn.ExecuteAsync(
+            var id = await conn.ExecuteScalarAsync<int>(
                 @"INSERT INTO playlist_video (playlist_id, video_id, play_order)
           VALUES (
               @playlistId,
@@ -55,8 +55,10 @@ namespace MusicVideoJukebox.Core.Metadata
                   (SELECT MAX(play_order) + 1 FROM playlist_video WHERE playlist_id = @playlistId),
                   1
               )
-          )",
+          )
+            RETURNING playlist_video_id",
                 new { playlistId, videoId });
+            return id;
         }
 
         public async Task CreateTables()

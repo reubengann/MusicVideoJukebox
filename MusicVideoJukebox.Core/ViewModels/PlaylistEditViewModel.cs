@@ -154,7 +154,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             AddPlaylistCommand = new DelegateCommand(AddPlaylist, CanAddPlaylist);
             SavePlaylistCommand = new DelegateCommand(SavePlaylist, CanSavePlaylist);
             DeletePlaylistCommand = new DelegateCommand(DeletePlaylist, CanDeletePlaylist);
-            AddTrackToPlaylistCommand = new DelegateCommand(AddTrackToPlaylist, CanAddTrackToPlaylist);
+            AddTrackToPlaylistCommand = new DelegateCommand(AddTracksToPlaylist, CanAddTrackToPlaylist);
             DeleteTrackFromPlaylistCommand = new DelegateCommand(DeleteTrackFromPlaylist, CanDeleteTrackFromPlaylist);
             ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist, CanShufflePlaylist);
         }
@@ -190,9 +190,17 @@ namespace MusicVideoJukebox.Core.ViewModels
             return true;
         }
 
-        private void AddTrackToPlaylist()
+        private async void AddTracksToPlaylist()
         {
-            
+            if (SelectedPlaylist == null) return;
+            var selectedTracks = FilteredAvailableTracks.Where(x => x.IsSelected);
+            int count = PlaylistTracks.Count;
+            foreach(var track in selectedTracks)
+            {
+                count++;
+                var playlistVideoId = await metadataManager.AppendSongToPlaylist(SelectedPlaylist.Playlist.PlaylistId, track.Metadata.VideoId);
+                PlaylistTracks.Add(new PlaylistTrackViewModel(new PlaylistTrackForViewmodel { Artist = track.Artist, Title = track.Title, PlaylistId = SelectedPlaylist.Id, PlaylistVideoId = playlistVideoId, PlayOrder = count, VideoId = track.Metadata.VideoId }));
+            }
         }
 
         private bool CanDeletePlaylist()

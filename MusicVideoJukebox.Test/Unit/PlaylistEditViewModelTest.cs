@@ -161,5 +161,21 @@ namespace MusicVideoJukebox.Test.Unit
             dut.AvailableTracksFilter = "2";
             Assert.Single(dut.FilteredAvailableTracks);
         }
+
+        [Fact]
+        public async Task CanAddTracksToPlaylist()
+        {
+            await libraryStore.SetLibrary(1, "foobar");
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "All Songs", IsAll = true });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
+            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
+            await dut.Initialize();
+            foreach(var t in dut.FilteredAvailableTracks)
+            {
+                t.IsSelected = true;
+            }
+            dut.AddTrackToPlaylistCommand.Execute();
+            Assert.Equal(2, metadataManagerFactory.ToReturn.AddedToPlaylist.Count);
+        }
     }
 }

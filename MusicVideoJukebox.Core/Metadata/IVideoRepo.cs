@@ -10,7 +10,7 @@
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
         Task UpdatePlaylistName(int id, string name);
-        Task AppendSongToPlaylist(int playlistId, int videoId);
+        Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task DeleteFromPlaylist(int playlistId, int videoId);

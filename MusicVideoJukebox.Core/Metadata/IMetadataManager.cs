@@ -21,7 +21,7 @@
         Task<bool> Resync();
         Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId);
         Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId);
-        Task AppendSongToPlaylist(int playlistId, int videoId);
+        Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
     }

@@ -88,10 +88,10 @@ namespace MusicVideoJukebox.Test.Fakes
             return PlaylistTracks.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title, PlayOrder = i++ }).ToList();
         }
 
-        public Task AppendSongToPlaylist(int playlistId, int videoId)
+        public Task<int> AppendSongToPlaylist(int playlistId, int videoId)
         {
             AddedToPlaylist.Add(new Tuple<int, int> (playlistId, videoId));
-            return Task.CompletedTask;
+            return Task.FromResult(1);
         }
 
         public Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)

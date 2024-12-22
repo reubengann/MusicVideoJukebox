@@ -76,7 +76,31 @@
                             <TextBox Text="{Binding AvailableTracksFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
                         <!--SelectedItem="{Binding SelectedAvailableTrack}"-->
-                        <ListBox MaxHeight="400" BorderThickness="2" ItemsSource="{Binding FilteredAvailableTracks}"  DisplayMemberPath="Name"/>
+                        <DataGrid 
+                            MaxHeight="400" 
+                            BorderThickness="2" 
+                            ItemsSource="{Binding FilteredAvailableTracks}"  
+                            DisplayMemberPath="Name"
+                            AutoGenerateColumns="False"
+                            CanUserSortColumns="True"
+                            IsReadOnly="True"
+                            SelectionMode="Extended"
+                            SelectionUnit="FullRow"
+                            >
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <!-- Artist Column -->
+                                <DataGridTextColumn Header="Artist" Binding="{Binding Metadata.Artist}" />
+                                <!-- Title Column -->
+                                <DataGridTextColumn Header="Title" Binding="{Binding Metadata.Title}" />
+                                <!-- Year Column -->
+                                <DataGridTextColumn Header="Year" Binding="{Binding Metadata.ReleaseYear}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </StackPanel>
 
                     <!-- Add and Delete Buttons -->

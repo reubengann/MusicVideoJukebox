@@ -5,14 +5,23 @@ namespace MusicVideoJukebox.Core.ViewModels
     public class AvailableTrackViewModel : BaseViewModel
     {
         private readonly VideoMetadata meta;
-        public bool IsModified { get; set; } = false;
 
         public AvailableTrackViewModel(VideoMetadata meta)
         {
             this.meta = meta;
         }
 
-        public string Name => $"{meta.Artist} - {meta.Title}";
+        public string Artist => meta.Artist;
+        public string Title => meta.Title;
+        public int? ReleaseYear => meta.ReleaseYear;
         public VideoMetadata Metadata => meta;
+
+        private bool isSelected;
+
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
+        }
     }
 }

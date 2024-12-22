@@ -143,9 +143,9 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.GetPlaylistTracks(playlistId);
         }
 
-        public async Task AppendSongToPlaylist(int playlistId, int videoId)
+        public async Task<int> AppendSongToPlaylist(int playlistId, int videoId)
         {
-            await videoRepo.AppendSongToPlaylist(playlistId, videoId);
+            return await videoRepo.AppendSongToPlaylist(playlistId, videoId);
         }
 
         public async Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)

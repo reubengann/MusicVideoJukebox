@@ -16,10 +16,10 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.CompletedTask;
         }
 
-        public Task AppendSongToPlaylist(int playlistId, int videoId)
+        public Task<int> AppendSongToPlaylist(int playlistId, int videoId)
         {
             AppendedToPlaylist.Add(new Tuple<int, int>(playlistId, videoId ));
-            return Task.CompletedTask;
+            return Task.FromResult(1);
         }
 
         public async Task CreateTables()
