@@ -17,9 +17,9 @@
         <foo:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
         <Viewbox>
-            <Grid Height="600" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+            <Grid Height="600"  IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>

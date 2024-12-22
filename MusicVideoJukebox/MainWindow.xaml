@@ -51,10 +51,15 @@
         </Viewbox>
         <Grid Panel.ZIndex="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".70*"/>
-                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions> 
             <Border x:Name="Sidebar" Background="#2E0400" VerticalAlignment="Stretch" Height="Auto" Padding="0,5,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
                 <Viewbox VerticalAlignment="Top">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="Auto">
                         <Button Command="{Binding NavigateLibraryCommand}">
@@ -111,6 +116,7 @@
                         </Button>
                     </StackPanel>
                 </Viewbox>
+                </Grid>
             </Border>
             
             <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="1">
