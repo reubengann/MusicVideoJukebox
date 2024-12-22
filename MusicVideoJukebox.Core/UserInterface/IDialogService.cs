@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
+﻿using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.ViewModels;
 
 namespace MusicVideoJukebox.Core.UserInterface
 {
@@ -17,7 +18,7 @@ namespace MusicVideoJukebox.Core.UserInterface
     public class MetadataMatchDialogResult
     {
         public bool Accepted { get; set; }
-
+        public ScoredMetadata? ScoredMetadata { get; set; }
     }
 
     public interface IDialogService

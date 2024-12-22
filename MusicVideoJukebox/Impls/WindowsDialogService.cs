@@ -58,9 +58,9 @@ namespace MusicVideoJukebox
             dialog.Owner = parent;
             dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             var result = dialog.ShowDialog();
-            if (vm.SelectedPressed)
+            if (vm.Accepted)
             {
-                return new MetadataMatchDialogResult { Accepted = true };
+                return new MetadataMatchDialogResult { Accepted = true, ScoredMetadata = vm.SelectedItem };
             }
             else
             {

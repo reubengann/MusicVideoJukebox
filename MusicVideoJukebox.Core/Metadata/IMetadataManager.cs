@@ -31,8 +31,8 @@
     {
         required public string TrackName { get; set; }
         required public string ArtistName { get; set; }
-        required public int FirstReleaseDateYear { get; set; }
-        required public string AlbumTitle { get; set; }
+        required public int? FirstReleaseDateYear { get; set; }
+        required public string? AlbumTitle { get; set; }
         required public int Similarity { get; set; }
     }
 }

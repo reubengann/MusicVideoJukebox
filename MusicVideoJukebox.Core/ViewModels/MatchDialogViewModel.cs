@@ -14,15 +14,21 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool isLoading;
         private int windowHeight;
         private int windowWidth;
+        private ScoredMetadata? selectedItem;
+        public event Action? RequestClose;
 
-        public bool SelectedPressed { get; set; }
         public int WindowHeight { get => windowHeight; set => SetProperty(ref windowHeight, value); }
         public int WindowWidth { get => windowWidth; set => SetProperty(ref windowWidth, value); }
         public ObservableCollection<ScoredMetadata> Candidates { get; set; } = [];
+        public ScoredMetadata? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); SelectCommand.RaiseCanExecuteChanged(); } }
 
-        public ICommand SearchCommand { get; set; }
+        public bool Accepted { get; set; } = false;
 
-        public string SearchArtist { get => searchArtist; set => SetProperty(ref searchArtist, value); }
+        public ICommand SearchCommand { get; }
+        public ICommand CancelCommand { get; }
+        public DelegateCommand SelectCommand { get; }
+
+        public string SearchArtist { get => searchArtist; set { SetProperty(ref searchArtist, value); } }
         public string SearchTitle { get => searchTitle; set => SetProperty(ref searchTitle, value); }
         public bool IsLoading
         {
@@ -33,10 +39,28 @@ namespace MusicVideoJukebox.Core.ViewModels
         public MatchDialogViewModel(VideoMetadata metadata, IMetadataManager metadataManager)
         {
             SearchCommand = new DelegateCommand(SearchAgain);
+            SelectCommand = new DelegateCommand(Select, CanSelect);
+            CancelCommand = new DelegateCommand(Cancel);
             this.metadata = metadata;
             this.metadataManager = metadataManager;
             searchArtist = metadata.Artist;
             searchTitle = metadata.Title;
+        }
+
+        private void Cancel()
+        {
+            RequestClose?.Invoke();
+        }
+
+        private bool CanSelect()
+        {
+            return SelectedItem != null;
+        }
+
+        private void Select()
+        {
+            Accepted = true;
+            RequestClose?.Invoke();
         }
 
         private async void SearchAgain()
@@ -56,6 +80,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
             try
             {
+                var maybeExactMatch = await metadataManager.TryGetAlbumYear(SearchArtist, SearchTitle);
+                if (maybeExactMatch.Success)
+                {
+                    Candidates.Add(new ScoredMetadata { AlbumTitle = maybeExactMatch.AlbumTitle, ArtistName = SearchArtist, FirstReleaseDateYear = maybeExactMatch.ReleaseYear, Similarity = 100, TrackName = SearchTitle });
+                }
                 var candidates = await metadataManager.GetScoredCandidates(SearchArtist, SearchTitle);
                 foreach (var candidate in candidates.OrderByDescending(x => x.Similarity))
                 {

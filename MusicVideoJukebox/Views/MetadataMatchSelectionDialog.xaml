@@ -43,11 +43,12 @@
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding Candidates}"
+                SelectedItem="{Binding SelectedItem}"
                       >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding TrackName}" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding ArtistName}"/>
-                    <DataGridTextColumn Header="Album" Binding="{Binding AlbumTitle}"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding TrackName}" Width="200" />
+                    <DataGridTextColumn Header="Artist" Binding="{Binding ArtistName}" Width="175"/>
+                    <DataGridTextColumn Header="Album" Binding="{Binding AlbumTitle}" Width="100"/>
                     <DataGridTextColumn Header="Year" Binding="{Binding FirstReleaseDateYear}"/>
                     <DataGridTextColumn Header="Score" Binding="{Binding Similarity}"/>
                 </DataGrid.Columns>

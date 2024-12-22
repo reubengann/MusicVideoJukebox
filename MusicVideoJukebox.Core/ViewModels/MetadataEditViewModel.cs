@@ -105,6 +105,18 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (SelectedItem == null) return;
             var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(SelectedItem.MetadataObject, metadataManager));
+            if (result.Accepted)
+            {
+                ArgumentNullException.ThrowIfNull(result.ScoredMetadata);
+                var scoredMetadata = result.ScoredMetadata;
+                SelectedItem.StartProgrammaticUpdate();
+                SelectedItem.Artist = scoredMetadata.ArtistName;
+                SelectedItem.Album = scoredMetadata.AlbumTitle;
+                SelectedItem.Title = scoredMetadata.TrackName;
+                SelectedItem.Year = scoredMetadata.FirstReleaseDateYear;
+                SelectedItem.Status = MetadataStatus.Done;
+                SelectedItem.EndProgrammaticUpdate();
+            }
         }
 
         private bool CanSaveChanges()

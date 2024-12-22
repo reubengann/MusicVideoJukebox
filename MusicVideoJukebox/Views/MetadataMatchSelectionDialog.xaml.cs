@@ -16,6 +16,12 @@ namespace MusicVideoJukebox.Views
             DataContext = vm;
             Loaded += MetadataMatchSelectionDialog_Loaded;
             this.vm = vm;
+            vm.RequestClose += Vm_RequestClose;
+        }
+
+        private void Vm_RequestClose()
+        {
+            Close();
         }
 
         private async void MetadataMatchSelectionDialog_Loaded(object sender, RoutedEventArgs e)
