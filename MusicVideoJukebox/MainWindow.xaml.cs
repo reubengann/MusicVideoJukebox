@@ -130,6 +130,7 @@ namespace MusicVideoJukebox
             services.AddTransient<MetadataEditViewModel>();
             services.AddTransient<PlaylistEditViewModel>();
             services.AddTransient<PlaylistPlayViewModel>();
+            services.AddSingleton<IDialogService>(x => new WindowsDialogService(this));
             //services.AddSingleton<AppStateService>();
             
             services.AddSingleton<VideoPlayingViewModel>();
@@ -139,7 +140,6 @@ namespace MusicVideoJukebox
             services.AddSingleton<LibraryStore>();
             services.AddSingleton<IFileSystemService, FileSystemService>();
             services.AddSingleton<IUIThreadTimerFactory, DispatcherUITimerFactory>();
-            services.AddSingleton<IDialogService, WindowsDialogService>();
             services.AddSingleton<IKeyboardHandler, KeyboardHandler>();
             services.AddSingleton<IReferenceDataRepo>(s => new ReferenceDataRepo("reference.sqlite"));
             var playerControls = player.playerControls as FrameworkElement;

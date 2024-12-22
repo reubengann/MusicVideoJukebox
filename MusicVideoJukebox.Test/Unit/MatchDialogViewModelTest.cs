@@ -1,11 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -17,7 +12,14 @@ namespace MusicVideoJukebox.Test.Unit
         public MatchDialogViewModelTest()
         {
             metadataManager = new FakeMetadataManager("");
-            dut = new MatchDialogViewModel(new VideoMetadata {  Artist = "artist1", Filename = "", Title = "track1"}, metadataManager);
+            dut = new MatchDialogViewModel(new VideoMetadata { Artist = "artist1", Filename = "", Title = "track1" }, metadataManager);
+        }
+
+        [Fact]
+        public void Prepopulates()
+        {
+            Assert.Equal("artist1", dut.SearchArtist);
+            Assert.Equal("track1", dut.SearchTitle);
         }
 
         [Fact]

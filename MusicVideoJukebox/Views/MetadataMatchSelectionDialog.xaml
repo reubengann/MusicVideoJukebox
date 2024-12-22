@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox.Views"
         xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Title="Match selection" Height="{Binding WindowHeight}" Width="{Binding WindowWidth}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
         d:DataContext="{d:DesignInstance Type=vms:MatchDialogViewModel, IsDesignTimeCreatable=False}"
@@ -22,6 +23,8 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
+            
+            
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5" >
                 <Label>Artist</Label>
                 <TextBox Width="200" Text="{Binding SearchArtist, UpdateSourceTrigger=PropertyChanged}"></TextBox>
@@ -51,6 +54,9 @@
                 <Button Margin="5" Command="{Binding SelectCommand}">Select</Button>
                 <Button Margin="5" Command="{Binding CancelCommand}">Cancel</Button>
             </UniformGrid>
+
+            <mah:ProgressRing IsActive="{Binding IsLoading}" Width="50" Height="50" Grid.RowSpan="2" Grid.ColumnSpan="2" 
+                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
     </Viewbox>
 </Window>
