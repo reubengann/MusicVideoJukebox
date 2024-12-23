@@ -107,7 +107,7 @@ namespace MusicVideoJukebox.Core.Metadata
                     audio_codec TEXT,
                     warning TEXT,
                     lufs REAL,
-                    FOREIGN KEY (video_id) REFERENCES video (video_id)
+                    FOREIGN KEY (video_id) REFERENCES video(video_id) ON DELETE CASCADE
                 );
             ");
             await conn.ExecuteAsync(@"
