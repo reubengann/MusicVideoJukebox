@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Views;
+using Unosquare.FFME;
 
 namespace MusicVideoJukebox
 {
@@ -13,7 +15,12 @@ namespace MusicVideoJukebox
         private readonly VideoInfoDisplay videoInfoDisplay = videoInfoDisplay;
         private readonly DependencyProperty opacityProperty = opacityProperty;
 
-        public void SetSource(Uri source) => media.Source = source;
+        public void SetSource(Uri source)
+        {
+                    
+            _ = media.Open(source);
+
+        }
 
         public void Pause()
         {
@@ -49,8 +56,8 @@ namespace MusicVideoJukebox
         {
             get
             {
-                if (media.NaturalDuration.HasTimeSpan)
-                    return media.NaturalDuration.TimeSpan.TotalSeconds;
+                if (media.NaturalDuration.HasValue)
+                    return media.NaturalDuration.Value.TotalSeconds;
                 return 1;
             }
         }

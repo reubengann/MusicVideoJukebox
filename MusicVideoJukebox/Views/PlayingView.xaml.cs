@@ -20,7 +20,7 @@ namespace MusicVideoJukebox.Views
             media.MediaEnded += Media_MediaEnded;
         }
 
-        private void Media_MediaEnded(object sender, System.Windows.RoutedEventArgs e)
+        private void Media_MediaEnded(object? sender, EventArgs e)
         {
             if (DataContext is VideoPlayingViewModel vm)
             {

@@ -8,6 +8,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+             xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
              MouseDoubleClick="UserControl_MouseDoubleClick"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920"
@@ -19,7 +20,7 @@
         <local:BoolToColumnConverter x:Key="BoolToMarginConverter" />
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
-        <MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
+        <ffme:MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual"/>
         <Grid x:Name="InfoHolder">
 
             <Grid.ColumnDefinitions>

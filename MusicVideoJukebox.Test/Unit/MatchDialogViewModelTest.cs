@@ -104,7 +104,7 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             dut.SelectedItem = dut.Candidates.First();
             Assert.True(dut.SelectCommand.CanExecute());
-            dut.CancelCommand.Execute();
+            dut.CancelCommand.Execute(null);
             Assert.False(dut.Accepted);
         }
     }

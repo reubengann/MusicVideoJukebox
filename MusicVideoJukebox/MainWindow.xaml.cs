@@ -7,6 +7,7 @@ using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.UserInterface;
 using MusicVideoJukebox.Core.ViewModels;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -26,6 +27,8 @@ namespace MusicVideoJukebox
         public MainWindow()
         {
             InitializeComponent();
+            player.media.MessageLogged += Media_MessageLogged;
+
             serviceProvider = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build().Services;
             this.vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             interfaceFader = serviceProvider.GetRequiredService<IFadesWhenInactive>();
@@ -36,6 +39,12 @@ namespace MusicVideoJukebox
             KeyDown += NewMainWindow_KeyDown;
             DataContext = vm;
             player.MediaElementDoubleClicked += Player_MediaElementDoubleClicked;
+        }
+
+        private void Media_MessageLogged(object? sender, Unosquare.FFME.Common.MediaLogMessageEventArgs e)
+        {
+            if (e.MessageType == Unosquare.FFME.Common.MediaLogMessageType.Error)
+                Debug.WriteLine($"{e.Message}");
         }
 
         private void Player_MediaElementDoubleClicked()
