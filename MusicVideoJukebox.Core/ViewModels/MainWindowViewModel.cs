@@ -119,7 +119,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private async void NavigateAnalyze()
         {
-            if (IsMetadataSelected)
+            if (IsAnalyzeSelected)
             {
                 await navigationService.NavigateToNothing();
             }

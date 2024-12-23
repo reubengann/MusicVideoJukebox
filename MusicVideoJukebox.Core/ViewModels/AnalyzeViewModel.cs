@@ -59,13 +59,21 @@ namespace MusicVideoJukebox.Core.ViewModels
                     {
                         var analyzeResult = await streamAnalyzer.Analyze(path);
 
+                        var warning = analyzeResult.Warning;
+                        if (analyzeResult.AudioStream.LUFS == null)
+                        {
+                            if (!string.IsNullOrEmpty(warning))
+                                warning += ", ";
+                            warning += "LUFS failed";
+                        }
+                        
                         await videoRepo.InsertAnalysisResult(new VideoAnalysisEntry
                         {
                             VideoCodec = analyzeResult.VideoStream.Codec,
                             VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
                             AudioCodec = analyzeResult.AudioStream.Codec,
                             LUFS = analyzeResult.AudioStream.LUFS,
-                            Warning = analyzeResult.Warning,
+                            Warning = warning,
                             VideoId = video.VideoId,
                         });
 
@@ -76,7 +84,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                             VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
                             AudioCodec = analyzeResult.AudioStream.Codec,
                             LUFS = analyzeResult.AudioStream.LUFS,
-                            Warning = analyzeResult.Warning,
+                            Warning = warning,
                         };
                     }
                     catch (Exception ex)
