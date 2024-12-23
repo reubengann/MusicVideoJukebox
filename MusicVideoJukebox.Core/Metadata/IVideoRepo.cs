@@ -15,6 +15,18 @@
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task DeleteFromPlaylist(int playlistId, int videoId);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
+        Task InsertAnalysisResult(VideoAnalysisEntry entry);
+        Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId);
+    }
+
+    public class VideoAnalysisEntry
+    {
+        public int VideoId { get; set; }
+        public string VideoCodec { get; set; } = string.Empty;
+        public string VideoResolution { get; set; } = string.Empty;
+        public string AudioCodec { get; set; } = string.Empty;
+        public string? Warning { get; set; }
+        public double? LUFS { get; set; }
     }
 
     public class PlaylistTrack

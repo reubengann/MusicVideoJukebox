@@ -39,6 +39,11 @@ namespace MusicVideoJukebox.Test.Fakes
             return MetadataEntries;
         }
 
+        public Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Playlist>> GetPlaylists()
         {
             throw new NotImplementedException();
@@ -55,6 +60,11 @@ namespace MusicVideoJukebox.Test.Fakes
         }
 
         public Task<int> GetTrackCountForPlaylist(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task InsertAnalysisResult(VideoAnalysisEntry entry)
         {
             throw new NotImplementedException();
         }

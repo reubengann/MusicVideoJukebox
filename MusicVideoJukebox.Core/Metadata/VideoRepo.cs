@@ -99,6 +99,18 @@ namespace MusicVideoJukebox.Core.Metadata
                 )
                 ");
             await conn.ExecuteAsync(@"
+                CREATE TABLE IF NOT EXISTS video_analysis (
+                    video_analysis_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    video_id INTEGER NOT NULL,
+                    video_codec TEXT,
+                    video_resolution TEXT,
+                    audio_codec TEXT,
+                    warning TEXT,
+                    lufs REAL,
+                    FOREIGN KEY (video_id) REFERENCES video (video_id)
+                );
+            ");
+            await conn.ExecuteAsync(@"
                 insert into playlist (playlist_name, is_all) VALUES ('All songs', 1)
                 ");
         }
@@ -116,21 +128,6 @@ namespace MusicVideoJukebox.Core.Metadata
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name, is_all from playlist")).ToList();
         }
-
-//        public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
-//        {
-//            using var conn = new SQLiteConnection(connectionString);
-//            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-//            var rows = await conn.QueryAsync<PlaylistTrackForViewmodel>(@"
-//SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title
-//FROM playlist_video A
-//JOIN video B
-//on A.video_id = B.video_id
-//WHERE playlist_id = @playlistId
-//", new { playlistId });
-
-//            return rows.ToList();
-//        }
 
         public async Task<int> GetTrackCountForPlaylist(int playlistId)
         {
@@ -263,6 +260,20 @@ namespace MusicVideoJukebox.Core.Metadata
                 ORDER by A.play_order
                 ", new { playlistId });
             return rows.ToList();
+        }
+
+        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync(
+                @"INSERT INTO video_analysis (video_id, video_codec, video_resolution, audio_codec, warning, lufs) 
+          VALUES (@VideoId, @VideoCodec, @VideoResolution, @AudioCodec, @Warning, @LUFS)",
+                entry);
+        }
+
+        public Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -16,6 +16,7 @@
                     <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
                     <DataGridTextColumn Header="Video Resolution" Binding="{Binding VideoResolution}" Width="150"/>
                     <DataGridTextColumn Header="Audio Codec" Binding="{Binding AudioCodec}" Width="100"/>
+                    <DataGridTextColumn Header="LUFS" Binding="{Binding LUFS}" Width="100"/>
                     <DataGridTextColumn Header="Warning" Binding="{Binding Warning}" Width="150"/>
                 </DataGrid.Columns>
             </DataGrid>

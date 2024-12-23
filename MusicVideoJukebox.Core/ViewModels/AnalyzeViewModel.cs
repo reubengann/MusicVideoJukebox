@@ -17,7 +17,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public override async Task Initialize()
         {
-            _ = Task.Run(async () => await LoadThem());
+            _ = Task.Run(LoadThem);
         }
 
         public async Task LoadThem()
@@ -37,6 +37,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                         VideoCodec = result.VideoStream.Codec,
                         VideoResolution = $"{result.VideoStream.Width}x{result.VideoStream.Height} @ {result.VideoStream.Framerate:F2} FPS",
                         AudioCodec = result.AudioStream.Codec,
+                        LUFS = result.AudioStream.LUFS,
                         Warning = result.Warning,
                     });
                 });
@@ -50,6 +51,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         required public string VideoCodec { get; set; }
         required public string VideoResolution { get; set; }
         required public string AudioCodec { get; set; }
+        required public double? LUFS { get; set; }
         required public string? Warning { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace MusicVideoJukebox.Test.Integration
             conn.Execute("DROP table video");
             conn.Execute("DROP table playlist");
             conn.Execute("DROP table playlist_video");
+            conn.Execute("DROP table video_analysis");
         }
 
         [Fact]
@@ -82,8 +83,8 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanUpdateVideo()
         {
             await dut.CreateTables();
-            var id = WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
-            await dut.UpdateMetadata(new VideoMetadata { VideoId = id, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
+            WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
+            await dut.UpdateMetadata(new VideoMetadata { VideoId = 1, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
             var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             var results = await conn.QueryAsync<VideoMetadata>("select * from video");
@@ -129,21 +130,6 @@ namespace MusicVideoJukebox.Test.Integration
             var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist WHERE is_all = 0");
             Assert.Equal("newname", name);
         }
-
-        //[Fact]
-        //public async Task CanRetrievePlaylistVideosForViewmodel()
-        //{
-        //    await dut.CreateTables();
-        //    WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
-        //    WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
-        //    WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
-        //    WithPlaylist(2, "All Songs");
-        //    WithPlaylistVideo(1, 2, 1, 1);
-        //    WithPlaylistVideo(2, 2, 2, 2);
-        //    WithPlaylistVideo(3, 1, 1, 1); // should not be returned
-        //    var result = await dut.GetPlaylistTrackForViewmodels(2);
-        //    Assert.Equal(2, result.Count);
-        //}
 
         [Fact]
         public async Task CanRetrieveTrackCountForPlaylist()
@@ -213,14 +199,33 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("video3.mp4", tracks[2].FileName);
         }
 
-        int WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status, int? year = null)
+        [Fact]
+        public async Task CanInsertAnalysisResult()
         {
-            using (var conn = new SQLiteConnection(connectionString))
-            {
-                var id = conn.ExecuteScalar<int>(@"INSERT INTO video (video_id, filename, title, artist, status, album, release_year) values (@videoId, @filename, @title, @artist, @status, @album, @year) RETURNING video_id",
-                    new { videoId, filename, title, artist, status, album, year });
-                return id;
-            }
+            await dut.CreateTables();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
+            await dut.InsertAnalysisResult(new VideoAnalysisEntry { AudioCodec = "aac", LUFS = -23, VideoCodec = "avi", VideoId = 1, VideoResolution = "640x480", Warning = null });
+            using var conn = new SQLiteConnection(connectionString);
+            var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM video_analysis");
+            Assert.Equal(1, rows);
+            var codec = await conn.ExecuteScalarAsync<string>("SELECT audio_codec FROM video_analysis");
+            Assert.Equal("aac", codec);
+        }
+
+        void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            conn.Execute(
+                @"INSERT INTO video_analysis (video_id, video_codec, video_resolution, audio_codec, warning, lufs) 
+          VALUES (@videoId, @videoCodec, @videoResolution, @audioCodec, @warning, @lufs)",
+                new { videoId, videoCodec, videoResolution, audioCodec, warning, lufs });
+        }
+
+        void WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status, int? year = null)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            var id = conn.ExecuteScalar<int>(@"INSERT INTO video (video_id, filename, title, artist, status, album, release_year) values (@videoId, @filename, @title, @artist, @status, @album, @year)",
+                new { videoId, filename, title, artist, status, album, year });
         }
 
         void WithPlaylist(int id, string name)
