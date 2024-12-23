@@ -39,7 +39,7 @@ namespace MusicVideoJukebox.Test.Fakes
             return MetadataEntries;
         }
 
-        public Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId)
+        public Task<List<VideoAnalysisEntry>> GetAnalysisResults()
         {
             throw new NotImplementedException();
         }

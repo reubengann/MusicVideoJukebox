@@ -271,9 +271,16 @@ namespace MusicVideoJukebox.Core.Metadata
                 entry);
         }
 
-        public Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId)
+        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
         {
-            throw new NotImplementedException();
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            using var conn = new SQLiteConnection(connectionString);
+            return (await conn.QueryAsync<VideoAnalysisEntry>(
+                @"SELECT filename, A.video_id, video_codec, video_resolution, 
+                 audio_codec, warning, lufs
+                FROM video_analysis A
+                join video B on A.video_id = B.video_id
+                ")).ToList();
         }
     }
 }

@@ -16,12 +16,13 @@
         Task DeleteFromPlaylist(int playlistId, int videoId);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
-        Task<List<VideoAnalysisEntry>> GetAnalysisResults(int videoId);
+        Task<List<VideoAnalysisEntry>> GetAnalysisResults();
     }
 
     public class VideoAnalysisEntry
     {
         public int VideoId { get; set; }
+        public string? Filename { get; set; }
         public string VideoCodec { get; set; } = string.Empty;
         public string VideoResolution { get; set; } = string.Empty;
         public string AudioCodec { get; set; } = string.Empty;
