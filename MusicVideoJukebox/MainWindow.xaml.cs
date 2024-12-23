@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Audio;
 using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;

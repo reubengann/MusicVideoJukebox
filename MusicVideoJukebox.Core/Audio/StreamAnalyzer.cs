@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Xabe.FFmpeg;
 
-namespace MusicVideoJukebox.Core
+namespace MusicVideoJukebox.Core.Audio
 {
     public class VideoFileAnalyzeVideoStreamResult
     {

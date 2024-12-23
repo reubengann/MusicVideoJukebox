@@ -1,4 +1,4 @@
-﻿using MusicVideoJukebox.Core;
+﻿using MusicVideoJukebox.Core.Audio;
 
 namespace MusicVideoJukebox.Test.Unit
 {

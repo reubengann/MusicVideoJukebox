@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Libraries;
+﻿using MusicVideoJukebox.Core.Audio;
+using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using System.Collections.ObjectModel;
 
