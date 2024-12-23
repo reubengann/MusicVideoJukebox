@@ -50,6 +50,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(nameof(IsPlaylistEditSelected));
             OnPropertyChanged(nameof(IsPlaylistPlaySelected));
             OnPropertyChanged(nameof(IsMetadataSelected));
+            OnPropertyChanged(nameof(IsAnalyzeSelected));
             OnPropertyChanged(nameof(IsThereAValidLibraryActive));
         }
 
