@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using MusicVideoJukebox.Core;
 using MusicVideoJukebox.Core.Metadata;
 using System.Data.SQLite;
 
@@ -123,7 +122,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.CreateTables();
             WithPlaylist(2, "playlist1");
-            await dut.UpdatePlaylistName(2, "newname" );
+            await dut.UpdatePlaylistName(2, "newname");
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
             Assert.Equal(2, rows);

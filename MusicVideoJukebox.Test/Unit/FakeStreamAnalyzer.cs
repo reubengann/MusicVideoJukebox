@@ -4,8 +4,11 @@ namespace MusicVideoJukebox.Test.Unit
 {
     internal class FakeStreamAnalyzer : IStreamAnalyzer
     {
+        public List<string> Analyzed = [];
+
         public async Task<VideoFileAnalyzeFullResult> Analyze(string path)
         {
+            Analyzed.Add(path);
             await Task.CompletedTask;
             return new VideoFileAnalyzeFullResult
             {

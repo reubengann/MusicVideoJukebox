@@ -1,4 +1,7 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.ViewModels;
+using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -7,20 +10,57 @@ namespace MusicVideoJukebox.Test.Unit
         AnalyzeViewModel dut;
         FakeStreamAnalyzer streamAnalyzer;
         FakeThreadDispatcher threadDispatcher;
+        FakeVideoRepo videoRepo;
+        LibraryStore libraryStore;
+        FakeLibrarySetRepo librarySetRepo;
 
         public AnalyzeViewModelTest()
         {
+            librarySetRepo = new FakeLibrarySetRepo();
+            libraryStore = new LibraryStore(librarySetRepo);
+            libraryStore.SetLibrary(1, "foobar").Wait();
+            videoRepo = new FakeVideoRepo();
             threadDispatcher = new FakeThreadDispatcher();
             streamAnalyzer = new FakeStreamAnalyzer();
-            dut = new AnalyzeViewModel(streamAnalyzer, threadDispatcher);
+
+            dut = new AnalyzeViewModel(streamAnalyzer, threadDispatcher, videoRepo, libraryStore);
         }
 
         [Fact]
-        public async Task LoadsThem()
+        public async Task WhenNotInDbThenAnalyzeThem()
         {
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "track1.mp4", Title = "track 1" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "track2.mp4", Title = "track 2" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 3, Artist = "artist 3", Filename = "track3.mp4", Title = "track 3" });
             await dut.Initialize();
-            await Task.Delay(1);
-            Assert.Equal(2, dut.AnalysisResults.Count);
+            await Task.Delay(1); // thread dispatcher
+            Assert.Equal(3, dut.AnalysisResults.Count);
+            Assert.Equal(3, streamAnalyzer.Analyzed.Count);
+        }
+
+        [Fact]
+        public async Task StoresAnalyzedInTheDb()
+        {
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "track1.mp4", Title = "track 1" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "track2.mp4", Title = "track 2" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 3, Artist = "artist 3", Filename = "track3.mp4", Title = "track 3" });
+            await dut.Initialize();
+            await Task.Delay(1); // thread dispatcher
+            Assert.Equal(3, videoRepo.AnalysisEntries.Count);
+            Assert.Equal(3, dut.AnalysisResults.Count);
+        }
+
+        [Fact]
+        public async Task WhenAlreadyDoneInDBDontDoAgain()
+        {
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "track1.mp4", Title = "track 1" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "track2.mp4", Title = "track 2" });
+            videoRepo.MetadataEntries.Add(new VideoMetadata { VideoId = 3, Artist = "artist 3", Filename = "track3.mp4", Title = "track 3" });
+            videoRepo.AnalysisEntries.Add(new VideoAnalysisEntry { VideoId = 1, AudioCodec = "aac", Filename = "track1.mp4", LUFS = -23, VideoCodec = "avi", VideoResolution = "640x480", Warning = null });
+            await dut.Initialize();
+            await Task.Delay(1); // thread dispatcher
+            Assert.Equal(3, dut.AnalysisResults.Count);
+            Assert.DoesNotContain(streamAnalyzer.Analyzed, x => x == "foobar\\track1.mp4");
         }
     }
 }

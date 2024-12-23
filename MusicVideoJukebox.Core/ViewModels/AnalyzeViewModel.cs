@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
+using System.Collections.ObjectModel;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -6,13 +8,17 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         private readonly IStreamAnalyzer streamAnalyzer;
         private readonly IUiThreadDispatcher threadDispatcher;
+        private readonly IVideoRepo videoRepo;
+        private readonly LibraryStore libraryStore;
 
         public ObservableCollection<AnalysisResultViewModel> AnalysisResults { get; set; } = [];
 
-        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, IUiThreadDispatcher threadDispatcher)
+        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, IUiThreadDispatcher threadDispatcher, IVideoRepo videoRepo, LibraryStore libraryStore)
         {
             this.streamAnalyzer = streamAnalyzer;
             this.threadDispatcher = threadDispatcher;
+            this.videoRepo = videoRepo;
+            this.libraryStore = libraryStore;
         }
 
         public override async Task Initialize()
@@ -22,25 +28,76 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public async Task LoadThem()
         {
-            // TEMP
-            var videoPaths = new List<string>() { @"C:\Users\Reuben\Videos\Test Folder\AC DC - For those about to rock.mp4", @"C:\Users\Reuben\Videos\Test Folder\Annie Lennox - Why.mp4" };
-            foreach (var path in videoPaths)
-            {
-                var result = await streamAnalyzer.Analyze(path);
+            if (libraryStore.CurrentState.LibraryPath == null) return;
 
+            var videos = await videoRepo.GetAllMetadata();
+            var existingAnalysis = (await videoRepo.GetAnalysisResults()).ToDictionary(x => x.VideoId, x => x);
+
+
+            foreach (var video in videos)
+            {
+                AnalysisResultViewModel result;
+
+                if (existingAnalysis.ContainsKey(video.VideoId))
+                {
+                    var existing = existingAnalysis[video.VideoId];
+                    ArgumentNullException.ThrowIfNull(existing.Filename);
+                    result = new AnalysisResultViewModel
+                    {
+                        Filename = existing.Filename,
+                        VideoCodec = existing.VideoCodec,
+                        VideoResolution = existing.VideoResolution,
+                        AudioCodec = existing.AudioCodec,
+                        LUFS = existing.LUFS,
+                        Warning = existing.Warning,
+                    };
+                }
+                else
+                {
+                    string path = Path.Combine(libraryStore.CurrentState.LibraryPath, video.Filename);
+                    try
+                    {
+                        var analyzeResult = await streamAnalyzer.Analyze(path);
+
+                        await videoRepo.InsertAnalysisResult(new VideoAnalysisEntry
+                        {
+                            VideoCodec = analyzeResult.VideoStream.Codec,
+                            VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
+                            AudioCodec = analyzeResult.AudioStream.Codec,
+                            LUFS = analyzeResult.AudioStream.LUFS,
+                            Warning = analyzeResult.Warning,
+                            VideoId = video.VideoId,
+                        });
+
+                        result = new AnalysisResultViewModel
+                        {
+                            Filename = video.Filename,
+                            VideoCodec = analyzeResult.VideoStream.Codec,
+                            VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
+                            AudioCodec = analyzeResult.AudioStream.Codec,
+                            LUFS = analyzeResult.AudioStream.LUFS,
+                            Warning = analyzeResult.Warning,
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        result = new AnalysisResultViewModel
+                        {
+                            Filename = video.Filename,
+                            VideoCodec = "Error",
+                            VideoResolution = "N/A",
+                            AudioCodec = "Error",
+                            Warning = ex.Message,
+                            LUFS = null
+                        };
+                    }
+                }
                 // Use dispatcher to update UI
                 threadDispatcher.Invoke(() =>
                 {
-                    AnalysisResults.Add(new AnalysisResultViewModel
-                    {
-                        Filename = result.Path,
-                        VideoCodec = result.VideoStream.Codec,
-                        VideoResolution = $"{result.VideoStream.Width}x{result.VideoStream.Height} @ {result.VideoStream.Framerate:F2} FPS",
-                        AudioCodec = result.AudioStream.Codec,
-                        LUFS = result.AudioStream.LUFS,
-                        Warning = result.Warning,
-                    });
+                    AnalysisResults.Add(result);
                 });
+
             }
         }
     }

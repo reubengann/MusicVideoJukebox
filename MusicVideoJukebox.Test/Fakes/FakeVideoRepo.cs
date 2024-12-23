@@ -8,6 +8,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<VideoMetadata> MetadataEntries = [];
         public List<VideoMetadata> UpdatedEntries = [];
         public List<Tuple<int, int>> AppendedToPlaylist = [];
+        public List<VideoAnalysisEntry> AnalysisEntries = [];
 
         public IEnumerable<char>? FolderPath { get; internal set; }
         public Task AddBasicInfos(List<BasicInfo> basicInfos)
@@ -39,9 +40,10 @@ namespace MusicVideoJukebox.Test.Fakes
             return MetadataEntries;
         }
 
-        public Task<List<VideoAnalysisEntry>> GetAnalysisResults()
+        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return AnalysisEntries;
         }
 
         public Task<List<Playlist>> GetPlaylists()
@@ -64,9 +66,10 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public Task InsertAnalysisResult(VideoAnalysisEntry entry)
+        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            AnalysisEntries.Add(entry);
         }
 
         public Task RemoveMetadata(int videoId)
