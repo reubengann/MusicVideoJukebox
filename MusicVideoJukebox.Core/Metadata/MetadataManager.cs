@@ -170,6 +170,16 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             await videoRepo.UpdatePlaylistTrackOrder(playlistId, videoId, order);
         }
+
+        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
+        {
+            await videoRepo.InsertAnalysisResult(entry);
+        }
+
+        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
+        {
+            return await videoRepo.GetAnalysisResults();
+        }
     }
 
     public static class FileNameHelpers

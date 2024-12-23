@@ -8,16 +8,16 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         private readonly IStreamAnalyzer streamAnalyzer;
         private readonly IUiThreadDispatcher threadDispatcher;
-        private readonly IVideoRepo videoRepo;
+        private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
 
         public ObservableCollection<AnalysisResultViewModel> AnalysisResults { get; set; } = [];
 
-        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, IUiThreadDispatcher threadDispatcher, IVideoRepo videoRepo, LibraryStore libraryStore)
+        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, IUiThreadDispatcher threadDispatcher, IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore)
         {
             this.streamAnalyzer = streamAnalyzer;
             this.threadDispatcher = threadDispatcher;
-            this.videoRepo = videoRepo;
+            this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
         }
 
@@ -30,9 +30,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
 
+            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
             var videos = await videoRepo.GetAllMetadata();
             var existingAnalysis = (await videoRepo.GetAnalysisResults()).ToDictionary(x => x.VideoId, x => x);
-
 
             foreach (var video in videos)
             {

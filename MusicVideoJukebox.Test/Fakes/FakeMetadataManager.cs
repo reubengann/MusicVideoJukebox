@@ -9,6 +9,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
+        public List<VideoAnalysisEntry> AnalysisEntries = [];
         public int SearchCount = 0;
 
         public List<ScoredMetadata> ScoredCandidates = [];
@@ -121,6 +122,18 @@ namespace MusicVideoJukebox.Test.Fakes
             SearchCount++;
             await Task.CompletedTask;
             return ScoredCandidates;
+        }
+
+        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
+        {
+            await Task.CompletedTask;
+            AnalysisEntries.Add(entry);
+        }
+
+        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
+        {
+            await Task.CompletedTask;
+            return AnalysisEntries;
         }
     }
 }

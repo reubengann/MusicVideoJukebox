@@ -25,6 +25,8 @@
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
         public Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track);
+        Task InsertAnalysisResult(VideoAnalysisEntry entry);
+        Task<List<VideoAnalysisEntry>> GetAnalysisResults();
     }
 
     public class ScoredMetadata

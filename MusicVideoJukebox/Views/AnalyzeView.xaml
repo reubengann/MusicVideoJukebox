@@ -7,12 +7,12 @@
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vms:AnalyzeViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="480" d:DesignWidth="850">
+             d:DesignHeight="480" d:DesignWidth="850" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
     <Viewbox>
-        <Grid Width="1050" Height="480">
-            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" >
+        <Grid Width="1050" Height="580">
+            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" Margin="5" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="200"/>
+                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="280"/>
                     <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
                     <DataGridTextColumn Header="Video Resolution" Binding="{Binding VideoResolution}" Width="150"/>
                     <DataGridTextColumn Header="Audio Codec" Binding="{Binding AudioCodec}" Width="100"/>
