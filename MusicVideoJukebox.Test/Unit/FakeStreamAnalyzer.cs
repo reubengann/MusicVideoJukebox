@@ -6,6 +6,7 @@ namespace MusicVideoJukebox.Test.Unit
     {
         public async Task<VideoFileAnalyzeResult> Analyze(string path)
         {
+            await Task.CompletedTask;
             return new VideoFileAnalyzeResult
             {
                 AudioStream = new VideoFileAnalyzeAudioStreamResult { Bitrate = 1, Channels = 2, Codec = "", SampleRate = 1 },
