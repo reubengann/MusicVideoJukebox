@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using MusicVideoJukebox.Core;
+using System.IO;
+using System.Windows;
+using Xabe.FFmpeg;
 
 namespace MusicVideoJukebox
 {
@@ -9,6 +12,9 @@ namespace MusicVideoJukebox
             base.OnStartup(e);
             MainWindow = new MainWindow();
             MainWindow.Show();
+            string directoryWithFFmpegAndFFprobe = Path.Combine("ffmpeg");
+            FFmpeg.SetExecutablesPath(directoryWithFFmpegAndFFprobe);
+            
         }
     }
 }

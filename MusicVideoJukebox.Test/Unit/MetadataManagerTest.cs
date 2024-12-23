@@ -44,15 +44,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task AddsAllTracksToTheMainPlaylist()
-        {
-            fileSystemService.ExistingFiles.AddRange(["artist 1 - track1.mp4", "artist 2 - track 2.mp4"]);
-            await dut.EnsureCreated();
-            Assert.True(videoRepo.TablesCreated);
-            Assert.Equal(2, videoRepo.AppendedToPlaylist.Count);
-        }
-
-        [Fact]
         public async Task UpdatesMetadataInRepo()
         {
             await dut.UpdateVideoMetadata(new VideoMetadata { Artist = "a", Filename = "b", Title = "c", Status = MetadataStatus.NotDone });

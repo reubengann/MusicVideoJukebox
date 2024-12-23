@@ -6,10 +6,12 @@ using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;
 using MusicVideoJukebox.Core.UserInterface;
 using MusicVideoJukebox.Core.ViewModels;
+using MusicVideoJukebox.Impls;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace MusicVideoJukebox
 {
@@ -139,9 +141,10 @@ namespace MusicVideoJukebox
             services.AddTransient<MetadataEditViewModel>();
             services.AddTransient<PlaylistEditViewModel>();
             services.AddTransient<PlaylistPlayViewModel>();
+            services.AddTransient<AnalyzeViewModel>();
             services.AddSingleton<IDialogService>(x => new WindowsDialogService(this));
-            //services.AddSingleton<AppStateService>();
             
+            services.AddSingleton<IStreamAnalyzer, StreamAnalyzer>();
             services.AddSingleton<VideoPlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
             services.AddSingleton<IMetadataManagerFactory, MetadataManagerFactory>();
@@ -154,6 +157,7 @@ namespace MusicVideoJukebox
             var playerControls = player.playerControls as FrameworkElement;
             services.AddSingleton<IFadesWhenInactive>(new InterfaceFader([Sidebar, playerControls], OpacityProperty));
             services.AddSingleton<IMediaPlayer>(new MediaElementMediaPlayer(player.media, player.VideoInfo, OpacityProperty));
+            services.AddSingleton<IUiThreadDispatcher, WpfUiThreadDispatcher>();
         }
     }
 }

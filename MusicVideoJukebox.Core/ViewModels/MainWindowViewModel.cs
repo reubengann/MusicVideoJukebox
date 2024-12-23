@@ -20,6 +20,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public bool IsPlaylistEditSelected => navigationService.CurrentViewModel is PlaylistEditViewModel;
         public bool IsPlaylistPlaySelected => navigationService.CurrentViewModel is PlaylistPlayViewModel;
         public bool IsMetadataSelected => navigationService.CurrentViewModel is MetadataEditViewModel;
+        public bool IsAnalyzeSelected => navigationService.CurrentViewModel is AnalyzeViewModel;
         public ICommand NavigateLibraryCommand { get; }
         public ICommand NavigatePlaylistEditCommand { get; }
         public ICommand NavigateMetadataCommand { get; }
@@ -32,6 +33,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             NavigatePlaylistEditCommand = new DelegateCommand(NavigateToPlaylistEdit);
             NavigateMetadataCommand = new DelegateCommand(NavigateToMetadata);
             NavigatePlaylistPlayCommand = new DelegateCommand(NavigateToPlaylistPlay);
+            NavigateAnalyzeCommand = new DelegateCommand(NavigateAnalyze);
             this.navigationService = navigationService;
             this.libraryStore = libraryStore;
             navigationService.NavigationChanged += NavigationService_NavigationChanged;
@@ -108,6 +110,22 @@ namespace MusicVideoJukebox.Core.ViewModels
             else
             {
                 await navigationService.NavigateTo<MetadataEditViewModel>();
+            }
+            OnPropertyChanged(nameof(CurrentViewModel));
+            RefreshButtons();
+        }
+
+        public DelegateCommand NavigateAnalyzeCommand { get; }
+
+        private async void NavigateAnalyze()
+        {
+            if (IsMetadataSelected)
+            {
+                await navigationService.NavigateToNothing();
+            }
+            else
+            {
+                await navigationService.NavigateTo<AnalyzeViewModel>();
             }
             OnPropertyChanged(nameof(CurrentViewModel));
             RefreshButtons();
