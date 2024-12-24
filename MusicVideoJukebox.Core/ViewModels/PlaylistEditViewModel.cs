@@ -1,8 +1,8 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -10,6 +10,8 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         private readonly LibraryStore libraryStore;
         private readonly IMetadataManagerFactory metadataManagerFactory;
+        private readonly IDialogService dialogService;
+        private readonly IImageScalerService imageScalerService;
         IMetadataManager metadataManager = null!;
         private PlaylistViewModel? selectedPlaylist;
         private ObservableCollection<PlaylistTrackViewModel> playlistTracks = [];
@@ -33,19 +35,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             get => selectedPlaylist;
             set
             {
-
-                //if (selectedPlaylist != null)
-                //{
-                //    selectedPlaylist.PropertyChanged -= SelectedPlaylist_PropertyChanged;
-                //}
-                
                 SetProperty(ref selectedPlaylist, value);
                 OnPropertyChanged(nameof(CanEditTracks));
-
-                //if (SelectedPlaylist != null)
-                //{
-                //    SelectedPlaylist.PropertyChanged += SelectedPlaylist_PropertyChanged;
-                //}
 
                 if (value != null && value.Id > 0)
                 {
@@ -60,49 +51,71 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
         }
 
-        public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
+        public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory, IDialogService dialogService, IImageScalerService imageScalerService)
         {
             this.libraryStore = libraryStore;
             this.metadataManagerFactory = metadataManagerFactory;
+            this.dialogService = dialogService;
+            this.imageScalerService = imageScalerService;
             AddPlaylistCommand = new DelegateCommand(AddPlaylist, CanAddPlaylist);
             EditPlaylistDetailsCommand = new DelegateCommand(LaunchPlaylistDetailsEditor, CanLaunchPlaylistDetailsEditor);
             DeletePlaylistCommand = new DelegateCommand(DeletePlaylist, CanDeletePlaylist);
             AddTrackToPlaylistCommand = new DelegateCommand(AddTracksToPlaylist, CanAddTrackToPlaylist);
             DeleteTrackFromPlaylistCommand = new DelegateCommand(DeleteTrackFromPlaylist, CanDeleteTrackFromPlaylist);
-            ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist, CanShufflePlaylist);
+            ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist);
         }
 
-        //private async void SavePlaylist()
-        //{
-        //    if (SelectedPlaylist == null) return;
-        //    if (SelectedPlaylist.Id == -1)
-        //    {
-        //        var id = await metadataManager.SavePlaylist(SelectedPlaylist.Playlist);
-        //        SelectedPlaylist.Id = id;
-        //    }
-        //    else
-        //    {
-        //        await metadataManager.UpdatePlaylistName(SelectedPlaylist.Id, SelectedPlaylist.Name);
-        //    }
-        //    SelectedPlaylist.IsModified = false;
-        //    OnPropertyChanged(nameof(SelectedPlaylist));
-        //    OnPropertyChanged(nameof(IsPlaylistMutable));
-        //    OnPropertyChanged(nameof(CanEditTracks));
-        //    RefreshButtons();
-        //}
+        public bool ErrorOccurred { get; private set; }
 
-        private void LaunchPlaylistDetailsEditor()
+        private async void LaunchPlaylistDetailsEditor()
         {
-            throw new NotImplementedException();
+            if (SelectedPlaylist == null) return;
+            try
+            {
+                var vm = new PlaylistDetailsEditDialogViewModel(SelectedPlaylist.Playlist, dialogService, imageScalerService, libraryStore);
+                dialogService.ShowEditPlaylistDetailsDialog(vm);
+                if (!vm.Accepted) return;
+                await metadataManager.UpdatePlaylist(vm.NewPlaylist);
+                SelectedPlaylist.Name = vm.NewPlaylist.PlaylistName;
+            }
+            catch
+            {
+                ErrorOccurred = true;
+            }
         }
 
-        //private void SelectedPlaylist_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        //{
-        //    if (e.PropertyName == nameof(PlaylistViewModel.Name))
-        //    {
-        //        EditPlaylistDetailsCommand.RaiseCanExecuteChanged();
-        //    }
-        //}
+        private async void AddPlaylist()
+        {
+            string newName = GenerateUniquePlaylistName("New Playlist");
+
+            var newPlaylist = new Playlist
+            {
+                PlaylistId = -1, // Indicating it's a new playlist that hasn't been saved yet
+                PlaylistName = newName
+            };
+
+            try
+            {
+                var vm = new PlaylistDetailsEditDialogViewModel(newPlaylist, dialogService, imageScalerService, libraryStore);
+                dialogService.ShowEditPlaylistDetailsDialog(vm);
+                if (!vm.Accepted) return;
+                var newId = await metadataManager.SavePlaylist(vm.NewPlaylist);
+                newPlaylist.PlaylistId = newId;
+            }
+            catch
+            {
+                ErrorOccurred = true;
+                return;
+            }
+
+            var newPlaylistViewModel = new PlaylistViewModel(newPlaylist);
+
+            Playlists.Add(newPlaylistViewModel);
+            SelectedPlaylist = newPlaylistViewModel;
+            OnPropertyChanged(nameof(SelectedPlaylist));
+            OnPropertyChanged(nameof(IsPlaylistMutable));
+            RefreshButtons();
+        }
 
         private async Task LoadTracksForSelectedPlaylist()
         {
@@ -118,13 +131,13 @@ namespace MusicVideoJukebox.Core.ViewModels
         }
 
         public bool IsPlaylistMutable
-        { 
-            get 
+        {
+            get
             {
                 if (SelectedPlaylist == null) return false;
                 if (SelectedPlaylist.IsAll) return false;
                 return true;
-            } 
+            }
         }
 
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
@@ -183,13 +196,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             DeleteTrackFromPlaylistCommand.RaiseCanExecuteChanged();
         }
 
-        
-
-        private bool CanShufflePlaylist()
-        {
-            return true;
-        }
-
         private async void ShufflePlaylist()
         {
             if (SelectedPlaylist == null) return;
@@ -207,7 +213,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void DeleteTrackFromPlaylist()
         {
-            
+
         }
 
         private bool CanAddTrackToPlaylist()
@@ -221,7 +227,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (SelectedPlaylist == null) return;
             var selectedTracks = FilteredAvailableTracks.Where(x => x.IsSelected);
             int count = PlaylistTracks.Count;
-            foreach(var track in selectedTracks)
+            foreach (var track in selectedTracks)
             {
                 count++;
                 var playlistVideoId = await metadataManager.AppendSongToPlaylist(SelectedPlaylist.Playlist.PlaylistId, track.Metadata.VideoId);
@@ -245,36 +251,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             return IsPlaylistMutable;
         }
 
-        
-
         private bool CanAddPlaylist()
         {
-            if (libraryStore.CurrentState.LibraryPath == null) return false;
-            if (SelectedPlaylist == null) return true;
-            return !SelectedPlaylist.IsModified;
-        }
-
-        private void AddPlaylist()
-        {
-            string baseName = "New Playlist";
-            string newName = GenerateUniquePlaylistName(baseName);
-
-            var newPlaylist = new Playlist
-            {
-                PlaylistId = -1, // Indicating it's a new playlist that hasn't been saved yet
-                PlaylistName = newName
-            };
-
-            var newPlaylistViewModel = new PlaylistViewModel(newPlaylist)
-            {
-                IsModified = true
-            };
-
-            Playlists.Add(newPlaylistViewModel);
-            SelectedPlaylist = newPlaylistViewModel;
-            OnPropertyChanged(nameof(SelectedPlaylist));
-            OnPropertyChanged(nameof(IsPlaylistMutable));
-            RefreshButtons();
+            return libraryStore.CurrentState.LibraryPath != null;
         }
 
         public override async Task Initialize()

@@ -7,7 +7,9 @@
         xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
         d:DataContext="{d:DesignInstance Type=vms:PlaylistDetailsEditDialogViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
-        Title="Edit playlist details" Height="450" Width="800" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+        Height="{Binding WindowHeight, Mode=TwoWay}" 
+        Width="{Binding WindowWidth, Mode=TwoWay}" 
+        Title="Edit playlist details" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
     <Viewbox>
         <Grid Width="640" Height="360">
             <Grid.RowDefinitions>

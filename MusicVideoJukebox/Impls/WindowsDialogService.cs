@@ -30,6 +30,22 @@ namespace MusicVideoJukebox
             return new MultipleFilePickerResult { Accepted = false };
         }
 
+        public SingleFilePickerResult PickSingleFile(string filter)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = filter,
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                return new SingleFilePickerResult { Accepted = true, SelectedFile = dialog.FileName };
+            }
+            return new SingleFilePickerResult { Accepted = false };
+        }
+
+
         public void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -66,6 +82,16 @@ namespace MusicVideoJukebox
             {
                 return new MetadataMatchDialogResult { Accepted = false };
             }
+        }
+
+        public void ShowEditPlaylistDetailsDialog(PlaylistDetailsEditDialogViewModel vm)
+        {
+            vm.WindowHeight = (int)(parent.ActualHeight * 0.8);
+            vm.WindowWidth = (int)(parent.ActualWidth * 0.8);
+            var dialog = new PlaylistDetailsEditDialog(vm);
+            dialog.Owner = parent;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var result = dialog.ShowDialog();
         }
 
         public void ShutDownApp()

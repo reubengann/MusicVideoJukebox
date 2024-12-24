@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.UserInterface;
+﻿using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.UserInterface;
 using MusicVideoJukebox.Core.ViewModels;
 
 namespace MusicVideoJukebox.Test.Fakes
@@ -10,10 +11,29 @@ namespace MusicVideoJukebox.Test.Fakes
         public bool ShowedMatchDialog = false;
         public MetadataMatchDialogResult MatchDialogResultToReturn = new();
         public FolderPickerResult PickResultToReturn = new();
+        public SingleFilePickerResult SingleFilePickerResultToReturn = new();
+        public bool AcceptedDetailsResult = false;
+        public Playlist AcceptedDetailsObject = new();
+
+        public bool ShowedSingleFileSelect { get; internal set; }
 
         public MultipleFilePickerResult PickMultipleFiles(string filter)
         {
             throw new NotImplementedException();
+        }
+
+        public SingleFilePickerResult PickSingleFile(string filter)
+        {
+            ShowedSingleFileSelect = true;
+            return SingleFilePickerResultToReturn; 
+        }
+
+        public void ShowEditPlaylistDetailsDialog(PlaylistDetailsEditDialogViewModel vm)
+        {
+            vm.Accepted = AcceptedDetailsResult;
+            vm.PlaylistDescription = AcceptedDetailsObject.Description;
+            vm.PlaylistIcon = AcceptedDetailsObject.ImagePath;
+            vm.PlaylistName = AcceptedDetailsObject.PlaylistName;
         }
 
         public void ShowError(string message)

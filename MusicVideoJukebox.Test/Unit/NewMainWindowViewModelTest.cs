@@ -15,9 +15,11 @@ namespace MusicVideoJukebox.Test.Unit
         FakeDialogService dialogService;
         FakeVideoRepo videoRepo;
         LibraryStore libraryStore;
+        FakeImageScalerService imageScalerService;
 
         public NewMainWindowViewModelTest()
         {
+            imageScalerService = new FakeImageScalerService();
             librarySetRepo = new FakeLibrarySetRepo();
             libraryStore = new LibraryStore(librarySetRepo);
             videoRepo = new FakeVideoRepo();
@@ -59,7 +61,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void IfSelectedPlaylistAgainDisableIt()
         {
-            navigationService.ViewModelsToGenerate[typeof(PlaylistEditViewModel)] = new PlaylistEditViewModel(libraryStore, metadataManagerFactory);
+            navigationService.ViewModelsToGenerate[typeof(PlaylistEditViewModel)] = new PlaylistEditViewModel(libraryStore, metadataManagerFactory, dialogService, imageScalerService);
             dut.NavigatePlaylistEditCommand.Execute(null);
             Assert.True(dut.IsPlaylistEditSelected);
             dut.NavigatePlaylistEditCommand.Execute(null);

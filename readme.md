@@ -1,4 +1,5 @@
 To do:
 
-- Fix display of long playlist names
-- Allow an icon for playlists
+- Allow an icon and description for playlists
+- Store progress for each playlist
+- Change playlist select to horizontal cards

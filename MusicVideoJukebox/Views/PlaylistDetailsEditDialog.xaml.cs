@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MusicVideoJukebox.Core.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MusicVideoJukebox.Views
 {
@@ -19,9 +8,19 @@ namespace MusicVideoJukebox.Views
     /// </summary>
     public partial class PlaylistDetailsEditDialog : Window
     {
-        public PlaylistDetailsEditDialog()
+        private readonly PlaylistDetailsEditDialogViewModel vm;
+
+        public PlaylistDetailsEditDialog(PlaylistDetailsEditDialogViewModel vm)
         {
             InitializeComponent();
+            DataContext = vm;
+            vm.RequestedClose += Vm_RequestClose;
+            this.vm = vm;
+        }
+
+        private void Vm_RequestClose()
+        {
+            Close();
         }
     }
 }
