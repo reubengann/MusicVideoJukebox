@@ -224,6 +224,18 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("file1.mp4", results[0].Filename);
         }
 
+        [Fact]
+        public async Task CanUpdateLUFS()
+        {
+            await dut.CreateTables();
+            WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
+            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20);
+            await dut.UpdateAnalysisVolume(1, -23);
+            using var conn = new SQLiteConnection(connectionString);
+            var lufs = await conn.ExecuteScalarAsync<double>("SELECT lufs FROM video_analysis WHERE video_id = 1");
+            Assert.Equal(-23.0, lufs, 0.01);
+        }
+
         void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs)
         {
             using var conn = new SQLiteConnection(connectionString);

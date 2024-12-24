@@ -27,6 +27,7 @@
         public Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track);
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
         Task<List<VideoAnalysisEntry>> GetAnalysisResults();
+        Task UpdateAnalysisVolume(int videoId, double? lufs);
     }
 
     public class ScoredMetadata

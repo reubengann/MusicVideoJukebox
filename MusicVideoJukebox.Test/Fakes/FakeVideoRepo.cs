@@ -83,6 +83,11 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
+        public Task UpdateAnalysisVolume(int videoId, double? lufs)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task UpdateMetadata(VideoMetadata metadata)
         {
             UpdatedEntries.Add(metadata);

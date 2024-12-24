@@ -1,7 +1,9 @@
 ﻿using MusicVideoJukebox.Core.Audio;
 using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
+using Prism.Commands;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -11,15 +13,38 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IUiThreadDispatcher threadDispatcher;
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
+        private readonly IAudioNormalizer audioNormalizer;
+
+        public ICommand NormalizeTrackCommand { get; }
 
         public ObservableCollection<AnalysisResultViewModel> AnalysisResults { get; set; } = [];
+        public AnalysisResultViewModel? SelectedItem { get; set; }
 
-        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, IUiThreadDispatcher threadDispatcher, IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore)
+        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, 
+            IUiThreadDispatcher threadDispatcher, 
+            IMetadataManagerFactory metadataManagerFactory, 
+            LibraryStore libraryStore,
+            IAudioNormalizer audioNormalizer)
         {
             this.streamAnalyzer = streamAnalyzer;
             this.threadDispatcher = threadDispatcher;
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
+            this.audioNormalizer = audioNormalizer;
+            NormalizeTrackCommand = new DelegateCommand(NormalizeSelected);
+        }
+
+        private async void NormalizeSelected()
+        {
+            if (SelectedItem == null) return;
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename, SelectedItem.LUFS);
+            if (!success) return;
+            string path = Path.Combine(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename);
+            var newResult = await streamAnalyzer.Analyze(path);
+            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+            await videoRepo.UpdateAnalysisVolume(SelectedItem.VideoId, newResult.AudioStream.LUFS);
+            SelectedItem.LUFS = newResult.AudioStream.LUFS;
         }
 
         public override async Task Initialize()
@@ -45,6 +70,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     ArgumentNullException.ThrowIfNull(existing.Filename);
                     result = new AnalysisResultViewModel
                     {
+                        VideoId = video.VideoId,
                         Filename = existing.Filename,
                         VideoCodec = existing.VideoCodec,
                         VideoResolution = existing.VideoResolution,
@@ -80,6 +106,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
                         result = new AnalysisResultViewModel
                         {
+                            VideoId = video.VideoId,
                             Filename = video.Filename,
                             VideoCodec = analyzeResult.VideoStream.Codec,
                             VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
@@ -92,6 +119,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     {
                         result = new AnalysisResultViewModel
                         {
+                            VideoId = video.VideoId,
                             Filename = video.Filename,
                             VideoCodec = "Error",
                             VideoResolution = "N/A",
@@ -111,13 +139,16 @@ namespace MusicVideoJukebox.Core.ViewModels
         }
     }
 
-    public class AnalysisResultViewModel
+    public class AnalysisResultViewModel : BaseViewModel
     {
+        private double? lufs;
+
+        required public int VideoId { get; set; }
         required public string Filename { get; set; }
         required public string VideoCodec { get; set; }
         required public string VideoResolution { get; set; }
         required public string AudioCodec { get; set; }
-        required public double? LUFS { get; set; }
+        required public double? LUFS { get => lufs; set => SetProperty(ref lufs, value); }
         required public string? Warning { get; set; }
     }
 }

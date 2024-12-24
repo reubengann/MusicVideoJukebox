@@ -17,6 +17,7 @@
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
         Task<List<VideoAnalysisEntry>> GetAnalysisResults();
+        Task UpdateAnalysisVolume(int videoId, double? lufs);
     }
 
     public class VideoAnalysisEntry

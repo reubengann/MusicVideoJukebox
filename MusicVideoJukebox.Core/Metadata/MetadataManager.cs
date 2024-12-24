@@ -180,6 +180,11 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             return await videoRepo.GetAnalysisResults();
         }
+
+        public async Task UpdateAnalysisVolume(int videoId, double? lufs)
+        {
+            await videoRepo.UpdateAnalysisVolume(videoId, lufs);
+        }
     }
 
     public static class FileNameHelpers

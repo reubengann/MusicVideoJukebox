@@ -282,5 +282,11 @@ namespace MusicVideoJukebox.Core.Metadata
                 join video B on A.video_id = B.video_id
                 ")).ToList();
         }
+
+        public async Task UpdateAnalysisVolume(int videoId, double? lufs)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE video_analysis SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
+        }
     }
 }

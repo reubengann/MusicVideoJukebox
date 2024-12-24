@@ -13,6 +13,7 @@ namespace MusicVideoJukebox.Test.Unit
         LibraryStore libraryStore;
         FakeLibrarySetRepo librarySetRepo;
         FakeMetadataManagerFactory videoRepo;
+        FakeAudioNormalizer audioNormalizer;
 
         public AnalyzeViewModelTest()
         {
@@ -22,8 +23,8 @@ namespace MusicVideoJukebox.Test.Unit
             threadDispatcher = new FakeThreadDispatcher();
             streamAnalyzer = new FakeStreamAnalyzer();
             videoRepo = new FakeMetadataManagerFactory();
-
-            dut = new AnalyzeViewModel(streamAnalyzer, threadDispatcher, videoRepo, libraryStore);
+            audioNormalizer = new FakeAudioNormalizer();
+            dut = new AnalyzeViewModel(streamAnalyzer, threadDispatcher, videoRepo, libraryStore, audioNormalizer);
         }
 
         [Fact]
@@ -61,6 +62,30 @@ namespace MusicVideoJukebox.Test.Unit
             await Task.Delay(10); // thread dispatcher
             Assert.Equal(3, dut.AnalysisResults.Count);
             Assert.DoesNotContain(streamAnalyzer.Analyzed, x => x == "foobar\\track1.mp4");
+        }
+
+        [Fact]
+        public async Task WhenNormalizingDoIt()
+        {
+            videoRepo.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "track1.mp4", Title = "track 1" });
+            videoRepo.ToReturn.AnalysisEntries.Add(new VideoAnalysisEntry { VideoId = 1, AudioCodec = "aac", Filename = "track1.mp4", LUFS = -23, VideoCodec = "avi", VideoResolution = "640x480", Warning = null });
+            await dut.Initialize();
+            await Task.Delay(10); // thread dispatcher
+            dut.SelectedItem = dut.AnalysisResults[0];
+            dut.NormalizeCommand.Execute(null);
+            Assert.Single(audioNormalizer.Normalized);
+        }
+
+        [Fact]
+        public async Task WhenNormalizingReanalyzeAndUpdateRepo()
+        {
+            videoRepo.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "track1.mp4", Title = "track 1" });
+            videoRepo.ToReturn.AnalysisEntries.Add(new VideoAnalysisEntry { VideoId = 1, AudioCodec = "aac", Filename = "track1.mp4", LUFS = -23, VideoCodec = "avi", VideoResolution = "640x480", Warning = null });
+            await dut.Initialize();
+            await Task.Delay(10); // thread dispatcher
+            dut.SelectedItem = dut.AnalysisResults[0];
+            dut.NormalizeCommand.Execute(null);
+            Assert.Equal(1, videoRepo.ToReturn.AnalysisEntries[0].LUFS ?? 100, 0.01);
         }
     }
 }

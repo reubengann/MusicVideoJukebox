@@ -10,7 +10,7 @@
              d:DesignHeight="480" d:DesignWidth="850" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
     <Viewbox>
         <Grid Width="1050" Height="580">
-            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" Margin="5" >
+            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" SelectionMode="Single" Margin="5" SelectedItem="{Binding SelectedItem}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="280"/>
                     <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
@@ -19,6 +19,11 @@
                     <DataGridTextColumn Header="LUFS" Binding="{Binding LUFS}" Width="100"/>
                     <DataGridTextColumn Header="Warning" Binding="{Binding Warning}" Width="150"/>
                 </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Normalize" Command="{Binding NormalizeTrackCommand}"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
             </DataGrid>
         </Grid>
     </Viewbox>

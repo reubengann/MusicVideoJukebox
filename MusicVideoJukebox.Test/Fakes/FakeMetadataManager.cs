@@ -135,5 +135,12 @@ namespace MusicVideoJukebox.Test.Fakes
             await Task.CompletedTask;
             return AnalysisEntries;
         }
+
+        public Task UpdateAnalysisVolume(int videoId, double? lufs)
+        {
+            var foo = AnalysisEntries.Where(x => x.VideoId == videoId).First();
+            foo.LUFS = lufs;
+            return Task.CompletedTask;
+        }
     }
 }
