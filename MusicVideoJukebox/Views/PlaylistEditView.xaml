@@ -9,9 +9,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920"
              d:DataContext="{d:DesignInstance Type=vms:PlaylistEditViewModel, IsDesignTimeCreatable=False}">
-    <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-        <Viewbox Margin="20">
-            <Grid Width="900" Height="600">
+    <Viewbox>
+        <Grid Width="1050" Height="580" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <!-- Row Definitions -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -36,11 +35,7 @@
                     </StackPanel>
 
                     <!-- Name and Controls -->
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <DockPanel Margin="0,0,0,10">
-                            <Label Content="Name:" DockPanel.Dock="Left" />
-                            <TextBox Text="{Binding SelectedPlaylist.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPlaylistMutable}" />
-                        </DockPanel>
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Command="{Binding DeletePlaylistCommand}" IsEnabled="{Binding IsPlaylistMutable}" Width="40" Height="40" ToolTip="Delete Playlist">
                                 <mat:MaterialIcon Kind="Delete" Width="20" Height="20" />
@@ -48,8 +43,8 @@
                             <Button Command="{Binding AddPlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
                                 <mat:MaterialIcon Kind="Add" Width="20" Height="20" />
                             </Button>
-                            <Button Command="{Binding SavePlaylistCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
-                                <mat:MaterialIcon Kind="FloppyDisk" Width="20" Height="20" />
+                            <Button Command="{Binding EditPlaylistDetailsCommand}" Width="40" Height="40" ToolTip="Add Playlist" Margin="10,0,0,0">
+                                <mat:MaterialIcon Kind="Edit" Width="20" Height="20" />
                             </Button>
                         </StackPanel>
                     </StackPanel>
@@ -130,6 +125,5 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-        </Viewbox>
-    </Grid>
+    </Viewbox>
 </UserControl>

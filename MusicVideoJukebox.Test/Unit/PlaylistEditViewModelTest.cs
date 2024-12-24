@@ -40,14 +40,14 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.Equal(2, dut.AvailableTracks.Count);
         }
 
-        [Fact]
-        public async Task CannotSaveWithNoChanges()
-        {
-            await libraryStore.SetLibrary(1, "foobar");
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
-            await dut.Initialize();
-            Assert.False(dut.SavePlaylistCommand.CanExecute());
-        }
+        //[Fact]
+        //public async Task CannotSaveWithNoChanges()
+        //{
+        //    await libraryStore.SetLibrary(1, "foobar");
+        //    metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
+        //    await dut.Initialize();
+        //    Assert.False(dut.SavePlaylistCommand.CanExecute());
+        //}
 
         [Fact]
         public async Task IfNoLibrarySelectedDontCrash()
@@ -95,29 +95,29 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.Equal("New Playlist 2", dut.SelectedPlaylist?.Name);
         }
 
-        [Fact]
-        public async Task SavesAndRefreshesNewPlaylist()
-        {
-            await libraryStore.SetLibrary(1, "foobar");
-            await dut.Initialize();
-            dut.AddPlaylistCommand.Execute();
-            dut.SavePlaylistCommand.Execute();
-            Assert.Equal(1, dut.SelectedPlaylist?.Id);
-            Assert.Single(dut.Playlists);
-            Assert.Equal(1, dut.Playlists.First().Id);
-        }
+        //[Fact]
+        //public async Task SavesAndRefreshesNewPlaylist()
+        //{
+        //    await libraryStore.SetLibrary(1, "foobar");
+        //    await dut.Initialize();
+        //    dut.AddPlaylistCommand.Execute();
+        //    dut.SavePlaylistCommand.Execute();
+        //    Assert.Equal(1, dut.SelectedPlaylist?.Id);
+        //    Assert.Single(dut.Playlists);
+        //    Assert.Equal(1, dut.Playlists.First().Id);
+        //}
 
-        [Fact]
-        public async Task SavesExistingPlaylist()
-        {
-            await libraryStore.SetLibrary(1, "foobar");
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
-            await dut.Initialize();
-            dut.SelectedPlaylist = dut.Playlists[0];
-            dut.SelectedPlaylist.Name = "changed";
-            dut.SavePlaylistCommand.Execute();
-            Assert.Equal("changed", metadataManagerFactory.ToReturn.Playlists[0].PlaylistName);
-        }
+        //[Fact]
+        //public async Task SavesExistingPlaylist()
+        //{
+        //    await libraryStore.SetLibrary(1, "foobar");
+        //    metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "New Playlist" });
+        //    await dut.Initialize();
+        //    dut.SelectedPlaylist = dut.Playlists[0];
+        //    dut.SelectedPlaylist.Name = "changed";
+        //    dut.SavePlaylistCommand.Execute();
+        //    Assert.Equal("changed", metadataManagerFactory.ToReturn.Playlists[0].PlaylistName);
+        //}
 
         [Fact]
         public async Task LoadsExistingPlaylistTracksWhenInitializing()

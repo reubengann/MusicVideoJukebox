@@ -23,7 +23,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
         }
         public DelegateCommand AddPlaylistCommand { get; }
-        public DelegateCommand SavePlaylistCommand { get; }
+        public DelegateCommand EditPlaylistDetailsCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
         public DelegateCommand AddTrackToPlaylistCommand { get; }
         public DelegateCommand DeleteTrackFromPlaylistCommand { get; }
@@ -60,11 +60,47 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
         }
 
+        public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
+        {
+            this.libraryStore = libraryStore;
+            this.metadataManagerFactory = metadataManagerFactory;
+            AddPlaylistCommand = new DelegateCommand(AddPlaylist, CanAddPlaylist);
+            EditPlaylistDetailsCommand = new DelegateCommand(LaunchPlaylistDetailsEditor, CanLaunchPlaylistDetailsEditor);
+            DeletePlaylistCommand = new DelegateCommand(DeletePlaylist, CanDeletePlaylist);
+            AddTrackToPlaylistCommand = new DelegateCommand(AddTracksToPlaylist, CanAddTrackToPlaylist);
+            DeleteTrackFromPlaylistCommand = new DelegateCommand(DeleteTrackFromPlaylist, CanDeleteTrackFromPlaylist);
+            ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist, CanShufflePlaylist);
+        }
+
+        //private async void SavePlaylist()
+        //{
+        //    if (SelectedPlaylist == null) return;
+        //    if (SelectedPlaylist.Id == -1)
+        //    {
+        //        var id = await metadataManager.SavePlaylist(SelectedPlaylist.Playlist);
+        //        SelectedPlaylist.Id = id;
+        //    }
+        //    else
+        //    {
+        //        await metadataManager.UpdatePlaylistName(SelectedPlaylist.Id, SelectedPlaylist.Name);
+        //    }
+        //    SelectedPlaylist.IsModified = false;
+        //    OnPropertyChanged(nameof(SelectedPlaylist));
+        //    OnPropertyChanged(nameof(IsPlaylistMutable));
+        //    OnPropertyChanged(nameof(CanEditTracks));
+        //    RefreshButtons();
+        //}
+
+        private void LaunchPlaylistDetailsEditor()
+        {
+            throw new NotImplementedException();
+        }
+
         private void SelectedPlaylist_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(PlaylistViewModel.Name))
             {
-                SavePlaylistCommand.RaiseCanExecuteChanged();
+                EditPlaylistDetailsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -141,23 +177,13 @@ namespace MusicVideoJukebox.Core.ViewModels
         void RefreshButtons()
         {
             AddPlaylistCommand.RaiseCanExecuteChanged();
-            SavePlaylistCommand.RaiseCanExecuteChanged();
+            EditPlaylistDetailsCommand.RaiseCanExecuteChanged();
             DeletePlaylistCommand.RaiseCanExecuteChanged();
             AddTrackToPlaylistCommand.RaiseCanExecuteChanged();
             DeleteTrackFromPlaylistCommand.RaiseCanExecuteChanged();
         }
 
-        public PlaylistEditViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory)
-        {
-            this.libraryStore = libraryStore;
-            this.metadataManagerFactory = metadataManagerFactory;
-            AddPlaylistCommand = new DelegateCommand(AddPlaylist, CanAddPlaylist);
-            SavePlaylistCommand = new DelegateCommand(SavePlaylist, CanSavePlaylist);
-            DeletePlaylistCommand = new DelegateCommand(DeletePlaylist, CanDeletePlaylist);
-            AddTrackToPlaylistCommand = new DelegateCommand(AddTracksToPlaylist, CanAddTrackToPlaylist);
-            DeleteTrackFromPlaylistCommand = new DelegateCommand(DeleteTrackFromPlaylist, CanDeleteTrackFromPlaylist);
-            ShufflePlaylistCommand = new DelegateCommand(ShufflePlaylist, CanShufflePlaylist);
-        }
+        
 
         private bool CanShufflePlaylist()
         {
@@ -213,30 +239,13 @@ namespace MusicVideoJukebox.Core.ViewModels
             throw new NotImplementedException();
         }
 
-        private bool CanSavePlaylist()
+        private bool CanLaunchPlaylistDetailsEditor()
         {
             if (SelectedPlaylist == null) return false;
             return SelectedPlaylist.IsModified;
         }
 
-        private async void SavePlaylist()
-        {
-            if (SelectedPlaylist == null) return;
-            if (SelectedPlaylist.Id == -1)
-            {
-                var id = await metadataManager.SavePlaylist(SelectedPlaylist.Playlist);
-                SelectedPlaylist.Id = id;
-            }
-            else
-            {
-                await metadataManager.UpdatePlaylistName(SelectedPlaylist.Id, SelectedPlaylist.Name);
-            }
-            SelectedPlaylist.IsModified = false;
-            OnPropertyChanged(nameof(SelectedPlaylist));
-            OnPropertyChanged(nameof(IsPlaylistMutable));
-            OnPropertyChanged(nameof(CanEditTracks));
-            RefreshButtons();
-        }
+        
 
         private bool CanAddPlaylist()
         {
