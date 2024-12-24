@@ -9,7 +9,7 @@
         Task RemoveMetadata(int videoId);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylistName(int id, string name);
+        Task UpdatePlaylistDetails(Playlist playlist);
         Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);

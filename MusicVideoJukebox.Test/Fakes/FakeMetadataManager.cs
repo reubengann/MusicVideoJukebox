@@ -74,13 +74,15 @@ namespace MusicVideoJukebox.Test.Fakes
             return id;
         }
 
-        public async Task UpdatePlaylistName(int id, string name)
+        public async Task UpdatePlaylist(Playlist playlist)
         {
             foreach (var item in Playlists)
             {
-                if (item.PlaylistId == id)
+                if (item.PlaylistId == playlist.PlaylistId)
                 {
-                    item.PlaylistName = name;
+                    item.PlaylistName = playlist.PlaylistName;
+                    item.Description = playlist.Description;
+                    item.ImagePath = playlist.ImagePath;
                     return;
                 }
             }

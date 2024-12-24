@@ -79,6 +79,8 @@ namespace MusicVideoJukebox.Core.Metadata
                 create table if not exists playlist (
                 playlist_id integer primary key autoincrement,
                 playlist_name text not null,
+                description TEXT,
+                image_path TEXT,
                 is_all boolean not null
                 )
                 ");
@@ -126,7 +128,7 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name, is_all from playlist")).ToList();
+            return (await conn.QueryAsync<Playlist>("SELECT playlist_id, playlist_name, description, image_path, is_all from playlist")).ToList();
         }
 
         public async Task<int> GetTrackCountForPlaylist(int playlistId)
@@ -235,10 +237,17 @@ namespace MusicVideoJukebox.Core.Metadata
             }
         }
 
-        public async Task UpdatePlaylistName(int id, string name)
+        public async Task UpdatePlaylistDetails(Playlist playlist)
         {
             using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync("UPDATE playlist SET playlist_name = @name WHERE playlist_id = @id", new { id, name });
+            await conn.ExecuteAsync(
+                @"
+UPDATE playlist 
+SET playlist_name = @name,
+description = @description,
+image_path = @imagePath
+WHERE playlist_id = @id
+", new { id = playlist.PlaylistId, name = playlist.PlaylistName, description = playlist.Description, imagePath = playlist.ImagePath });
         }
 
         public async Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)

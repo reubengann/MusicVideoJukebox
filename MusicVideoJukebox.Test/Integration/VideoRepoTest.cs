@@ -100,9 +100,10 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetPlaylists()
         {
             await dut.CreateTables();
-            WithPlaylist(2, "playlist1");
+            WithPlaylist(2, "playlist1", description: "foobar");
             var result = await dut.GetPlaylists();
             Assert.Equal(2, result.Count);
+            Assert.Equal("foobar", result[1].Description);
         }
 
         [Fact]
@@ -122,12 +123,14 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.CreateTables();
             WithPlaylist(2, "playlist1");
-            await dut.UpdatePlaylistName(2, "newname");
+            await dut.UpdatePlaylistDetails(new Playlist { PlaylistId = 2, PlaylistName = "newname", Description = "something" });
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
             Assert.Equal(2, rows);
             var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist WHERE is_all = 0");
             Assert.Equal("newname", name);
+            var description = await conn.ExecuteScalarAsync<string?>("SELECT description from playlist WHERE is_all = 0");
+            Assert.NotNull(description);
         }
 
         [Fact]
@@ -252,12 +255,12 @@ namespace MusicVideoJukebox.Test.Integration
                 new { videoId, filename, title, artist, status, album, year });
         }
 
-        void WithPlaylist(int id, string name)
+        void WithPlaylist(int id, string name, string? description = null, string? imagePath = null)
         {
             using (var conn = new SQLiteConnection(connectionString))
             {
-                conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name, is_all) values (@id, @name, 0)",
-                    new { id, name });
+                conn.ExecuteScalar<int>(@"INSERT INTO playlist (playlist_id, playlist_name, description, image_path, is_all) values (@id, @name, @description, @imagePath, 0)",
+                    new { id, name, description, imagePath });
             }
         }
 

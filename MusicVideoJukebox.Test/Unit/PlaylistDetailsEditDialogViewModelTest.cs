@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
+﻿using MusicVideoJukebox.Core.Metadata;
+using MusicVideoJukebox.Core.ViewModels;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -8,7 +9,7 @@ namespace MusicVideoJukebox.Test.Unit
 
         public PlaylistDetailsEditDialogViewModelTest()
         {
-            dut = new PlaylistDetailsEditDialogViewModel();
+            dut = new PlaylistDetailsEditDialogViewModel(new Playlist { });
         }
     }
 }

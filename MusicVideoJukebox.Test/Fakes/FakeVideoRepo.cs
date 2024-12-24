@@ -94,7 +94,7 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.CompletedTask;
         }
 
-        public Task UpdatePlaylistName(int id, string name)
+        public Task UpdatePlaylistDetails(Playlist playlist)
         {
             throw new NotImplementedException();
         }

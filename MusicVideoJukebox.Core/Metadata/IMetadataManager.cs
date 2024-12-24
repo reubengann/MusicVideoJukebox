@@ -17,7 +17,7 @@
         Task UpdateVideoMetadata(VideoMetadata entry);
         Task<List<Playlist>> GetPlaylists();
         Task<int> SavePlaylist(Playlist playlist);
-        Task UpdatePlaylistName(int id, string name);
+        Task UpdatePlaylist(Playlist playlist);
         Task<bool> Resync();
         Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId);
         Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId);

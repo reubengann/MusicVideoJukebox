@@ -34,18 +34,18 @@ namespace MusicVideoJukebox.Core.ViewModels
             set
             {
 
-                if (selectedPlaylist != null)
-                {
-                    selectedPlaylist.PropertyChanged -= SelectedPlaylist_PropertyChanged;
-                }
+                //if (selectedPlaylist != null)
+                //{
+                //    selectedPlaylist.PropertyChanged -= SelectedPlaylist_PropertyChanged;
+                //}
                 
                 SetProperty(ref selectedPlaylist, value);
                 OnPropertyChanged(nameof(CanEditTracks));
 
-                if (SelectedPlaylist != null)
-                {
-                    SelectedPlaylist.PropertyChanged += SelectedPlaylist_PropertyChanged;
-                }
+                //if (SelectedPlaylist != null)
+                //{
+                //    SelectedPlaylist.PropertyChanged += SelectedPlaylist_PropertyChanged;
+                //}
 
                 if (value != null && value.Id > 0)
                 {
@@ -96,13 +96,13 @@ namespace MusicVideoJukebox.Core.ViewModels
             throw new NotImplementedException();
         }
 
-        private void SelectedPlaylist_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(PlaylistViewModel.Name))
-            {
-                EditPlaylistDetailsCommand.RaiseCanExecuteChanged();
-            }
-        }
+        //private void SelectedPlaylist_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        //{
+        //    if (e.PropertyName == nameof(PlaylistViewModel.Name))
+        //    {
+        //        EditPlaylistDetailsCommand.RaiseCanExecuteChanged();
+        //    }
+        //}
 
         private async Task LoadTracksForSelectedPlaylist()
         {
@@ -242,7 +242,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool CanLaunchPlaylistDetailsEditor()
         {
             if (SelectedPlaylist == null) return false;
-            return SelectedPlaylist.IsModified;
+            return IsPlaylistMutable;
         }
 
         

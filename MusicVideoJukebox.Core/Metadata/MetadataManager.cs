@@ -130,9 +130,9 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.SavePlaylist(playlist);
         }
 
-        public async Task UpdatePlaylistName(int id, string name)
+        public async Task UpdatePlaylist(Playlist playlist)
         {
-            await videoRepo.UpdatePlaylistName(id, name);
+            await videoRepo.UpdatePlaylistDetails(playlist);
         }
 
         public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
