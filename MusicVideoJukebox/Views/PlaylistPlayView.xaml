@@ -11,15 +11,22 @@
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vms:PlaylistPlayViewModel, IsDesignTimeCreatable=False}"
              >
+    <!--Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"-->
     <Grid>
-        <Viewbox>
-            <ItemsControl ItemsSource="{Binding Items}">
+        <Viewbox HorizontalAlignment="Left">
+            <ItemsControl ItemsSource="{Binding Items}" Width="900" Height="500" Margin="5" BorderThickness="1" BorderBrush="AliceBlue">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderThickness="5" Padding="5" Margin="5" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                            >
+                        <Border 
+                        BorderThickness="1" 
+                        Padding="5" 
+                        Margin="5" 
+                        BorderBrush="AliceBlue"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
                             <Border.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.SelectPlaylistCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                <MouseBinding Gesture="LeftClick" 
+                                Command="{Binding DataContext.SelectPlaylistCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                                 CommandParameter="{Binding}" />
                             </Border.InputBindings>
                             <Border.Style>
@@ -32,19 +39,29 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <StackPanel Orientation="Vertical">
-                                <mat:MaterialIcon Kind="Music" Width="50" Height="50" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                                <TextBlock Text="{Binding Name}" FontSize="18" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" HorizontalAlignment="Center"/>
-                            </StackPanel>
+                            <DockPanel>
+                                <TextBlock 
+                                Text="{Binding Name}" 
+                                Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                                HorizontalAlignment="Center" 
+                                DockPanel.Dock="Bottom" />
+                                <mat:MaterialIcon 
+                                Kind="Music" 
+                                Width="64" 
+                                Height="64" 
+                                Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                                HorizontalAlignment="Center" />
+                            </DockPanel>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" Rows="3"/>
+                        <UniformGrid Columns="4" Rows="4"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </Viewbox>
     </Grid>
+
 </UserControl>

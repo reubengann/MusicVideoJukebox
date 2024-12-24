@@ -232,6 +232,9 @@ namespace MusicVideoJukebox.Core.ViewModels
                 await metadataManager.UpdatePlaylistName(SelectedPlaylist.Id, SelectedPlaylist.Name);
             }
             SelectedPlaylist.IsModified = false;
+            OnPropertyChanged(nameof(SelectedPlaylist));
+            OnPropertyChanged(nameof(IsPlaylistMutable));
+            OnPropertyChanged(nameof(CanEditTracks));
             RefreshButtons();
         }
 
