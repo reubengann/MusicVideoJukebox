@@ -6,7 +6,7 @@ namespace MusicVideoJukebox.Test.Unit
     {
         public List<string> Analyzed = [];
 
-        public async Task<VideoFileAnalyzeFullResult> Analyze(string path)
+        public async Task<VideoFileAnalyzeFullResult> Analyze(string path, CancellationToken cancellationToken)
         {
             Analyzed.Add(path);
             await Task.CompletedTask;

@@ -72,7 +72,7 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             await Task.Delay(10); // thread dispatcher
             dut.SelectedItem = dut.AnalysisResults[0];
-            dut.NormalizeCommand.Execute(null);
+            dut.NormalizeTrackCommand.Execute();
             Assert.Single(audioNormalizer.Normalized);
         }
 
@@ -84,7 +84,7 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             await Task.Delay(10); // thread dispatcher
             dut.SelectedItem = dut.AnalysisResults[0];
-            dut.NormalizeCommand.Execute(null);
+            dut.NormalizeTrackCommand.Execute();
             Assert.Equal(1, videoRepo.ToReturn.AnalysisEntries[0].LUFS ?? 100, 0.01);
         }
     }

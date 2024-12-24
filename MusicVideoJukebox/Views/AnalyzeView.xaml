@@ -5,12 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox.Views"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vms:AnalyzeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="480" d:DesignWidth="850" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
     <Viewbox>
         <Grid Width="1050" Height="580">
-            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" SelectionMode="Single" Margin="5" SelectedItem="{Binding SelectedItem}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="520" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" SelectionMode="Single" Margin="5" SelectedItem="{Binding SelectedItem}"
+                      MaxHeight="500" BorderThickness="1">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="280"/>
                     <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
@@ -25,6 +31,12 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
+            <mah:ProgressRing Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <UniformGrid Margin="5" Grid.Row="1" Rows="1" Width="500">
+                <Button Command="{Binding CancelOperationsCommand}">Cancel</Button>
+                <Button Command="{Binding NormalizeAllCommand}" Margin="5,0,0,0">Normalize All</Button>
+                <Button Command="{Binding ReanalyzeAllCommand}" Margin="5,0,0,0">Reanalyze All</Button>
+            </UniformGrid>
         </Grid>
     </Viewbox>
 </UserControl>

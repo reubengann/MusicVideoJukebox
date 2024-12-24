@@ -7,7 +7,7 @@ namespace MusicVideoJukebox.Test.Unit
         public bool ReturnValue = true;
         public List<string> Normalized = [];
 
-        public Task<bool> NormalizeAudio(string sourcefolder, string filename, double? lufs)
+        public Task<bool> NormalizeAudio(string sourcefolder, string filename, double? lufs, CancellationToken cancellationToken)
         {
             Normalized.Add(filename);
             return Task.FromResult(ReturnValue);

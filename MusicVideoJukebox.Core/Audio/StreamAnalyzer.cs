@@ -32,7 +32,7 @@ namespace MusicVideoJukebox.Core.Audio
 
     public class StreamAnalyzer : IStreamAnalyzer
     {
-        public async Task<VideoFileAnalyzeFullResult> Analyze(string path)
+        public async Task<VideoFileAnalyzeFullResult> Analyze(string path, CancellationToken cancellationToken)
         {
             var mediaInfo = await FFmpeg.GetMediaInfo(path);
             var warning = "";
@@ -50,8 +50,7 @@ namespace MusicVideoJukebox.Core.Audio
             var videoStream = mediaInfo.VideoStreams.First();
             var audioStream = mediaInfo.AudioStreams.First();
 
-            var loudness = await CalculateLoudness(path);
-
+            var loudness = await CalculateLoudness(path, cancellationToken);
             return new VideoFileAnalyzeFullResult
             {
                 Path = mediaInfo.Path,
@@ -75,7 +74,7 @@ namespace MusicVideoJukebox.Core.Audio
             };
         }
 
-        private async Task<double?> CalculateLoudness(string path)
+        private async Task<double?> CalculateLoudness(string path, CancellationToken cancellationToken)
         {
             var conversion = FFmpeg.Conversions.New()
                 .AddParameter($"-i \"{path}\"")
@@ -91,7 +90,7 @@ namespace MusicVideoJukebox.Core.Audio
                 }
             };
 
-            await conversion.Start();
+            await conversion.Start(cancellationToken);
 
             // Parse the output for LUFS value
             // Find the line containing '[Parsed_loudnorm_0'
@@ -124,7 +123,7 @@ namespace MusicVideoJukebox.Core.Audio
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error parsing JSON: {ex.Message}");
+                        return null;
                     }
                 }
             }

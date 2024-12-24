@@ -13,7 +13,7 @@ namespace MusicVideoJukebox.Core.Audio
             this.archiveFolder = archivefolder;
         }
 
-        public async Task<bool> NormalizeAudio(string sourcefolder, string filename, double? lufs)
+        public async Task<bool> NormalizeAudio(string sourcefolder, string filename, double? lufs, CancellationToken cancellationToken)
         {
             if (lufs == null) return false;
             double measuredLufs = lufs ?? 0;
@@ -35,7 +35,7 @@ namespace MusicVideoJukebox.Core.Audio
 
             try
             {
-                await conversion.Start();
+                await conversion.Start(cancellationToken);
                 if (!Directory.Exists(archiveFolder))
                 {
                     Directory.CreateDirectory(archiveFolder);

@@ -3,7 +3,6 @@ using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
@@ -14,15 +13,22 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
         private readonly IAudioNormalizer audioNormalizer;
+        private CancellationTokenSource? cancellationTokenSource;
+        private bool isBusy = false;
 
-        public ICommand NormalizeTrackCommand { get; }
+        public DelegateCommand NormalizeTrackCommand { get; }
+        public DelegateCommand CancelOperationsCommand { get; }
+        public DelegateCommand NormalizeAllCommand { get; }
+        public DelegateCommand ReanalyzeAllCommand { get; }
 
         public ObservableCollection<AnalysisResultViewModel> AnalysisResults { get; set; } = [];
         public AnalysisResultViewModel? SelectedItem { get; set; }
 
-        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer, 
-            IUiThreadDispatcher threadDispatcher, 
-            IMetadataManagerFactory metadataManagerFactory, 
+        public bool IsBusy { get => isBusy; set { SetProperty(ref isBusy, value); RefreshButtons(); } }
+
+        public AnalyzeViewModel(IStreamAnalyzer streamAnalyzer,
+            IUiThreadDispatcher threadDispatcher,
+            IMetadataManagerFactory metadataManagerFactory,
             LibraryStore libraryStore,
             IAudioNormalizer audioNormalizer)
         {
@@ -31,18 +37,57 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             this.audioNormalizer = audioNormalizer;
-            NormalizeTrackCommand = new DelegateCommand(NormalizeSelected);
+            NormalizeTrackCommand = new DelegateCommand(NormalizeSelected, () => !IsBusy);
+            CancelOperationsCommand = new DelegateCommand(CancelOperations, () => IsBusy);
+            NormalizeAllCommand = new DelegateCommand(NormalizeAll, () => !IsBusy);
+            ReanalyzeAllCommand = new DelegateCommand(ReanalyzeAll, () => !IsBusy);
+        }
+
+        private void RefreshButtons()
+        {
+            NormalizeTrackCommand.RaiseCanExecuteChanged();
+            CancelOperationsCommand.RaiseCanExecuteChanged();
+            NormalizeAllCommand.RaiseCanExecuteChanged();
+            ReanalyzeAllCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ReanalyzeAll()
+        {
+
+        }
+
+        private void NormalizeAll()
+        {
+
+        }
+
+        private void CancelOperations()
+        {
+            cancellationTokenSource?.Cancel();
         }
 
         private async void NormalizeSelected()
         {
+            cancellationTokenSource = new CancellationTokenSource();
             if (SelectedItem == null) return;
             if (libraryStore.CurrentState.LibraryPath == null) return;
-            var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename, SelectedItem.LUFS);
-            if (!success) return;
+            IsBusy = true;
+            try
+            {
+                var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename, SelectedItem.LUFS, CancellationToken.None);
+                if (!success) return;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+            if (cancellationTokenSource.IsCancellationRequested) return;
             string path = Path.Combine(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename);
-            var newResult = await streamAnalyzer.Analyze(path);
+            var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
             var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+
+            // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
+            // If I wasn't being lazy, I would copy the old file back at this point.
             await videoRepo.UpdateAnalysisVolume(SelectedItem.VideoId, newResult.AudioStream.LUFS);
             SelectedItem.LUFS = newResult.AudioStream.LUFS;
         }
@@ -60,8 +105,11 @@ namespace MusicVideoJukebox.Core.ViewModels
             var videos = await videoRepo.GetAllMetadata();
             var existingAnalysis = (await videoRepo.GetAnalysisResults()).ToDictionary(x => x.VideoId, x => x);
 
+            cancellationTokenSource = new CancellationTokenSource();
+
             foreach (var video in videos)
             {
+                if (cancellationTokenSource.IsCancellationRequested) return;
                 AnalysisResultViewModel result;
 
                 if (existingAnalysis.ContainsKey(video.VideoId))
@@ -84,7 +132,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     string path = Path.Combine(libraryStore.CurrentState.LibraryPath, video.Filename);
                     try
                     {
-                        var analyzeResult = await streamAnalyzer.Analyze(path);
+                        var analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
 
                         var warning = analyzeResult.Warning;
                         if (analyzeResult.AudioStream.LUFS == null)
@@ -93,7 +141,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                                 warning += ", ";
                             warning += "LUFS failed";
                         }
-                        
+
                         await videoRepo.InsertAnalysisResult(new VideoAnalysisEntry
                         {
                             VideoCodec = analyzeResult.VideoStream.Codec,
