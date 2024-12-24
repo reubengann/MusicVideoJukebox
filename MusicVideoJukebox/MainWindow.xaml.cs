@@ -141,7 +141,7 @@ namespace MusicVideoJukebox
             services.AddTransient<LibraryViewModel>();
             services.AddTransient<MetadataEditViewModel>();
             services.AddTransient<PlaylistEditViewModel>();
-            services.AddTransient<PlaylistPlayViewModel>();
+            services.AddTransient<PlaylistSelectViewModel>();
             services.AddTransient<AnalyzeViewModel>();
             services.AddSingleton<IDialogService>(x => new WindowsDialogService(this));
             

@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class PlaylistPlayViewModel : AsyncInitializeableViewModel
+    public class PlaylistSelectViewModel : AsyncInitializeableViewModel
     {
         private IMetadataManager? metadataManager;
         private readonly LibraryStore libraryStore;
@@ -19,7 +19,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public ObservableCollection<PlaylistViewModel> Items { get; } = [];
 
-        public PlaylistPlayViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory, INavigationService navigationService)
+        public PlaylistSelectViewModel(LibraryStore libraryStore, IMetadataManagerFactory metadataManagerFactory, INavigationService navigationService)
         {
             SelectPlaylistCommand = new DelegateCommand<PlaylistViewModel>(SelectPlaylist);
             this.libraryStore = libraryStore;

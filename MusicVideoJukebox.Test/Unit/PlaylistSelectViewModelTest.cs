@@ -5,22 +5,22 @@ using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
 {
-    public class PlaylistPlayViewModelTest
+    public class PlaylistSelectViewModelTest
     {
-        PlaylistPlayViewModel dut;
+        PlaylistSelectViewModel dut;
         FakeMetadataManagerFactory metadataManagerFactory;
         LibraryStore libraryStore;
         FakeLibrarySetRepo librarySetRepo;
         FakeNavigationService navigationService;
 
-        public PlaylistPlayViewModelTest()
+        public PlaylistSelectViewModelTest()
         {
             navigationService = new FakeNavigationService();
             librarySetRepo = new FakeLibrarySetRepo();
             metadataManagerFactory = new FakeMetadataManagerFactory();
             libraryStore = new LibraryStore(librarySetRepo);
             
-            dut = new PlaylistPlayViewModel(libraryStore, metadataManagerFactory, navigationService);
+            dut = new PlaylistSelectViewModel(libraryStore, metadataManagerFactory, navigationService);
         }
 
         [Fact]

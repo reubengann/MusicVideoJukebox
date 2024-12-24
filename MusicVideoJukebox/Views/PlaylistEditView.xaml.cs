@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace MusicVideoJukebox.Views
 {
     /// <summary>
-    /// Interaction logic for PlaylistPlayView.xaml
+    /// Interaction logic for PlaylistsView.xaml
     /// </summary>
-    public partial class PlaylistPlayView : UserControl
+    public partial class PlaylistEditView : UserControl
     {
-        public PlaylistPlayView()
+        public PlaylistEditView()
         {
             InitializeComponent();
         }

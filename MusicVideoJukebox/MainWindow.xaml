@@ -148,10 +148,10 @@
                         <views:LibrariesView />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vms:PlaylistEditViewModel}">
-                        <views:PlaylistsView />
+                        <views:PlaylistEditView />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type vms:PlaylistPlayViewModel}">
-                        <views:PlaylistPlayView />
+                    <DataTemplate DataType="{x:Type vms:PlaylistSelectViewModel}">
+                        <views:PlaylistSelectView />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vms:MetadataEditViewModel}">
                         <views:MetadataEditView />
