@@ -2,13 +2,13 @@
 {
     public interface IVideoRepo
     {
-        Task CreateTables();
+        Task InitializeDatabase();
         Task AddBasicInfos(List<BasicInfo> basicInfos);
         Task<List<VideoMetadata>> GetAllMetadata();
         Task UpdateMetadata(VideoMetadata metadata);
         Task RemoveMetadata(int videoId);
         Task<List<Playlist>> GetPlaylists();
-        Task<int> SavePlaylist(Playlist playlist);
+        Task<int> InsertPlaylist(Playlist playlist);
         Task UpdatePlaylistDetails(Playlist playlist);
         Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
@@ -18,6 +18,7 @@
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
         Task<List<VideoAnalysisEntry>> GetAnalysisResults();
         Task UpdateAnalysisVolume(int videoId, double? lufs);
+        Task UpdatePlayStatus(int playlistId, int videoId);
     }
 
     public class VideoAnalysisEntry

@@ -23,7 +23,7 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.FromResult(1);
         }
 
-        public async Task CreateTables()
+        public async Task InitializeDatabase()
         {
             await Task.CompletedTask;
             TablesCreated = true;
@@ -78,7 +78,7 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.CompletedTask;
         }
 
-        public Task<int> SavePlaylist(Playlist playlist)
+        public Task<int> InsertPlaylist(Playlist playlist)
         {
             throw new NotImplementedException();
         }
@@ -100,6 +100,11 @@ namespace MusicVideoJukebox.Test.Fakes
         }
 
         public Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdatePlayStatus(int playlistId, int videoId)
         {
             throw new NotImplementedException();
         }

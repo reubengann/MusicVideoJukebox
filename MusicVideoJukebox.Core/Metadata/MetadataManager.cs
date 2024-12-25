@@ -28,7 +28,7 @@ namespace MusicVideoJukebox.Core.Metadata
             {
                 return;
             }
-            await videoRepo.CreateTables();
+            await videoRepo.InitializeDatabase();
             var rows = fileSystemService.ListMp4Files(folderPath);
             List<BasicInfo> infos = [];
             foreach (var row in rows)
@@ -127,7 +127,7 @@ namespace MusicVideoJukebox.Core.Metadata
 
         public async Task<int> SavePlaylist(Playlist playlist)
         {
-            return await videoRepo.SavePlaylist(playlist);
+            return await videoRepo.InsertPlaylist(playlist);
         }
 
         public async Task UpdatePlaylist(Playlist playlist)

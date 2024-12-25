@@ -61,7 +61,7 @@ namespace MusicVideoJukebox.Core.Metadata
             return id;
         }
 
-        public async Task CreateTables()
+        public async Task InitializeDatabase()
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync(@"
@@ -95,9 +95,15 @@ namespace MusicVideoJukebox.Core.Metadata
                 )
                 ");
             await conn.ExecuteAsync(@"
-                create table if not exists play_status (
-                playlist_id integer null,
-                song_id integer null
+                create table if not exists playlist_status (
+                playlist_id integer not null,
+                video_id integer null,
+                song_order integer null
+                )
+                ");
+            await conn.ExecuteAsync(@"
+                create table if not exists active_playlist (
+                playlist_id integer not null
                 )
                 ");
             await conn.ExecuteAsync(@"
@@ -112,9 +118,15 @@ namespace MusicVideoJukebox.Core.Metadata
                     FOREIGN KEY (video_id) REFERENCES video(video_id) ON DELETE CASCADE
                 );
             ");
-            await conn.ExecuteAsync(@"
-                insert into playlist (playlist_name, is_all) VALUES ('All songs', 1)
-                ");
+            await SetupTasks(conn);
+        }
+
+        async Task SetupTasks(SQLiteConnection conn)
+        {
+            // should be 1 ...
+            var allSongPlaylistId = await InsertPlaylist(conn, new Playlist { PlaylistName = "All songs", Description = "Every song in the library", IsAll = true });
+            await conn.ExecuteAsync(@"INSERT INTO playlist_status (playlist_id) VALUES (@allSongPlaylistId)", new { allSongPlaylistId });
+            await conn.ExecuteAsync(@"INSERT INTO active_playlist (playlist_id) VALUES (@allSongPlaylistId)", new { allSongPlaylistId });
         }
 
         public async Task<List<VideoMetadata>> GetAllMetadata()
@@ -137,11 +149,20 @@ namespace MusicVideoJukebox.Core.Metadata
             return await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM playlist_video WHERE playlist_id = @playlistId", new { playlistId });
         }
 
-        public async Task<int> SavePlaylist(Playlist playlist)
+        public async Task<int> InsertPlaylist(Playlist playlist)
         {
             using var conn = new SQLiteConnection(connectionString);
+            return await InsertPlaylist(conn, playlist);
+        }
 
-            return await conn.ExecuteScalarAsync<int>("INSERT INTO playlist (playlist_name, is_all) VALUES (@playlistName, @isAll) RETURNING playlist_id", new { playlistName = playlist.PlaylistName, isAll = playlist.IsAll });
+        public async Task<int> InsertPlaylist(SQLiteConnection conn, Playlist playlist)
+        {
+            var createdId = await conn.ExecuteScalarAsync<int>(@"
+INSERT INTO playlist (playlist_name, description, image_path, is_all) 
+VALUES (@PlaylistName, @Description, @ImagePath, @IsAll) RETURNING playlist_id", playlist);
+            // Also need to make sure we have a playlist_status
+
+            return createdId;
         }
 
         public async Task UpdateMetadata(VideoMetadata metadata)
@@ -296,6 +317,11 @@ WHERE playlist_id = @id
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("UPDATE video_analysis SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
+        }
+
+        public Task UpdatePlayStatus(int playlistId, int videoId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -22,20 +22,35 @@ namespace MusicVideoJukebox.Test.Integration
             conn.Execute("DROP table playlist");
             conn.Execute("DROP table playlist_video");
             conn.Execute("DROP table video_analysis");
+            conn.Execute("DROP table playlist_status");
+            conn.Execute("DROP table active_playlist");
         }
 
         [Fact]
         public async Task CanCreateTables()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("SELECT * from video");
         }
 
         [Fact]
+        public async Task WhenCreatingTablesCreatesAnAllSongsPlaylistAndStatus()
+        {
+            await dut.InitializeDatabase();
+            using var conn = new SQLiteConnection(connectionString);
+            var playlistCount = await conn.ExecuteScalarAsync<int>("SELECT count(*) from playlist");
+            Assert.Equal(1, playlistCount);
+            var statusCount = await conn.ExecuteScalarAsync<int>("SELECT count(*) from playlist_status");
+            Assert.Equal(1, statusCount);
+            var activePlaylistCount = await conn.ExecuteScalarAsync<int>("SELECT count(*) from active_playlist");
+            Assert.Equal(1, activePlaylistCount);
+        }
+
+        [Fact]
         public async Task CanAddBasicVideoInfo()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             await dut.AddBasicInfos([
                 new BasicInfo { Artist = "artist1", Filename = "path1", Title = "name1" },
                 new BasicInfo { Artist = "artist2", Filename = "path2", Title = "name2" },
@@ -50,7 +65,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanRemoveMetadata()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             await dut.AddBasicInfos([
                 new BasicInfo { Artist = "artist1", Filename = "path1", Title = "name1" },
                 new BasicInfo { Artist = "artist2", Filename = "path2", Title = "name2" },
@@ -70,7 +85,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanGetBasicVideoInfo()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "file1", "title1", "artist1", "album1", MetadataStatus.NotDone);
             WithVideo(2, "file2", "title2", "artist2", "album2", MetadataStatus.NotDone);
             var result = await dut.GetAllMetadata();
@@ -81,7 +96,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanUpdateVideo()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
             await dut.UpdateMetadata(new VideoMetadata { VideoId = 1, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
             var conn = new SQLiteConnection(connectionString);
@@ -99,7 +114,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanGetPlaylists()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithPlaylist(2, "playlist1", description: "foobar");
             var result = await dut.GetPlaylists();
             Assert.Equal(2, result.Count);
@@ -109,8 +124,8 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanSaveNewPlaylist()
         {
-            await dut.CreateTables();
-            var id = await dut.SavePlaylist(new Playlist { PlaylistId = -1, PlaylistName = "New Playlist" });
+            await dut.InitializeDatabase();
+            var id = await dut.InsertPlaylist(new Playlist { PlaylistId = -1, PlaylistName = "New Playlist" });
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist");
             Assert.Equal(2, rows);
@@ -121,7 +136,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanUpdatePlaylist()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithPlaylist(2, "playlist1");
             await dut.UpdatePlaylistDetails(new Playlist { PlaylistId = 2, PlaylistName = "newname", Description = "something" });
             using var conn = new SQLiteConnection(connectionString);
@@ -136,7 +151,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanRetrieveTrackCountForPlaylist()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
             WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
             WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
@@ -151,7 +166,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanAppendToPlaylist()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
             WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
             WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
@@ -166,7 +181,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanModifyPlaylistOrder()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done);
             WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
             WithVideo(3, "", "title 3", "artist 3", "album 3", MetadataStatus.Done);
@@ -183,7 +198,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanGetPlaylistTracks()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
             WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
             WithVideo(3, "video3.mp4", "title 3", "artist 3", "album 3", MetadataStatus.Done);
@@ -204,7 +219,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanInsertAnalysisResult()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
             await dut.InsertAnalysisResult(new VideoAnalysisEntry { AudioCodec = "aac", LUFS = -23, VideoCodec = "avi", VideoId = 1, VideoResolution = "640x480", Warning = null });
             using var conn = new SQLiteConnection(connectionString);
@@ -217,7 +232,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanGetAnalysisResults()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
             WithVideoAnalysis(1, "avi", "640x480", "aac", null, -23);
             var results = await dut.GetAnalysisResults();
@@ -230,7 +245,7 @@ namespace MusicVideoJukebox.Test.Integration
         [Fact]
         public async Task CanUpdateLUFS()
         {
-            await dut.CreateTables();
+            await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
             WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20);
             await dut.UpdateAnalysisVolume(1, -23);
