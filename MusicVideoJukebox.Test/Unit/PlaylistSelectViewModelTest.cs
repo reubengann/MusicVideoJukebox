@@ -40,7 +40,7 @@ namespace MusicVideoJukebox.Test.Unit
             var other = new Playlist { IsAll = false, PlaylistId = 2, PlaylistName = "Other" };
             metadataManagerFactory.ToReturn.Playlists.Add(other);
             await dut.Initialize();
-            dut.SelectPlaylistCommand.Execute(new PlaylistViewModel(other));
+            dut.SelectPlaylistCommand.Execute(new PlaylistViewModel(other, libraryStore));
             Assert.Equal(2, libraryStore.CurrentState.PlaylistId);
         }
     }

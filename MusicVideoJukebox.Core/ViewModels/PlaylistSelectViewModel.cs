@@ -40,7 +40,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             var playlists = await metadataManager.GetPlaylists();
             foreach (var playlist in playlists)
             {
-                Items.Add(new PlaylistViewModel(playlist));
+                Items.Add(new PlaylistViewModel(playlist, libraryStore));
             }
         }
     }

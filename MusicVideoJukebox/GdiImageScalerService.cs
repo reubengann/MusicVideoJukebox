@@ -55,7 +55,7 @@ namespace MusicVideoJukebox
 
                     return Path.Combine("images", outputImageName);
                 }
-                catch (Exception ex)
+                catch
                 {
                     return null;
                 }

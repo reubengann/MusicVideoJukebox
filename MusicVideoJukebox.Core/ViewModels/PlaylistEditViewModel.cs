@@ -108,7 +108,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 return;
             }
 
-            var newPlaylistViewModel = new PlaylistViewModel(newPlaylist);
+            var newPlaylistViewModel = new PlaylistViewModel(newPlaylist, libraryStore);
 
             Playlists.Add(newPlaylistViewModel);
             SelectedPlaylist = newPlaylistViewModel;
@@ -263,7 +263,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             var playlists = await metadataManager.GetPlaylists();
             foreach (var pl in playlists)
             {
-                Playlists.Add(new PlaylistViewModel(pl));
+                Playlists.Add(new PlaylistViewModel(pl, libraryStore));
             }
             var avail = await metadataManager.GetAllMetadata();
             foreach (var a in avail)
