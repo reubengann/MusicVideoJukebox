@@ -146,6 +146,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<IDialogService>(x => new WindowsDialogService(this));
             
             services.AddSingleton<IStreamAnalyzer, StreamAnalyzer>();
+            services.AddSingleton<IImageScalerService, GdiImageScalerService>();
             services.AddSingleton<IAudioNormalizer>(s => new AudioNormalizer(@"C:\Users\Reuben\Videos\bkup")); //TEMP
             services.AddSingleton<VideoPlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();

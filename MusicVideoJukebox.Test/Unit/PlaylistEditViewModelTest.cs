@@ -1,5 +1,4 @@
-﻿using MusicVideoJukebox.Core;
-using MusicVideoJukebox.Core.Libraries;
+﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.ViewModels;
 using MusicVideoJukebox.Test.Fakes;
@@ -30,7 +29,7 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task LoadsPlaylists()
         {
             await libraryStore.SetLibrary(1, "foobar");
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1"});
+            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
             await dut.Initialize();
             Assert.Single(dut.Playlists);
         }
@@ -44,15 +43,6 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             Assert.Equal(2, dut.AvailableTracks.Count);
         }
-
-        //[Fact]
-        //public async Task CannotSaveWithNoChanges()
-        //{
-        //    await libraryStore.SetLibrary(1, "foobar");
-        //    metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { PlaylistId = 1, PlaylistName = "playlist 1" });
-        //    await dut.Initialize();
-        //    Assert.False(dut.SavePlaylistCommand.CanExecute());
-        //}
 
         [Fact]
         public async Task IfNoLibrarySelectedDontCrash()
@@ -159,7 +149,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 1, Artist = "artist 1", Filename = "file1", Title = "title 1" });
             metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { VideoId = 2, Artist = "artist 2", Filename = "file2", Title = "title 2" });
             await dut.Initialize();
-            foreach(var t in dut.FilteredAvailableTracks)
+            foreach (var t in dut.FilteredAvailableTracks)
             {
                 t.IsSelected = true;
             }

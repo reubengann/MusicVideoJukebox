@@ -50,10 +50,10 @@ namespace MusicVideoJukebox
                     }
 
                     // Save the result
-                    var outputImagePath = Path.Combine("images", outputImageName);
+                    var outputImagePath = Path.Combine(libraryImageFolder, outputImageName);
                     finalImage.Save(outputImagePath, ImageFormat.Png);
 
-                    return outputImagePath;
+                    return Path.Combine("images", outputImageName);
                 }
                 catch (Exception ex)
                 {

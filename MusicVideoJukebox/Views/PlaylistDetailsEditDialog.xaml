@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicVideoJukebox.Views"
+        xmlns:main="clr-namespace:MusicVideoJukebox"
         xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+        xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         d:DataContext="{d:DesignInstance Type=vms:PlaylistDetailsEditDialogViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
         Height="{Binding WindowHeight, Mode=TwoWay}" 
@@ -28,13 +30,14 @@
 
                 <Label Content="Description (Optional)" FontWeight="Bold" />
                 <TextBox Text="{Binding PlaylistDescription}" AcceptsReturn="True" Height="100" Margin="0,5,0,0" />
+                <Label Content="{Binding PlaylistIcon}" Height="100" Margin="0,5,0,0" />
             </StackPanel>
 
             <!-- Right Side: Icon Selection -->
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Center">
                 <Label Content="Icon" FontWeight="Bold" />
                 <Border BorderThickness="1" BorderBrush="Gray" Width="120" Height="120" Margin="0,10">
-                    <Image Source="{Binding PlaylistIcon}" Stretch="Uniform" />
+                    <Image Source="{Binding PlaylistIcon}" Margin="10"/>
                 </Border>
                 <Button Command="{Binding SelectIconCommand}" Content="Choose Icon" Margin="0,10" />
             </StackPanel>

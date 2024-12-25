@@ -15,7 +15,10 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public string PlaylistName { get => playlist.PlaylistName; set => SetUnderlyingProperty(playlist.PlaylistName, value, v => { playlist.PlaylistName = v; }); }
         public string? PlaylistDescription { get => playlist.Description; set => SetUnderlyingProperty(playlist.Description, value, v => { playlist.Description = v; }); }
-        public string? PlaylistIcon { get => GetPath(); set => SetUnderlyingProperty(playlist.ImagePath, value, v => { playlist.ImagePath = v; }); }
+        public string PlaylistIcon { 
+            get => GetPath(); 
+            set => SetUnderlyingProperty(playlist.ImagePath, value, v => { playlist.ImagePath = v; }); 
+        }
 
         public ICommand SelectIconCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -28,11 +31,11 @@ namespace MusicVideoJukebox.Core.ViewModels
         public int WindowWidth { get; set; }
         public Playlist NewPlaylist => playlist;
 
-        string? GetPath()
+        string GetPath()
         {
-            if (libraryStore.CurrentState == null) return null;
-            if (libraryStore.CurrentState.LibraryPath == null) return null;
-            if (playlist.ImagePath == null) return null;
+            if (libraryStore.CurrentState == null
+                || libraryStore.CurrentState.LibraryPath == null
+                || playlist.ImagePath == null) return "/Images/image_off.png";
             return Path.Combine(libraryStore.CurrentState.LibraryPath, playlist.ImagePath);
         }
 
@@ -67,8 +70,8 @@ namespace MusicVideoJukebox.Core.ViewModels
             ArgumentNullException.ThrowIfNull(pickResult.SelectedFile);
             ArgumentNullException.ThrowIfNull(libraryStore.CurrentState.LibraryPath);
 
-            var guid = Guid.NewGuid().ToString();
-            var writtenFilePath = await imageScalerService.ScaleImage(libraryStore.CurrentState.LibraryPath, pickResult.SelectedFile, guid);
+            var newFilename = Guid.NewGuid().ToString() + ".png";
+            var writtenFilePath = await imageScalerService.ScaleImage(libraryStore.CurrentState.LibraryPath, pickResult.SelectedFile, newFilename);
             if (writtenFilePath == null)
             {
                 dialogService.ShowError("Unable to scale image!");

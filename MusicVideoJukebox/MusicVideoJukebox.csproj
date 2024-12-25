@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\image_off.png" />
     <None Remove="Images\library_add.png" />
     <None Remove="Images\library_music.png" />
   </ItemGroup>
@@ -37,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\image_off.png" />
     <Resource Include="Images\library_add.png" />
     <Resource Include="Images\library_music.png" />
   </ItemGroup>
