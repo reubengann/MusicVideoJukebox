@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vms:PlaylistSelectDesignTimeViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance Type=vms:PlaylistSelectViewModel, IsDesignTimeCreatable=False}"
              >
     <Viewbox >
         <Grid Width="1050" Height="480" Margin="0,0,0,0">
@@ -20,14 +20,20 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
 
-            <Button Height="50" Width="40">
+            <Button Height="50" Width="40" 
+                PreviewMouseLeftButtonDown="ScrollLeft_PreviewMouseDown"
+                PreviewMouseLeftButtonUp="Scroll_Stop"
+                MouseLeave="Scroll_StopOnLeave">
                 <mat:MaterialIcon Kind="ChevronLeft"/>
             </Button>
-            <Button Height="50" Width="40" Grid.Column="2">
+            <Button Height="50" Width="40" Grid.Column="2" 
+                    PreviewMouseLeftButtonDown="ScrollRight_PreviewMouseDown"
+                    PreviewMouseLeftButtonUp="Scroll_Stop"
+                    MouseLeave="Scroll_StopOnLeave">
                 <mat:MaterialIcon Kind="ChevronRight"/>
             </Button>
 
-            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,0,0,90">
+            <ScrollViewer x:Name="scrollviewer" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,0,0,90">
                 <ItemsControl ItemsSource="{Binding Items}" VerticalAlignment="Center" HorizontalAlignment="Center" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
