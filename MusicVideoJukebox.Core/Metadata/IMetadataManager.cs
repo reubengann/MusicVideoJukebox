@@ -28,6 +28,13 @@
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
         Task<List<VideoAnalysisEntry>> GetAnalysisResults();
         Task UpdateAnalysisVolume(int videoId, double? lufs);
+        Task<PlaylistStatus> GetActivePlaylist();
+    }
+
+    public class PlaylistStatus
+    {
+        public int PlaylistId { get; set; }
+        public int? SongOrder { get; set; }
     }
 
     public class ScoredMetadata

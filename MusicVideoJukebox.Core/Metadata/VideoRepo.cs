@@ -329,5 +329,16 @@ WHERE playlist_id = @id
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("UPDATE active_playlist SET playlist_id = @playlistId", new { playlistId });
         }
+
+        public async Task<PlaylistStatus> GetActivePlaylist()
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            return (await conn.QueryAsync<PlaylistStatus>(@"
+select B.playlist_id, song_order
+from active_playlist A 
+JOIN playlist_status B ON A.playlist_id = B.playlist_id
+")).First();
+        }
     }
 }

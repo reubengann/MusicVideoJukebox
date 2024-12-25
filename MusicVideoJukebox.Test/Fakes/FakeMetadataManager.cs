@@ -11,7 +11,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
         public List<VideoAnalysisEntry> AnalysisEntries = [];
         public int SearchCount = 0;
-
+        public PlaylistStatus CurrentActivePlaylistStatus = new();
         public List<ScoredMetadata> ScoredCandidates = [];
 
         public bool WasShuffled = false;
@@ -143,6 +143,11 @@ namespace MusicVideoJukebox.Test.Fakes
             var foo = AnalysisEntries.Where(x => x.VideoId == videoId).First();
             foo.LUFS = lufs;
             return Task.CompletedTask;
+        }
+
+        public Task<PlaylistStatus> GetActivePlaylist()
+        {
+            return Task.FromResult(CurrentActivePlaylistStatus);
         }
     }
 }

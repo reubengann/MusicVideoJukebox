@@ -186,6 +186,11 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.AppendSongToPlaylist(playlistId, videoId);
         }
 
+        public async Task<PlaylistStatus> GetActivePlaylist()
+        {
+            return await videoRepo.GetActivePlaylist();
+        }
+
         #endregion
     }
 

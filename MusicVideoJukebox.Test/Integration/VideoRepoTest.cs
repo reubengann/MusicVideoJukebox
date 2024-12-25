@@ -277,6 +277,15 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(-23.0, lufs, 0.01);
         }
 
+        [Fact]
+        public async Task CanGetActivePlaylistInitial()
+        {
+            await dut.InitializeDatabase();
+            var activeId = await dut.GetActivePlaylist();
+            Assert.Equal(1, activeId.PlaylistId);
+            Assert.Null(activeId.SongOrder);
+        }
+
         void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs)
         {
             using var conn = new SQLiteConnection(connectionString);
