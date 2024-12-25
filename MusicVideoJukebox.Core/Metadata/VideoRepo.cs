@@ -97,7 +97,6 @@ namespace MusicVideoJukebox.Core.Metadata
             await conn.ExecuteAsync(@"
                 create table if not exists playlist_status (
                 playlist_id integer not null,
-                video_id integer null,
                 song_order integer null
                 )
                 ");
@@ -155,7 +154,7 @@ namespace MusicVideoJukebox.Core.Metadata
             return await InsertPlaylist(conn, playlist);
         }
 
-        public async Task<int> InsertPlaylist(SQLiteConnection conn, Playlist playlist)
+        async Task<int> InsertPlaylist(SQLiteConnection conn, Playlist playlist)
         {
             var createdId = await conn.ExecuteScalarAsync<int>(@"
 INSERT INTO playlist (playlist_name, description, image_path, is_all) 
@@ -319,9 +318,16 @@ WHERE playlist_id = @id
             await conn.ExecuteAsync("UPDATE video_analysis SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
         }
 
-        public Task UpdatePlayStatus(int playlistId, int videoId)
+        public async Task UpdatePlayStatus(int playlistId, int songOrder)
         {
-            throw new NotImplementedException();
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE playlist_status SET song_order = @songOrder WHERE playlist_id = @playlistId", new { playlistId, songOrder });
+        }
+
+        public async Task UpdateActivePlaylist(int playlistId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE active_playlist SET playlist_id = @playlistId", new { playlistId });
         }
     }
 }

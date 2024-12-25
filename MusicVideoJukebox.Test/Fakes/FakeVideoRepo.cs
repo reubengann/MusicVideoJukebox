@@ -108,5 +108,10 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateActivePlaylist(int playlistId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -112,6 +112,29 @@ namespace MusicVideoJukebox.Test.Integration
         }
 
         [Fact]
+        public async Task CanChangeActivePlaylist()
+        {
+            await dut.InitializeDatabase();
+            WithPlaylist(2, "whatever");
+            await dut.UpdateActivePlaylist(2);
+            var conn = new SQLiteConnection(connectionString);
+            var activePlaylistId = await conn.ExecuteScalarAsync<int>("SELECT playlist_id from active_playlist");
+            Assert.Equal(2, activePlaylistId);
+        }
+
+        [Fact]
+        public async Task CanUpdatePlaylistStatus()
+        {
+            await dut.InitializeDatabase();
+            WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
+            WithVideo(2, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
+            await dut.UpdatePlayStatus(1, 2);
+            var conn = new SQLiteConnection(connectionString);
+            var songOrder = await conn.ExecuteScalarAsync<int>("SELECT song_order from playlist_status where playlist_id = 1");
+            Assert.Equal(2, songOrder);
+        }
+
+        [Fact]
         public async Task CanGetPlaylists()
         {
             await dut.InitializeDatabase();
