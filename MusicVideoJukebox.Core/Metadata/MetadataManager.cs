@@ -44,14 +44,6 @@ namespace MusicVideoJukebox.Core.Metadata
             return new BasicInfo { Artist = artist, Title = title, Filename = filename };
         }
 
-
-        public async Task<List<VideoMetadata>> GetAllMetadata()
-        {
-            return await videoRepo.GetAllMetadata();
-        }
-
-
-
         public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
         {
             var maybeExactResult = await referenceDataRepo.TryGetExactMatch(artist, track);
@@ -120,35 +112,10 @@ namespace MusicVideoJukebox.Core.Metadata
             return anyChanges;
         }
 
-        public Task<List<Playlist>> GetPlaylists()
-        {
-            return videoRepo.GetPlaylists();
-        }
-
-        public async Task<int> SavePlaylist(Playlist playlist)
-        {
-            return await videoRepo.InsertPlaylist(playlist);
-        }
-
-        public async Task UpdatePlaylist(Playlist playlist)
-        {
-            await videoRepo.UpdatePlaylistDetails(playlist);
-        }
-
         public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
         {
             var tracks = await videoRepo.GetPlaylistTracks(playlistId);
             return tracks.Select(x => new PlaylistTrackForViewmodel { Artist =  x.Artist, Title = x.Title, PlaylistId = playlistId, PlaylistVideoId = x.PlaylistVideoId, PlayOrder = x.PlayOrder, VideoId = x.VideoId }).ToList();
-        }
-
-        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
-        {
-            return await videoRepo.GetPlaylistTracks(playlistId);
-        }
-
-        public async Task<int> AppendSongToPlaylist(int playlistId, int videoId)
-        {
-            return await videoRepo.AppendSongToPlaylist(playlistId, videoId);
         }
 
         public async Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)
@@ -165,6 +132,9 @@ namespace MusicVideoJukebox.Core.Metadata
             }
             return shuffledTracks;
         }
+
+        #region Passthrough methods
+
 
         public async Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
         {
@@ -185,6 +155,38 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             await videoRepo.UpdateAnalysisVolume(videoId, lufs);
         }
+
+        public async Task<List<VideoMetadata>> GetAllMetadata()
+        {
+            return await videoRepo.GetAllMetadata();
+        }
+
+        public Task<List<Playlist>> GetPlaylists()
+        {
+            return videoRepo.GetPlaylists();
+        }
+
+        public async Task<int> SavePlaylist(Playlist playlist)
+        {
+            return await videoRepo.InsertPlaylist(playlist);
+        }
+
+        public async Task UpdatePlaylist(Playlist playlist)
+        {
+            await videoRepo.UpdatePlaylistDetails(playlist);
+        }
+
+        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        {
+            return await videoRepo.GetPlaylistTracks(playlistId);
+        }
+
+        public async Task<int> AppendSongToPlaylist(int playlistId, int videoId)
+        {
+            return await videoRepo.AppendSongToPlaylist(playlistId, videoId);
+        }
+
+        #endregion
     }
 
     public static class FileNameHelpers

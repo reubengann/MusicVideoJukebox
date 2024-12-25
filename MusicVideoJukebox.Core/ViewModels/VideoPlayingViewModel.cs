@@ -190,13 +190,17 @@ namespace MusicVideoJukebox.Core.ViewModels
             InfoViewModel = new VideoInfoViewModel(track);
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
-            _ = libraryStore.SetVideoId(CurrentPlaylistTrack.VideoId); // fire and forget
+
+            // TODO: Move this to the navigator.
+            //_ = libraryStore.SetVideoId(CurrentPlaylistTrack.VideoId); // fire and forget
         }
 
         public async Task Recheck()
         {
-            // if the libraryId is the same and the playlistId is the same, we don't need to do anything.
             if (libraryStore.CurrentState.LibraryPath == null) return;
+
+            // if the libraryId is the same and the playlistId is the same, we don't need to do anything.
+            // otherwise, we need to reinstantiate the navigator
             if (libraryStore.CurrentState.LibraryId == currentLibraryId && libraryStore.CurrentState.PlaylistId == currentPlaylistId) return;
 
             var playlistChangedOnly = currentPlaylistId != libraryStore.CurrentState.PlaylistId;
