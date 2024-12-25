@@ -44,4 +44,24 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
         }
     }
+
+    public class PlaylistSelectDesignTimeViewModel
+    {
+        public ObservableCollection<PlaylistDesignTimeViewModel> Items { get; } = [];
+
+        public PlaylistSelectDesignTimeViewModel()
+        {
+            Items.Add(new PlaylistDesignTimeViewModel { Name = "All songs" });
+            Items.Add(new PlaylistDesignTimeViewModel { Name = "Foo", ImagePath = @"C:\Users\Reuben\Videos\Test Folder\images\4236d502-1fe3-490d-833c-ebc9cd03f636.png" });
+        }
+    }
+
+    public class PlaylistDesignTimeViewModel
+    {
+        private string imagePath = "";
+
+        required public string Name { get; set; }
+        public string ImagePath { get => imagePath ?? "pack://application:,,,/Images/library_music.png"; set => imagePath = value; }
+        public string Description { get; set; } = "(no description)";
+    }
 }

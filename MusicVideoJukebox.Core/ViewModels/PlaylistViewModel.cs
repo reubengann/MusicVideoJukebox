@@ -26,7 +26,14 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState == null
                 || libraryStore.CurrentState.LibraryPath == null
-                || playlist.ImagePath == null) return "/Images/image_off.png";
+                || playlist.ImagePath == null)
+            {
+                if (playlist.IsAll)
+                {
+                    return "pack://application:,,,/Images/library_music.png";
+                }
+                return "pack://application:,,,/Images/image_off.png";
+            }
             return Path.Combine(libraryStore.CurrentState.LibraryPath, playlist.ImagePath);
         }
     }

@@ -5,63 +5,69 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicVideoJukebox.Views"
              xmlns:vms="clr-namespace:MusicVideoJukebox.Core.ViewModels;assembly=MusicVideoJukebox.Core"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mat="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d" 
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vms:PlaylistSelectViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=vms:PlaylistSelectDesignTimeViewModel, IsDesignTimeCreatable=True}"
              >
-    <!--Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"-->
-    <Grid>
-        <Viewbox HorizontalAlignment="Left">
-            <ItemsControl ItemsSource="{Binding Items}" Width="900" Height="500" Margin="5" BorderThickness="1" BorderBrush="AliceBlue">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border 
-                        BorderThickness="1" 
-                        Padding="5" 
-                        Margin="5" 
-                        BorderBrush="AliceBlue"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch">
-                            <Border.InputBindings>
-                                <MouseBinding Gesture="LeftClick" 
-                                Command="{Binding DataContext.SelectPlaylistCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                CommandParameter="{Binding}" />
-                            </Border.InputBindings>
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Highlight}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <DockPanel>
-                                <TextBlock 
-                                Text="{Binding Name}" 
-                                Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
-                                HorizontalAlignment="Center" 
-                                DockPanel.Dock="Bottom" />
-                                <mat:MaterialIcon 
-                                Kind="Music" 
-                                Width="64" 
-                                Height="64" 
-                                Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
-                                HorizontalAlignment="Center" />
-                            </DockPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" Rows="4"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Viewbox>
-    </Grid>
+    <Viewbox >
+        <Grid Width="1050" Height="480" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="850"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Height="50" Width="40">
+                <mat:MaterialIcon Kind="ChevronLeft"/>
+            </Button>
+            <Button Height="50" Width="40" Grid.Column="2">
+                <mat:MaterialIcon Kind="ChevronRight"/>
+            </Button>
+
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,0,0,90">
+                <ItemsControl ItemsSource="{Binding Items}" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <mah:Tile Width="250" Height="380" Cursor="Hand" 
+                                   TitleFontSize="16" HorizontalTitleAlignment="Center" FontWeight="Bold"
+                                      >
+                                <mah:Tile.Style>
+                                    <Style TargetType="mah:Tile">
+                                        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                                        <Setter Property="Cursor" Value="Hand" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </mah:Tile.Style>
+                                <mah:Tile.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" 
+                                                  Command="{Binding DataContext.SelectPlaylistCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" 
+                                                 />
+                                </mah:Tile.InputBindings>
+                                <StackPanel>
+                                    <Image Source="{Binding ImagePath}" Width="140" Height="140"/>
+                                    <TextBlock Text="{Binding Name}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                                               TextWrapping="Wrap" TextAlignment="Center" Margin="5" />
+                                    <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                                               TextWrapping="Wrap" TextAlignment="Center" Margin="5" />
+                                </StackPanel>
+                            </mah:Tile>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Viewbox>
 
 </UserControl>
