@@ -64,8 +64,8 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.False(dut.IsPlaying);
             WithMetadata("fake.mp4");
             WithPlaylist(true, 1, "All");
-            WithPlaylistTrack("", "c:\\afile.mp4", "");
-            WithPlaylistTrack("", "c:\\afile.mp4", "");
+            WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
+            WithPlaylistTrack("", "c:\\afile.mp4", "", 2);
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.True(dut.IsPlaying);
@@ -78,7 +78,7 @@ namespace MusicVideoJukebox.Test.Unit
             WithMetadata("fake.mp4");
             WithPlaylist(true, 1, "All");
             WithPlaylist(false, 2, "Other");
-            WithPlaylistTrack("", "c:\\afile.mp4", "");
+            WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             await libraryStore.SetPlaylist(2);
@@ -93,8 +93,8 @@ namespace MusicVideoJukebox.Test.Unit
             WithMetadata("fake.mp4");
             WithMetadata("fake2.mp4");
             WithPlaylist(true, 1, "All");
-            WithPlaylistTrack("", "c:\\afile.mp4", "");
-            WithPlaylistTrack("", "c:\\afile2.mp4", "");
+            WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
+            WithPlaylistTrack("", "c:\\afile2.mp4", "", 2);
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
@@ -103,14 +103,14 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task ReadvancesTheTrack()
+        public async Task LoopsAroundWhenAtBeginning()
         {
             Assert.False(dut.IsPlaying);
             WithMetadata("fake.mp4");
             WithMetadata("fake2.mp4");
             WithPlaylist(true, 1, "All");
-            WithPlaylistTrack("", "c:\\afile.mp4", "");
-            WithPlaylistTrack("", "c:\\afile2.mp4", "");
+            WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
+            WithPlaylistTrack("", "c:\\afile2.mp4", "", 2);
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
@@ -128,9 +128,9 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = isAll, PlaylistId = playlistId, PlaylistName = playlistName });
         }
 
-        void WithPlaylistTrack(string artist, string filename, string title)
+        void WithPlaylistTrack(string artist, string filename, string title, int playOrder)
         {
-            metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = artist, FileName = filename, Title = title });
+            metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = artist, FileName = filename, Title = title, PlayOrder = playOrder });
         }
     }
 }
