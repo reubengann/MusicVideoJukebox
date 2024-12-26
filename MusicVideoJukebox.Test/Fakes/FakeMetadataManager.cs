@@ -116,7 +116,7 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             LastPlaylistQueried = playlistId;
             await Task.CompletedTask;
-            return PlaylistTracks;
+            return new List<PlaylistTrack>(PlaylistTracks);
         }
 
         public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)

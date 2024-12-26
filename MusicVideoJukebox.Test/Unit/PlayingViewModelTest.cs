@@ -5,9 +5,9 @@ using MusicVideoJukebox.Test.Fakes;
 
 namespace MusicVideoJukebox.Test.Unit
 {
-    public class VideoPlayingViewModelTest
+    public class PlayingViewModelTest
     {
-        VideoPlayingViewModel dut;
+        PlayingViewModel dut;
         FakeMediaPlayer2 mediaPlayer2;
         FakeUIThreadFactory threadFactory;
         FakeUiThreadTimer progressBarTimer;
@@ -16,7 +16,7 @@ namespace MusicVideoJukebox.Test.Unit
         FakeInterfaceFader fader;
         FakeLibrarySetRepo librarySetRepo;
 
-        public VideoPlayingViewModelTest()
+        public PlayingViewModelTest()
         {
             librarySetRepo = new FakeLibrarySetRepo();
             fader = new FakeInterfaceFader();
@@ -27,7 +27,7 @@ namespace MusicVideoJukebox.Test.Unit
             threadFactory.ToReturn.Add(progressBarTimer);
             threadFactory.ToReturn.Add(new FakeUiThreadTimer());
             mediaPlayer2 = new FakeMediaPlayer2();
-            dut = new VideoPlayingViewModel(mediaPlayer2, threadFactory, metadataManagerFactory, fader, libraryStore);
+            dut = new PlayingViewModel(mediaPlayer2, threadFactory, metadataManagerFactory, fader, libraryStore);
         }
 
         [Fact]
@@ -95,11 +95,13 @@ namespace MusicVideoJukebox.Test.Unit
             WithPlaylist(true, 1, "All");
             WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
             WithPlaylistTrack("", "c:\\afile2.mp4", "", 2);
+            metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.SongOrder = 1;
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
             dut.SkipNextCommand.Execute(null);
             Assert.Equal("c:\\afile2.mp4", dut.CurrentPlaylistTrack?.FileName);
+            Assert.Equal(2, metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.SongOrder);
         }
 
         [Fact]

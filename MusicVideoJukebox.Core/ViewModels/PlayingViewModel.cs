@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class VideoPlayingViewModel : BaseViewModel
+    public class PlayingViewModel : BaseViewModel
     {
         private const int VIDEO_INFO_START_GUTTER = 3;
         private const int VIDEO_INFO_END_GUTTER = 10;
@@ -69,7 +69,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool sidebarVisible;
         private int? currentPlaylistId;
 
-        public VideoPlayingViewModel(IMediaPlayer mediaElementMediaPlayer, 
+        public PlayingViewModel(IMediaPlayer mediaElementMediaPlayer, 
             IUIThreadTimerFactory uIThreadTimerFactory, 
             IMetadataManagerFactory metadataManagerFactory,
             IFadesWhenInactive fadesWhenInactive,
@@ -181,60 +181,52 @@ namespace MusicVideoJukebox.Core.ViewModels
             progressUpdateTimer.Start();
         }
 
-        private void SetSource(PlaylistTrack track)
+        private void SetSource(PlaylistTrack? track)
         {
             mediaPlayer.HideInfoImmediate();
             if (libraryStore.CurrentState.LibraryPath == null) return;
             CurrentPlaylistTrack = track;
+            if (track == null) return;
             mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.CurrentState.LibraryPath, track.FileName)));
             InfoViewModel = new VideoInfoViewModel(track);
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
-
-            // TODO: Move this to the navigator.
-            //_ = libraryStore.SetVideoId(CurrentPlaylistTrack.VideoId); // fire and forget
         }
 
         public async Task Recheck()
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
-
-            // if the libraryId is the same and the playlistId is the same, we don't need to do anything.
-            // otherwise, we need to reinstantiate the navigator
-            if (libraryStore.CurrentState.LibraryId == currentLibraryId && libraryStore.CurrentState.PlaylistId == currentPlaylistId) return;
-
-            var playlistChangedOnly = currentPlaylistId != libraryStore.CurrentState.PlaylistId;
-
-            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            await metadataManager.EnsureCreated();
-
-            currentLibraryId = libraryStore.CurrentState.LibraryId;
-            currentPlaylistId = libraryStore.CurrentState.PlaylistId;
-
-
-            if (currentPlaylistId == null)
+            
+            if (libraryStore.CurrentState.LibraryId != currentLibraryId)
             {
-                var playlists = await metadataManager.GetPlaylists();
-                var playlist = playlists.Where(x => x.IsAll).First();
-                currentPlaylistId = playlist.PlaylistId;
-                await libraryStore.SetPlaylist(currentPlaylistId);
+                currentLibraryId = libraryStore.CurrentState.LibraryId;
+                metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+                await metadataManager.EnsureCreated();
+                await LoadPlaylist();
             }
-
-            var tracks = await metadataManager.GetPlaylistTracks((int)currentPlaylistId);
-            if (tracks.Count == 0) return;
-            playlistNavigator = new PlaylistNavigator(tracks);
-
-            if (libraryStore.CurrentState.VideoId != null && !playlistChangedOnly)
+            else if (libraryStore.CurrentState.PlaylistId != currentPlaylistId)
             {
-                playlistNavigator.SetCurrentTrack((int)libraryStore.CurrentState.VideoId);
+                await LoadPlaylist();
             }
             else
             {
-                playlistNavigator.PlayFirst();
-                await libraryStore.SetVideoId(playlistNavigator.CurrentTrack.VideoId);
+                ArgumentNullException.ThrowIfNull(playlistNavigator);
+                var restoreStateResult = await playlistNavigator.CheckPlaylistState();
+                if (restoreStateResult.NeedsToChangeTrack)
+                {
+                    SetSource(restoreStateResult.NewPlaylistTrack);
+                    Play();
+                }   
             }
 
-            SetSource(playlistNavigator.CurrentTrack);
+        }
+
+        async Task LoadPlaylist()
+        {
+            ArgumentNullException.ThrowIfNull(metadataManager);
+            playlistNavigator = new PlaylistNavigator(metadataManager);
+            currentPlaylistId = playlistNavigator.CurrentPlaylistId;
+            SetSource(await playlistNavigator.Resume());
             Play();
         }
     }

@@ -22,7 +22,7 @@ namespace MusicVideoJukebox.Views
 
         private void Media_MediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (DataContext is VideoPlayingViewModel vm)
+            if (DataContext is PlayingViewModel vm)
             {
                 vm.DonePlaying();
             }
@@ -38,7 +38,7 @@ namespace MusicVideoJukebox.Views
                 // Check if the user clicked on the track but not on the thumb
                 if (track?.Thumb != null && !track.Thumb.IsMouseOver)
                 {
-                    if (DataContext is VideoPlayingViewModel vm)
+                    if (DataContext is PlayingViewModel vm)
                     {
                         vm.StartScrubbing();
                     }
@@ -53,7 +53,7 @@ namespace MusicVideoJukebox.Views
 
         private void Slider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is VideoPlayingViewModel vm)
+            if (DataContext is PlayingViewModel vm)
             {
                 vm.StartScrubbing();
             }
@@ -61,7 +61,7 @@ namespace MusicVideoJukebox.Views
 
         private void Slider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is VideoPlayingViewModel vm)
+            if (DataContext is PlayingViewModel vm)
             {
                 vm.StopScrubbing();
             }

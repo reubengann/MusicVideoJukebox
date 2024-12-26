@@ -19,7 +19,7 @@ namespace MusicVideoJukebox
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel vm;
-        private readonly VideoPlayingViewModel vpvm;
+        private readonly PlayingViewModel vpvm;
         private readonly IFadesWhenInactive interfaceFader;
         IServiceProvider serviceProvider;
         IKeyboardHandler keyboardHandler;
@@ -32,7 +32,7 @@ namespace MusicVideoJukebox
             serviceProvider = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build().Services;
             this.vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             interfaceFader = serviceProvider.GetRequiredService<IFadesWhenInactive>();
-            vpvm = serviceProvider.GetRequiredService<VideoPlayingViewModel>();
+            vpvm = serviceProvider.GetRequiredService<PlayingViewModel>();
             player.DataContext = vpvm;
             keyboardHandler = serviceProvider.GetRequiredService<IKeyboardHandler>();
             navigationService = serviceProvider.GetRequiredService<INavigationService>();
@@ -148,7 +148,7 @@ namespace MusicVideoJukebox
             services.AddSingleton<IStreamAnalyzer, StreamAnalyzer>();
             services.AddSingleton<IImageScalerService, GdiImageScalerService>();
             services.AddSingleton<IAudioNormalizer>(s => new AudioNormalizer(@"C:\Users\Reuben\Videos\bkup")); //TEMP
-            services.AddSingleton<VideoPlayingViewModel>();
+            services.AddSingleton<PlayingViewModel>();
             services.AddSingleton<IWindowLauncher, WindowLauncher>();
             services.AddSingleton<IMetadataManagerFactory, MetadataManagerFactory>();
             services.AddSingleton<IVideoRepoFactory, VideoRepoFactory>();

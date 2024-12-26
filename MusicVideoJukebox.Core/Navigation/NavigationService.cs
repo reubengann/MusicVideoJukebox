@@ -8,10 +8,10 @@ namespace MusicVideoJukebox.Core.Navigation
     {
         private readonly IServiceProvider _serviceProvider;
         private IFadesWhenInactive fadesWhenInactive;
-        private readonly VideoPlayingViewModel videoPlayingViewModel;
+        private readonly PlayingViewModel videoPlayingViewModel;
         private AsyncInitializeableViewModel? _currentViewModel;
 
-        public NavigationService(IServiceProvider serviceProvider, IFadesWhenInactive fadesWhenInactive, VideoPlayingViewModel videoPlayingViewModel)
+        public NavigationService(IServiceProvider serviceProvider, IFadesWhenInactive fadesWhenInactive, PlayingViewModel videoPlayingViewModel)
         {
             _serviceProvider = serviceProvider;
             this.fadesWhenInactive = fadesWhenInactive;

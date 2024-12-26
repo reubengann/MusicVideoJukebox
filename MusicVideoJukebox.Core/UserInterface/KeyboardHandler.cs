@@ -5,9 +5,9 @@ namespace MusicVideoJukebox.Core.UserInterface
     public class KeyboardHandler : IKeyboardHandler
     {
         private readonly MainWindowViewModel newMainWindowViewModel;
-        private readonly VideoPlayingViewModel videoPlayingViewModel;
+        private readonly PlayingViewModel videoPlayingViewModel;
 
-        public KeyboardHandler(MainWindowViewModel newMainWindowViewModel, VideoPlayingViewModel videoPlayingViewModel)
+        public KeyboardHandler(MainWindowViewModel newMainWindowViewModel, PlayingViewModel videoPlayingViewModel)
         {
             this.newMainWindowViewModel = newMainWindowViewModel;
             this.videoPlayingViewModel = videoPlayingViewModel;
