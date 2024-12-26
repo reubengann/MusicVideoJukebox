@@ -1,4 +1,7 @@
-﻿namespace MusicVideoJukebox.Core.Metadata
+﻿
+using System.Diagnostics;
+
+namespace MusicVideoJukebox.Core.Metadata
 {
     public class NewNavigator
     {
@@ -13,10 +16,19 @@
         private int currentIndex;
 
         public PlaylistTrack CurrentTrack => CurrentTracks[currentIndex];
+        public int SongOrder => currentIndex + 1;
 
         public PlaylistTrack Next()
         {
             currentIndex = (currentIndex + 1) % CurrentTracks.Count;
+            _ = metadataManager.UpdateCurrentSongOrder(SongOrder);
+            return CurrentTrack;
+        }
+
+        public PlaylistTrack Previous()
+        {
+            currentIndex = (currentIndex - 1 + CurrentTracks.Count) % CurrentTracks.Count;
+            _ = metadataManager.UpdateCurrentSongOrder(SongOrder);
             return CurrentTrack;
         }
 

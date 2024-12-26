@@ -286,6 +286,16 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Null(activeId.SongOrder);
         }
 
+        [Fact]
+        public async Task CanUpdateCurrentSongOrder()
+        {
+            await dut.InitializeDatabase();
+            await dut.UpdateCurrentSongOrder(5);
+            using var conn = new SQLiteConnection(connectionString);
+            var songOrder = await conn.ExecuteScalarAsync<int>("SELECT song_order from playlist_status");
+            Assert.Equal(5, songOrder);
+        }
+
         void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs)
         {
             using var conn = new SQLiteConnection(connectionString);

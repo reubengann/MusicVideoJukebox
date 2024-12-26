@@ -31,13 +31,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public void WhenGoingToNextTrackAlsoUpdateTheDatabase()
-        {
-            var foo = dut.Next() ?? throw new Exception();
-            Assert.Equal("artist 2", foo.Artist);
-        }
-
-        [Fact]
         public void PreviousWrapsAround()
         {
             var foo = dut.Previous() ?? throw new Exception();

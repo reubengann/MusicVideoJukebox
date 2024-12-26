@@ -21,6 +21,7 @@
         Task UpdatePlayStatus(int playlistId, int songOrder);
         Task UpdateActivePlaylist(int playlistId);
         Task<PlaylistStatus> GetActivePlaylist();
+        Task UpdateCurrentSongOrder(int songOrder);
     }
 
     public class VideoAnalysisEntry

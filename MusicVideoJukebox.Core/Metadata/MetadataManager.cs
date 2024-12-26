@@ -191,6 +191,11 @@ namespace MusicVideoJukebox.Core.Metadata
             return await videoRepo.GetActivePlaylist();
         }
 
+        public async Task UpdateCurrentSongOrder(int songOrder)
+        {
+            await videoRepo.UpdateCurrentSongOrder(songOrder);
+        }
+
         #endregion
     }
 

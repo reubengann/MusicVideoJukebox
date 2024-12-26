@@ -118,5 +118,10 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateCurrentSongOrder(int songOrder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

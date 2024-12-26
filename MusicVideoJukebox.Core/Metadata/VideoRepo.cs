@@ -340,5 +340,11 @@ from active_playlist A
 JOIN playlist_status B ON A.playlist_id = B.playlist_id
 ")).First();
         }
+
+        public async Task UpdateCurrentSongOrder(int songOrder)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync("UPDATE playlist_status SET song_order = @songOrder", new { songOrder });
+        }
     }
 }
