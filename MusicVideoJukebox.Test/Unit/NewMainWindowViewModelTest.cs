@@ -21,10 +21,10 @@ namespace MusicVideoJukebox.Test.Unit
         {
             imageScalerService = new FakeImageScalerService();
             librarySetRepo = new FakeLibrarySetRepo();
-            libraryStore = new LibraryStore(librarySetRepo);
+            metadataManagerFactory = new FakeMetadataManagerFactory();
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             videoRepo = new FakeVideoRepo();
             dialogService = new FakeDialogService(); 
-            metadataManagerFactory = new FakeMetadataManagerFactory();
             interfaceFader = new FakeInterfaceFader();
             navigationService = new FakeNavigationService();
             windowLauncher = new FakeWindowLauncher();

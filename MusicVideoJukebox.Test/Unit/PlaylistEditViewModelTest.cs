@@ -17,11 +17,11 @@ namespace MusicVideoJukebox.Test.Unit
         public PlaylistEditViewModelTest()
         {
             librarySetRepo = new FakeLibrarySetRepo();
-            libraryStore = new LibraryStore(librarySetRepo);
+            metadataManagerFactory = new FakeMetadataManagerFactory();
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             dialogService = new FakeDialogService();
             imageScalerService = new FakeImageScalerService();
 
-            metadataManagerFactory = new FakeMetadataManagerFactory();
             dut = new PlaylistEditViewModel(libraryStore, metadataManagerFactory, dialogService, imageScalerService);
         }
 

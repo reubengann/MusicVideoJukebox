@@ -1,8 +1,4 @@
-﻿
-
-
-
-namespace MusicVideoJukebox.Core.Libraries
+﻿namespace MusicVideoJukebox.Core.Libraries
 {
     public class LibraryItem
     {
@@ -17,15 +13,6 @@ namespace MusicVideoJukebox.Core.Libraries
         required public string FolderPath { get; set; }
         
         required public string Name { get; set; }
-    }
-
-    public class CurrentState
-    {
-        public int? LibraryId { get; set; }
-        public string? LibraryPath { get; set; }
-        public int? PlaylistId { get; set; }
-        public int? VideoId { get; set; }
-        public int? Volume { get; set; }
     }
 
     public interface ILibrarySetRepo

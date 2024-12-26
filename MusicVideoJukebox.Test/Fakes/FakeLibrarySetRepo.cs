@@ -1,4 +1,5 @@
-﻿using MusicVideoJukebox.Core.Libraries;
+﻿using MusicVideoJukebox.Core;
+using MusicVideoJukebox.Core.Libraries;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -44,7 +45,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task UpdateState(CurrentState currentState)
         {
-            CurrentState = new CurrentState { LibraryId = currentState.LibraryId, LibraryPath = currentState.LibraryPath, PlaylistId = currentState.PlaylistId, VideoId = currentState.VideoId, Volume = currentState.Volume };
+            CurrentState = new CurrentState { LibraryId = currentState.LibraryId, LibraryPath = currentState.LibraryPath, VideoId = currentState.VideoId, Volume = currentState.Volume };
             return Task.CompletedTask;
         }
     }

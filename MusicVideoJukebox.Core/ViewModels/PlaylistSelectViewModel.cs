@@ -10,7 +10,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 {
     public class PlaylistSelectViewModel : AsyncInitializeableViewModel
     {
-        private IMetadataManager? metadataManager;
+        private IMetadataManager metadataManager = null!;
         private readonly LibraryStore libraryStore;
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly INavigationService navigationService;
@@ -29,7 +29,8 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private async void SelectPlaylist(PlaylistViewModel model)
         {
-            await libraryStore.SetPlaylist(model.Playlist.PlaylistId);
+            libraryStore.CurrentPlaylistId = model.Playlist.PlaylistId;
+            await metadataManager.UpdateActivePlaylist(model.Playlist.PlaylistId);
             await navigationService.NavigateToNothing();
         }
 

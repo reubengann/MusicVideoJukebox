@@ -204,7 +204,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 await metadataManager.EnsureCreated();
                 await LoadPlaylist();
             }
-            else if (libraryStore.CurrentState.PlaylistId != currentPlaylistId)
+            else if (libraryStore.CurrentPlaylistId != currentPlaylistId)
             {
                 await LoadPlaylist();
             }
@@ -225,8 +225,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             ArgumentNullException.ThrowIfNull(metadataManager);
             playlistNavigator = new PlaylistNavigator(metadataManager);
-            currentPlaylistId = playlistNavigator.CurrentPlaylistId;
             SetSource(await playlistNavigator.Resume());
+            currentPlaylistId = playlistNavigator.CurrentPlaylistId;
             Play();
         }
     }

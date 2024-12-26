@@ -16,9 +16,9 @@ namespace MusicVideoJukebox.Test.Unit
         public MetadataEditViewModelTest()
         {
             librarySetRepo = new FakeLibrarySetRepo();
-            libraryStore = new LibraryStore(librarySetRepo);
-            dialogService = new FakeDialogService();
             metadataManagerFactory = new FakeMetadataManagerFactory();
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
+            dialogService = new FakeDialogService();
             dut = new MetadataEditViewModel(metadataManagerFactory, libraryStore, dialogService);
         }
 

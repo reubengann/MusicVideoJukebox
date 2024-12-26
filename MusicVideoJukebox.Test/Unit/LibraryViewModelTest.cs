@@ -18,10 +18,10 @@ namespace MusicVideoJukebox.Test.Unit
         {
             navigationService = new FakeNavigationService();
             librarySetRepo = new FakeLibrarySetRepo();
-            libraryStore = new LibraryStore(librarySetRepo);
+            metadataManagerFactory = new FakeMetadataManagerFactory();
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             dialogService = new FakeDialogService();
             windowLauncher = new FakeWindowLauncher();
-            metadataManagerFactory = new FakeMetadataManagerFactory();
 
             dut = new LibraryViewModel(libraryStore, librarySetRepo, windowLauncher, metadataManagerFactory, dialogService, navigationService);
         }

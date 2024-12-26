@@ -161,7 +161,7 @@ namespace MusicVideoJukebox.Test.Unit
         {
             var item = metadataManager.PlaylistTracks.First(x => x.PlayOrder == playOrder);
             var idx = metadataManager.PlaylistTracks.IndexOf(item);
-            for (int i = idx + 1; i < metadataManager.Playlists.Count; i++)
+            for (int i = idx + 1; i < metadataManager.PlaylistTracks.Count; i++)
             {
                 var old = metadataManager.PlaylistTracks[i];
                 metadataManager.PlaylistTracks[i] = new PlaylistTrack

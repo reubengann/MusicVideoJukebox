@@ -20,8 +20,8 @@ namespace MusicVideoJukebox.Test.Unit
         {
             librarySetRepo = new FakeLibrarySetRepo();
             fader = new FakeInterfaceFader();
-            libraryStore = new LibraryStore(librarySetRepo);
             metadataManagerFactory = new FakeMetadataManagerFactory();
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             threadFactory = new FakeUIThreadFactory();
             progressBarTimer = new FakeUiThreadTimer();
             threadFactory.ToReturn.Add(progressBarTimer);
@@ -80,11 +80,19 @@ namespace MusicVideoJukebox.Test.Unit
             WithPlaylist(false, 2, "Other");
             WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
             await libraryStore.SetLibrary(1, "something");
+            SetPlaylist(1);
             await dut.Recheck();
-            await libraryStore.SetPlaylist(2);
+            SetPlaylist(2);
             await dut.Recheck();
             Assert.Equal(2, metadataManagerFactory.ToReturn.LastPlaylistQueried);
         }
+
+        void SetPlaylist(int playlistId)
+        {
+            metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.PlaylistId = playlistId;
+            libraryStore.CurrentPlaylistId = playlistId;
+        }
+
 
         [Fact]
         public async Task AdvancesTheTrack()

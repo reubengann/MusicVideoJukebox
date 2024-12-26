@@ -12,13 +12,15 @@ namespace MusicVideoJukebox.Test.Unit
         FakeImageScalerService imageScalerService;
         LibraryStore libraryStore;
         FakeLibrarySetRepo librarySetRepo;
+        FakeMetadataManagerFactory metadataManagerFactory;
 
         public PlaylistDetailsEditDialogViewModelTest()
         {
+            metadataManagerFactory = new FakeMetadataManagerFactory();
             librarySetRepo = new FakeLibrarySetRepo();
             imageScalerService = new FakeImageScalerService();
             dialogService = new FakeDialogService();
-            libraryStore = new LibraryStore(librarySetRepo);
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             libraryStore.SetLibrary(1, @"c:\cool").Wait();
             dut = new PlaylistDetailsEditDialogViewModel(new Playlist { Description = "foobar", PlaylistId = 1, PlaylistName = "name" }, dialogService, imageScalerService, libraryStore);
         }

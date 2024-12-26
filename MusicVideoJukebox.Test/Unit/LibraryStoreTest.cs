@@ -1,10 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
+using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Test.Fakes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicVideoJukebox.Test.Unit
 {
@@ -12,11 +8,13 @@ namespace MusicVideoJukebox.Test.Unit
     {
         LibraryStore dut;
         FakeLibrarySetRepo librarySetRepo;
+        FakeMetadataManagerFactory metadataManagerFactory;
 
         public LibraryStoreTest()
         {
+            metadataManagerFactory = new FakeMetadataManagerFactory();
             librarySetRepo = new FakeLibrarySetRepo();
-            dut = new LibraryStore(librarySetRepo);
+            dut = new LibraryStore(librarySetRepo, metadataManagerFactory);
         }
 
         [Fact]

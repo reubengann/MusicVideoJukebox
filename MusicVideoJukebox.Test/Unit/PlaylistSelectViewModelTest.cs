@@ -18,7 +18,7 @@ namespace MusicVideoJukebox.Test.Unit
             navigationService = new FakeNavigationService();
             librarySetRepo = new FakeLibrarySetRepo();
             metadataManagerFactory = new FakeMetadataManagerFactory();
-            libraryStore = new LibraryStore(librarySetRepo);
+            libraryStore = new LibraryStore(librarySetRepo, metadataManagerFactory);
             
             dut = new PlaylistSelectViewModel(libraryStore, metadataManagerFactory, navigationService);
         }
@@ -41,7 +41,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.Playlists.Add(other);
             await dut.Initialize();
             dut.SelectPlaylistCommand.Execute(new PlaylistViewModel(other, libraryStore));
-            Assert.Equal(2, libraryStore.CurrentState.PlaylistId);
+            Assert.Equal(2, libraryStore.CurrentPlaylistId);
         }
     }
 }
