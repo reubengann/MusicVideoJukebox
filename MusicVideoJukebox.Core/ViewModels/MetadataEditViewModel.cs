@@ -176,7 +176,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private async Task FetchMetadata()
         {
-            foreach (var entry in MetadataEntries)
+            foreach (var entry in MetadataEntries.Where(x => x.Status == MetadataStatus.NotDone))
             {
                 if (entry.Status != MetadataStatus.NotDone) continue;
                 entry.StartProgrammaticUpdate();

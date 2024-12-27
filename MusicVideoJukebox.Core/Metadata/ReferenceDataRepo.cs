@@ -33,8 +33,23 @@ namespace MusicVideoJukebox.Core.Metadata
             return new MetadataGetResult { Success = false };
         }
 
+        int SEARCH_LENGTH = 3;
+
         public async Task <List<FetchedMetadata>> GetCandidates(string artist, string track)
         {
+            // Remove "The " prefix from the search terms if it exists
+            string processedArtist = artist.ToLower().StartsWith("the ", StringComparison.OrdinalIgnoreCase) ? artist[4..] : artist;
+            string processedTrack = track.ToLower().StartsWith("the ", StringComparison.OrdinalIgnoreCase) ? track[4..] : track;
+
+            if (processedArtist.Length > SEARCH_LENGTH)
+            {
+                processedArtist = processedArtist[..SEARCH_LENGTH];
+            }
+            if (processedTrack.Length > SEARCH_LENGTH)
+            {
+                processedTrack = processedTrack[..SEARCH_LENGTH];
+            }
+
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             using var conn = new SQLiteConnection(connectionString);
             var maybeMatch = await conn.QueryAsync<FetchedMetadata>(
@@ -45,7 +60,7 @@ namespace MusicVideoJukebox.Core.Metadata
               WHERE (track_name LIKE @track OR track_name LIKE 'the ' || @track)
               AND (artist_name LIKE @artist OR artist_name LIKE 'the ' || @artist)
               LIMIT 101",
-            new { track = track[..2] + "%", artist = artist[..2] + "%"});
+            new { track = processedTrack + "%", artist = processedArtist + "%"});
             return maybeMatch.ToList();
         }
     }

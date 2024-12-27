@@ -1,12 +1,12 @@
 with cte as (
 select rec.id AS track_id,
         rec.name AS track_name,
-        lower(trim(translate(regexp_replace(
+        lower(trim(translate(REPLACE(regexp_replace(
         CASE
             WHEN rec.name ~ '^\(.*\)' THEN rec.name -- Keep full name if it starts with parentheses
         	ELSE SPLIT_PART(rec.name, '(', 1) -- Otherwise, truncate at first opening parenthesis
         end,
-        '\([^)]*\)$', '', 'g'),
+        '\([^)]*\)$', '', 'g'),'‐', '-'),
         '’', ''''))) AS normalized_track_name,
         ac.id AS artist_id,
         ac.name AS artist_name,

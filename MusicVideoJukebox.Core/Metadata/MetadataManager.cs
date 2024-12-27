@@ -222,7 +222,7 @@ namespace MusicVideoJukebox.Core.Metadata
                     title = parts[1];
                 }
                 string artist = parts[0];
-                return (artist, title);
+                return (artist.Trim(), title.Trim()); // sometimes there are extra spaces between the name and the hyphen
             }
             else
             {

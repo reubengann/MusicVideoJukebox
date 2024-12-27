@@ -19,7 +19,7 @@
     </UserControl.Resources>
     <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
         <Viewbox>
-            <Grid Height="600"  IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+            <Grid Height="700" Width="1200" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -30,7 +30,7 @@
                       SelectedItem="{Binding SelectedItem}"
                       Padding="5">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Status">
+                    <DataGridTemplateColumn Header="Status" SortMemberPath="Status">
                         <DataGridTemplateColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
