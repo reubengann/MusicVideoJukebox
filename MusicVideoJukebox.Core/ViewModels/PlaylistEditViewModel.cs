@@ -76,6 +76,8 @@ namespace MusicVideoJukebox.Core.ViewModels
                 dialogService.ShowEditPlaylistDetailsDialog(vm);
                 if (!vm.Accepted) return;
                 await metadataManager.UpdatePlaylist(vm.NewPlaylist);
+                SelectedPlaylist.Playlist.Description = vm.NewPlaylist.Description;
+                SelectedPlaylist.Playlist.ImagePath = vm.NewPlaylist.ImagePath;
                 SelectedPlaylist.Name = vm.NewPlaylist.PlaylistName;
             }
             catch
@@ -127,7 +129,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             var tracks = await metadataManager.GetPlaylistTracksForViewmodel(SelectedPlaylist.Id);
             PlaylistTracks = new ObservableCollection<PlaylistTrackViewModel>(
             tracks.OrderBy(x => x.PlayOrder).Select(track => new PlaylistTrackViewModel(track))
-    );
+            );
         }
 
         public bool IsPlaylistMutable

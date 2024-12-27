@@ -161,5 +161,11 @@ namespace MusicVideoJukebox.Test.Fakes
             CurrentActivePlaylistStatus.PlaylistId = playlistId;
             return Task.CompletedTask;
         }
+
+        public Task UpdatePlayStatus(int playlistId, int songOrder)
+        {
+            CurrentActivePlaylistStatus.SongOrder = songOrder;
+            return Task.CompletedTask;
+        }
     }
 }

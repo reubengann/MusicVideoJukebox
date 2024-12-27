@@ -196,6 +196,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         public async Task Recheck()
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
+
+            var wasPlaying = IsPlaying;
             
             if (libraryStore.CurrentState.LibraryId != currentLibraryId)
             {
@@ -215,10 +217,12 @@ namespace MusicVideoJukebox.Core.ViewModels
                 if (restoreStateResult.NeedsToChangeTrack)
                 {
                     SetSource(restoreStateResult.NewPlaylistTrack);
-                    Play();
                 }   
             }
-
+            if (wasPlaying)
+            {
+                Play();
+            }
         }
 
         async Task LoadPlaylist()
@@ -227,7 +231,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             playlistNavigator = new PlaylistNavigator(metadataManager);
             SetSource(await playlistNavigator.Resume());
             currentPlaylistId = playlistNavigator.CurrentPlaylistId;
-            Play();
         }
     }
 }

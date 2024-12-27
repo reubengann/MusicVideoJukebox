@@ -19,14 +19,14 @@
         public PlaylistTrack Next()
         {
             currentIndex = (currentIndex + 1) % CurrentTracks.Count;
-            _ = metadataManager.UpdateCurrentSongOrder(SongOrder);
+            _ = metadataManager.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
             return CurrentTrack;
         }
 
         public PlaylistTrack Previous()
         {
             currentIndex = (currentIndex - 1 + CurrentTracks.Count) % CurrentTracks.Count;
-            _ = metadataManager.UpdateCurrentSongOrder(SongOrder);
+            _ = metadataManager.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
             return CurrentTrack;
         }
 
@@ -39,7 +39,7 @@
             if (activePlaylistStatus.SongOrder == null)
             {
                 currentIndex = 0;
-                await metadataManager.UpdateCurrentSongOrder(currentIndex + 1);
+                await metadataManager.UpdatePlayStatus(CurrentPlaylistId, 1);
             }
             else
             {
@@ -77,7 +77,7 @@
                     // Update the currentIndex
                     // Update the database
                     currentIndex = 0;
-                    await metadataManager.UpdateCurrentSongOrder(SongOrder);
+                    await metadataManager.UpdatePlayStatus(CurrentPlaylistId, 1);
                 }
                 else
                 {
@@ -93,7 +93,7 @@
             {
                 // The song is still in the playlist.
                 currentIndex = CurrentTracks.IndexOf(maybeSameSongInNewOrder);
-                await metadataManager.UpdateCurrentSongOrder(maybeSameSongInNewOrder.PlayOrder);
+                await metadataManager.UpdatePlayStatus(CurrentPlaylistId, maybeSameSongInNewOrder.PlayOrder);
                 return new RestoreStateResult { NeedsToChangeTrack = false };
             }
         }

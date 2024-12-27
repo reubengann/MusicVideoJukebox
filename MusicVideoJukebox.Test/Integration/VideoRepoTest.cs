@@ -154,6 +154,8 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(2, rows);
             var name = await conn.ExecuteScalarAsync<string>("SELECT playlist_name from playlist where is_all = 0");
             Assert.Equal("New Playlist", name);
+            var playlistStatus = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) from playlist_status");
+            Assert.Equal(2, playlistStatus);
         }
 
         [Fact]
@@ -290,7 +292,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanUpdateCurrentSongOrder()
         {
             await dut.InitializeDatabase();
-            await dut.UpdateCurrentSongOrder(5);
+            await dut.UpdatePlayStatus(1, 5);
             using var conn = new SQLiteConnection(connectionString);
             var songOrder = await conn.ExecuteScalarAsync<int>("SELECT song_order from playlist_status");
             Assert.Equal(5, songOrder);

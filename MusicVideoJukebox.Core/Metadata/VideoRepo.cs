@@ -124,7 +124,6 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             // should be 1 ...
             var allSongPlaylistId = await InsertPlaylist(conn, new Playlist { PlaylistName = "All songs", Description = "Every song in the library", IsAll = true });
-            await conn.ExecuteAsync(@"INSERT INTO playlist_status (playlist_id) VALUES (@allSongPlaylistId)", new { allSongPlaylistId });
             await conn.ExecuteAsync(@"INSERT INTO active_playlist (playlist_id) VALUES (@allSongPlaylistId)", new { allSongPlaylistId });
         }
 
@@ -160,7 +159,7 @@ namespace MusicVideoJukebox.Core.Metadata
 INSERT INTO playlist (playlist_name, description, image_path, is_all) 
 VALUES (@PlaylistName, @Description, @ImagePath, @IsAll) RETURNING playlist_id", playlist);
             // Also need to make sure we have a playlist_status
-
+            await conn.ExecuteAsync("INSERT INTO playlist_status (playlist_id) VALUES (@createdId)", new { createdId });
             return createdId;
         }
 
@@ -339,12 +338,6 @@ select B.playlist_id, song_order
 from active_playlist A 
 JOIN playlist_status B ON A.playlist_id = B.playlist_id
 ")).First();
-        }
-
-        public async Task UpdateCurrentSongOrder(int songOrder)
-        {
-            using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync("UPDATE playlist_status SET song_order = @songOrder", new { songOrder });
         }
     }
 }

@@ -19,6 +19,15 @@ namespace MusicVideoJukebox.Core.ViewModels
         public string ImagePath => GetPath();
         public string Description => playlist.Description ?? "(no description)";
 
+        public void UpdateDetails(string? description, string? imagePath)
+        {
+            playlist.Description = description;
+            playlist.ImagePath = imagePath;
+            OnPropertyChanged(nameof(Description));
+            OnPropertyChanged(nameof(ImagePath));
+        }
+
+
         public bool IsAll => playlist.IsAll;
         public Playlist Playlist => playlist;
 

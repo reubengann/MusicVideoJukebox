@@ -59,19 +59,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task ChecksTheLibraryStoreForNewLibraryWhenTriggered()
-        {
-            Assert.False(dut.IsPlaying);
-            WithMetadata("fake.mp4");
-            WithPlaylist(true, 1, "All");
-            WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
-            WithPlaylistTrack("", "c:\\afile.mp4", "", 2);
-            await libraryStore.SetLibrary(1, "something");
-            await dut.Recheck();
-            Assert.True(dut.IsPlaying);
-        }
-
-        [Fact]
         public async Task CheckTheLibraryStoreForNewPlaylistWhenTriggered()
         {
             Assert.False(dut.IsPlaying);

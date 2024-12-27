@@ -30,7 +30,7 @@
         Task UpdateAnalysisVolume(int videoId, double? lufs);
         Task<PlaylistStatus> GetActivePlaylist();
         Task UpdateActivePlaylist(int playlistId);
-        Task UpdateCurrentSongOrder(int songOrder);
+        Task UpdatePlayStatus(int playlistId, int songOrder);
     }
 
     public class PlaylistStatus
