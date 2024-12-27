@@ -10,7 +10,7 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         private const int VIDEO_INFO_START_GUTTER = 3;
         private const int VIDEO_INFO_END_GUTTER = 10;
-        private bool isPlaying = false;
+        private bool isPlaying = true;
         private readonly IMediaPlayer mediaPlayer;
         private readonly IUIThreadTimerFactory uIThreadTimerFactory;
         IUIThreadTimer scrubDebounceTimer;
@@ -50,7 +50,12 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 if (scrubbedRecently) return;
                 scrubbedRecently = true;
+                var prevVolume = Volume;
+                if (!IsPlaying)
+                    Volume = 0;
                 mediaPlayer.CurrentTimeSeconds = value;
+                if (!IsPlaying)
+                    Volume = prevVolume;
             }
         }
 
