@@ -76,8 +76,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 dialogService.ShowEditPlaylistDetailsDialog(vm);
                 if (!vm.Accepted) return;
                 await metadataManager.UpdatePlaylist(vm.NewPlaylist);
-                SelectedPlaylist.Playlist.Description = vm.NewPlaylist.Description;
-                SelectedPlaylist.Playlist.ImagePath = vm.NewPlaylist.ImagePath;
+                SelectedPlaylist.UpdateDetails(vm.PlaylistDescription, vm.PlaylistIcon);
                 SelectedPlaylist.Name = vm.NewPlaylist.PlaylistName;
             }
             catch
@@ -101,6 +100,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 var vm = new PlaylistDetailsEditDialogViewModel(newPlaylist, dialogService, imageScalerService, libraryStore);
                 dialogService.ShowEditPlaylistDetailsDialog(vm);
                 if (!vm.Accepted) return;
+                newPlaylist = vm.NewPlaylist;
                 var newId = await metadataManager.SavePlaylist(vm.NewPlaylist);
                 newPlaylist.PlaylistId = newId;
             }
