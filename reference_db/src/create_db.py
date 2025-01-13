@@ -255,17 +255,25 @@ def table_exists(conn, table_name):
     return result[0]
 
 
-def create_db(recreate: bool):
+def create_db(recreate: bool, keep_first_pass: bool):
     print("Checking server-side tables")
     conn = get_pg()
     dropped_any = False
     did_anything = False
+
+    if recreate and os.path.exists(SQLITE_DB):
+        print("Deleting old sqlite")
+        os.unlink(SQLITE_DB)
+
     for table_name, table_script in [
         ("a_first_pass", "step_1.sql"),
         ("a_second_pass", "step_1a.sql"),
         ("a_ranked_tracks", "step_2.sql"),
         ("a_rank_1_tracks", "step_3.sql"),
     ]:
+        if table_name == "a_first_pass" and recreate and keep_first_pass:
+            print("Keeping a_first_pass")
+            continue
         if table_exists(conn, table_name):
             if recreate:
                 cur = conn.cursor()
@@ -273,13 +281,13 @@ def create_db(recreate: bool):
                 cur.execute(f"DROP TABLE {table_name};")
                 conn.commit()
                 dropped_any = True
-                execute_script(conn, Path(table_script).read_text())
+                execute_script(conn, Path(table_script).read_text(encoding="utf-8"))
                 did_anything = True
             else:
                 print(f"{table_name} already exists")
         else:
             print(f"Creating {table_name}")
-            execute_script(conn, Path(table_script).read_text())
+            execute_script(conn, Path(table_script).read_text(encoding="utf-8"))
             did_anything = True
 
     dropped_any = True

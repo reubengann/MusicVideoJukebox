@@ -11,14 +11,14 @@ WITH normalized_tracks AS (
         afp.release_year,
         afp.primary_type_name,
         afp.secondary_type_name,
-        lower(trim(regexp_replace(
+        lower(trim(translate(regexp_replace(
             afp.track_name,
-            '\((?!.*\().*(edit|mix|version|instrumental|live).*\)$', -- Match only the last set of parentheses
+            '\([^()]*\)$', -- Match only the last set of parentheses
             '',
             'gi'
-        ))) AS base_name,
+        ), '’', ''''))) AS base_name,
         CASE
-            WHEN afp.track_name ~* '\((?!.*\().*(edit|mix|version|instrumental|live).*\)$' THEN 'Remove'
+            WHEN afp.track_name ~* '\([^()]*\)$' THEN 'Remove'
             ELSE 'Keep'
         END AS action
     FROM a_first_pass afp
