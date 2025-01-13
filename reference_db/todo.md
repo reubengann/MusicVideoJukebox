@@ -1,15 +1,5 @@
-- if there's "song" and "song (instrumental)", we should remove instrumental
-    - (instrumental)
-    - (edit)
-    - (Motiv8 radio edit)
-    - (7" remix)
-    - (extended mix)
-    - (LP mix)
-    - (acoustic)
-    - (single mix)
-    - (new mix) though for A Moment Like This, only the new mix exists?!
-    - (radio edit - vocal)
-    - (take XXX)
+- if there's "song" and "song [instrumental]", we should remove instrumental
+    - same with " - some garbage"
 look especially at Gloria Estefan - Turn the Beat Around.
 - Add Classic Nouveaux
 - Add Unplugged for Nirvana and Eric Clapton

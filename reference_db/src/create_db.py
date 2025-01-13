@@ -268,6 +268,7 @@ def create_db(recreate: bool, keep_first_pass: bool):
     for table_name, table_script in [
         ("a_first_pass", "step_1.sql"),
         ("a_second_pass", "step_1a.sql"),
+        ("a_third_pass", "step_1b.sql"),
         ("a_ranked_tracks", "step_2.sql"),
         ("a_rank_1_tracks", "step_3.sql"),
     ]:

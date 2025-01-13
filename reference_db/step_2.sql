@@ -16,7 +16,7 @@ SELECT
     track_name,
     recording_artist_id,
     MIN(release_year) AS earliest_single_year
-FROM a_second_pass
+FROM a_third_pass
 WHERE primary_type_name = 'Single'
 GROUP BY track_name, recording_artist_id;
 
@@ -56,7 +56,7 @@ SELECT
             END,
             album_id ASC -- Tie-breaker
     ) AS the_rank
-FROM a_second_pass fp
+FROM a_third_pass fp
 LEFT JOIN singles_rank sr
     ON fp.track_name = sr.track_name
     AND fp.recording_artist_id = sr.recording_artist_id;
