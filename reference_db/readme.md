@@ -22,7 +22,7 @@ docker-compose exec indexer python -m sir reindex
 Now, from the `reference_db` folder, run
 
 ```bash
-python make_reference_db.py
+python make_reference_db.py create
 ```
 
 Store this file in `MusicVideoJukeBox` folder.

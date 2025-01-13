@@ -1,0 +1,15 @@
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Main",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "make_reference_db.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["create", "--recreate"]
+    }
+  ]
+}
