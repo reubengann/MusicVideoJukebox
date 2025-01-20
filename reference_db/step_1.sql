@@ -156,8 +156,12 @@ UPDATE a_first_pass SET recording_artist_id = 22656, recording_artist_name = 'LL
 UPDATE a_first_pass SET recording_artist_id = 509, recording_artist_name = 'Goo Goo Dolls' WHERE recording_artist_id = 940807;
 UPDATE a_first_pass SET recording_artist_id = 803, recording_artist_name = 'The Pretenders' WHERE recording_artist_id = 855259;
 UPDATE a_first_pass SET recording_artist_id = 53815, recording_artist_name = 'Tony! Toni! Toné!' WHERE recording_artist_id = 846666;
+UPDATE a_first_pass SET recording_artist_id = 96, recording_artist_name = 'Bangles' WHERE recording_artist_id = 843692;
+UPDATE a_first_pass SET recording_artist_id = 11650, recording_artist_name = 'The Smashing Pumpkins' WHERE recording_artist_id = 933469;
 
 --This is annoying
 UPDATE a_first_pass SET recording_artist_name = 'Weird Al Yankovic' WHERE recording_artist_id = 863324;
 
-DELETE from a_first_pass where album_id = 38468 -- Best of Nick Cave came out almost exactly with other albums and fucks things up
+DELETE from a_first_pass where album_id = 38468; -- Best of Nick Cave came out almost exactly with other albums and fucks things up
+DELETE from a_first_pass where recording_artist_id = 591414; -- The Better Beatles
+DELETE from a_first_pass where track_id = 21554716; -- Incorrectly says that Australia was on Chutes Too Narrow

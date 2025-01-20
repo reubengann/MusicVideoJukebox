@@ -45,15 +45,16 @@ SELECT
     ROW_NUMBER() OVER (
         PARTITION BY fp.track_name, fp.recording_artist_id
         ORDER BY
-            release_year ASC, -- Earliest release year for ties
             CASE
                 -- Albums take precedence unless a single is more than 1 year earlier
-                WHEN primary_type_name = 'Album' AND sr.earliest_single_year + 1 >= release_year THEN 1
-                WHEN primary_type_name = 'Single' THEN 2
+                when primary_type_name = 'Album' and sr.earliest_single_year is null then 1
+                WHEN primary_type_name = 'Album' AND sr.earliest_single_year + 1 >= release_year THEN 2
+                WHEN primary_type_name = 'Single' THEN 3
                 WHEN primary_type_name = 'Album' AND secondary_type_name IN ('Soundtrack', 'Live') THEN 4
                 WHEN primary_type_name = 'EP' THEN 5
-                ELSE 5
+                ELSE 6
             END,
+            release_year ASC, -- Earliest release year for ties
             album_id ASC -- Tie-breaker
     ) AS the_rank
 FROM a_third_pass fp

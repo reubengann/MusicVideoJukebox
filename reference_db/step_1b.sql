@@ -66,3 +66,4 @@ UPDATE a_third_pass SET track_name = track_name || ' (Unledded)' WHERE album_id 
 UPDATE a_third_pass SET track_name = track_name || ' (A Black and White Night)' WHERE album_id = 96095;
 UPDATE a_third_pass SET track_name = track_name || ' (In Central Park)' WHERE album_id = 195560;
 UPDATE a_third_pass SET track_name = track_name || ' (Stop Making Sense)' WHERE album_id = 979654;
+UPDATE a_third_pass SET track_name = track_name || ' (Big Time)' WHERE album_id = 38640;
