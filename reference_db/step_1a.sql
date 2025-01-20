@@ -11,12 +11,14 @@ WITH normalized_tracks AS (
         afp.release_year,
         afp.primary_type_name,
         afp.secondary_type_name,
-        lower(trim(translate(regexp_replace(
-            afp.track_name,
-            '\([^()]*\)$', -- Match only the last set of parentheses
-            '',
-            'gi'
-        ), '’', ''''))) AS base_name,
+        lower(trim(translate(
+            regexp_replace(
+                regexp_replace(
+                    regexp_replace(afp.track_name, '\[[^][]*\]$', '', 'gi')-- Match the last set of square brackets
+                    , '\([^()]*\)$', '', 'gi') -- Match only the last set of parentheses
+                    , '&', 'and', 'g')
+                    , '’', '''' -- normalizes apostrophes
+        ))) AS base_name,
         CASE
             WHEN afp.track_name ~* '\([^()]*\)$' THEN 'Remove'
             ELSE 'Keep'

@@ -111,6 +111,9 @@ def populate_flat_table(conn, data):
         ) = row
 
         # Normalize track and artist names
+        if track_name is None or recording_artist_name is None:
+            print(f"Error: Cannot normalize track {row}")
+            raise Exception()
         normalized_track_name = normalize_name(track_name)
         normalized_artist_name = normalize_name(recording_artist_name)
         artist_title = f"{normalized_artist_name} - {normalized_track_name}"
@@ -261,7 +264,7 @@ def create_db(recreate: bool, keep_first_pass: bool):
     dropped_any = False
     did_anything = False
 
-    if recreate and os.path.exists(SQLITE_DB):
+    if os.path.exists(SQLITE_DB):
         print("Deleting old sqlite")
         os.unlink(SQLITE_DB)
 
@@ -276,7 +279,7 @@ def create_db(recreate: bool, keep_first_pass: bool):
             print("Keeping a_first_pass")
             continue
         if table_exists(conn, table_name):
-            if recreate:
+            if recreate or did_anything:
                 cur = conn.cursor()
                 print(f"Dropping and recreating {table_name}")
                 cur.execute(f"DROP TABLE {table_name};")
