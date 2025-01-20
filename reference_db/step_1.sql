@@ -145,7 +145,8 @@ WHERE rg.id in (
     320312, --	Wool	Budspawn
     1284405, --	Zerra One	The Domino Effect
     105138, --	soulDecision	No One Does It Better
-    924914 --	Eric Clapton	Music for Monserrat (Benefit Concert)
+    924914, --	Eric Clapton	Music for Monserrat (Benefit Concert)
+    742213 --	Paul Heaton	The Cross Eyed Rambler
     );
 
 --standardize artists
@@ -158,3 +159,5 @@ UPDATE a_first_pass SET recording_artist_id = 53815, recording_artist_name = 'To
 
 --This is annoying
 UPDATE a_first_pass SET recording_artist_name = 'Weird Al Yankovic' WHERE recording_artist_id = 863324;
+
+DELETE from a_first_pass where album_id = 38468 -- Best of Nick Cave came out almost exactly with other albums and fucks things up

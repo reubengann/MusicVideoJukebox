@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import pickle
 import re
+import time
 import unicodedata
 import psycopg2
 import sqlite3
@@ -223,7 +224,6 @@ def drop_flat_table(conn):
     conn.execute("DROP TABLE flat_tracks;")
     conn.commit()
     conn.execute("VACUUM;")
-    print("Dropped flat_tracks table.")
 
 
 def create_indexes(conn):
@@ -269,65 +269,81 @@ def create_db(recreate: bool, start_at: int | None):
         os.unlink(SQLITE_DB)
 
     count = 0
-    for table_name, table_script in [
-        ("a_first_pass", "step_1.sql"),
-        ("a_second_pass", "step_1a.sql"),
-        ("a_third_pass", "step_1b.sql"),
-        ("a_ranked_tracks", "step_2.sql"),
-        ("a_rank_1_tracks", "step_3.sql"),
-    ]:
-        count += 1
-        if table_exists(conn, table_name):
-            if start_at is not None and count < start_at:
-                print(f"Keeping {table_name}")
-                continue
-            if recreate or did_anything:
-                cur = conn.cursor()
-                print(f"Dropping and recreating {table_name}")
-                cur.execute(f"DROP TABLE {table_name};")
-                conn.commit()
-                dropped_any = True
+    table_steps = [
+        ("a_first_pass", "step_1.sql", 174.0),
+        ("a_second_pass", "step_1a.sql", 54.6),
+        ("a_third_pass", "step_1b.sql", 61.5),
+        ("a_ranked_tracks", "step_2.sql", 18.3),
+        ("a_rank_1_tracks", "step_3.sql", 3.1),
+    ]
+    base_time = 10.6 + 18.2 + 121.7 + 14.3 + 5.7 + 4.7
+    if start_at and start_at < len(table_steps):
+        total_time = base_time + sum([ts[2] for ts in table_steps[start_at - 1 :]])
+    else:
+        total_time = base_time + sum([ts[2] for ts in table_steps])
+
+    with tqdm.tqdm(total=total_time) as pbar:
+        for table_name, table_script, approx_time in table_steps:
+            count += 1
+            if table_exists(conn, table_name):
+                if start_at is not None and count < start_at:
+                    tqdm.tqdm.write(f"Keeping {table_name}")
+                    continue
+                if recreate or did_anything:
+                    cur = conn.cursor()
+                    tqdm.tqdm.write(f"Dropping and recreating {table_name}")
+                    cur.execute(f"DROP TABLE {table_name};")
+                    conn.commit()
+                    dropped_any = True
+                    execute_script(conn, Path(table_script).read_text(encoding="utf-8"))
+                    did_anything = True
+                else:
+                    tqdm.tqdm.write(f"{table_name} already exists")
+            else:
+                tqdm.tqdm.write(f"Creating {table_name}")
                 execute_script(conn, Path(table_script).read_text(encoding="utf-8"))
                 did_anything = True
-            else:
-                print(f"{table_name} already exists")
+            pbar.update(approx_time)
+
+        dropped_any = True
+        if dropped_any:
+            tqdm.tqdm.write("Vacuuming")  # 10.6
+            old_isolation_level = conn.isolation_level
+            conn.set_isolation_level(0)
+            cur = conn.cursor()
+            cur.execute("VACUUM")
+            conn.set_isolation_level(old_isolation_level)
+            pbar.update(10.6)
+
+        if did_anything and os.path.exists(PICKLE_FILE):
+            tqdm.tqdm.write("Deleting pickle cache")
+            os.unlink(PICKLE_FILE)
+
+        if os.path.exists(PICKLE_FILE):
+            data = load_from_pickle(PICKLE_FILE)
+            tqdm.tqdm.write(f"Data loaded from {PICKLE_FILE}.")
         else:
-            print(f"Creating {table_name}")
-            execute_script(conn, Path(table_script).read_text(encoding="utf-8"))
-            did_anything = True
+            tqdm.tqdm.write("Fetching data from PostgreSQL...")  # 18.2
+            data = fetch_postgres_data(conn)
+            tqdm.tqdm.write(f"Fetched {len(data)} rows.")
+            save_to_pickle(data, PICKLE_FILE)
+            tqdm.tqdm.write(f"Data saved to {PICKLE_FILE}.")
+            pbar.update(18.2)
 
-    dropped_any = True
-    if dropped_any:
-        print("Vacuuming")
-        old_isolation_level = conn.isolation_level
-        conn.set_isolation_level(0)
-        cur = conn.cursor()
-        cur.execute("VACUUM")
-        conn.set_isolation_level(old_isolation_level)
-
-    if did_anything and os.path.exists(PICKLE_FILE):
-        print("Deleting pickle cache")
-        os.unlink(PICKLE_FILE)
-
-    if os.path.exists(PICKLE_FILE):
-        data = load_from_pickle(PICKLE_FILE)
-        print(f"Data loaded from {PICKLE_FILE}.")
-    else:
-        print("Fetching data from PostgreSQL...")
-        data = fetch_postgres_data(conn)
-        print(f"Fetched {len(data)} rows.")
-        save_to_pickle(data, PICKLE_FILE)
-        print(f"Data saved to {PICKLE_FILE}.")
-
-    # Insert into SQLite
-    print("Inserting flat table into SQLite...")
-    sqlite_conn = sqlite3.connect(SQLITE_DB)
-    create_flat_table(sqlite_conn)
-    populate_flat_table(sqlite_conn, data)
-    print("Creating and populating final tables...")
-    create_and_populate_final_tables(sqlite_conn)
-    # Drop the flat table
-    drop_flat_table(sqlite_conn)
-    create_indexes(sqlite_conn)
-    sqlite_conn.close()
-    print("Data transfer completed.")
+        # Insert into SQLite
+        tqdm.tqdm.write("Inserting flat table into SQLite...")
+        sqlite_conn = sqlite3.connect(SQLITE_DB)
+        create_flat_table(sqlite_conn)
+        populate_flat_table(sqlite_conn, data)  # 121.7
+        pbar.update(121.7)
+        tqdm.tqdm.write("Creating and populating final tables...")
+        create_and_populate_final_tables(sqlite_conn)  # 14.3
+        pbar.update(14.3)
+        # Drop the flat table
+        drop_flat_table(sqlite_conn)  # 5.7
+        tqdm.tqdm.write("Dropped flat_tracks table.")
+        pbar.update(5.7)
+        create_indexes(sqlite_conn)  # 4.7
+        pbar.update(4.7)
+        sqlite_conn.close()
+        tqdm.tqdm.write("Data transfer completed.")

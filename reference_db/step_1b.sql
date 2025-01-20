@@ -55,8 +55,14 @@ LEFT JOIN best_track_names bnt
     ))) = bnt.normalized_track_name
     and asp.recording_artist_id = bnt.recording_artist_id;
 
-UPDATE a_third_pass SET track_name = track_name || ' (Unplugged)' WHERE (album_id = 21187 OR album_id = 22184);
+UPDATE a_third_pass SET track_name = track_name || ' (Unplugged)' WHERE album_id in (21187, 22184, 43144);
 UPDATE a_third_pass SET track_name = track_name || ' (Hell Freezes Over)' WHERE album_id = 20427;
 UPDATE a_third_pass SET track_name = track_name || ' (West 54th)' WHERE album_id = 106917;
 UPDATE a_third_pass SET track_name = track_name || ' (Brixton)' WHERE album_id = 352130;
 UPDATE a_third_pass SET track_name = track_name || ' (Monserrat)' WHERE album_id = 924914;
+UPDATE a_third_pass SET track_name = track_name || ' (The Dance)' WHERE album_id = 32332;
+UPDATE a_third_pass SET track_name = track_name || ' (Austin City Limits)', release_year = 1981 WHERE album_id = 1062263;
+UPDATE a_third_pass SET track_name = track_name || ' (Unledded)' WHERE album_id = 567705;
+UPDATE a_third_pass SET track_name = track_name || ' (A Black and White Night)' WHERE album_id = 96095;
+UPDATE a_third_pass SET track_name = track_name || ' (In Central Park)' WHERE album_id = 195560;
+UPDATE a_third_pass SET track_name = track_name || ' (Stop Making Sense)' WHERE album_id = 979654;
