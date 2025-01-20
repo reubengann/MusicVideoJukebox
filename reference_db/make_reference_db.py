@@ -18,11 +18,11 @@ def main() -> int:
 
     # Add command line arguments to the commands
     create_p.add_argument("--recreate", action="store_true")
-    create_p.add_argument("--keep_first_pass", action="store_true")
+    create_p.add_argument("--start_at", type=int)
     args = parser.parse_args()
     match args.subparser_name:
         case "create":
-            create_db(args.recreate, args.keep_first_pass)
+            create_db(args.recreate, args.start_at)
             return 0
         case "dump":
             dump_ids()

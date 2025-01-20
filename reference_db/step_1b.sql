@@ -56,3 +56,7 @@ LEFT JOIN best_track_names bnt
     and asp.recording_artist_id = bnt.recording_artist_id;
 
 UPDATE a_third_pass SET track_name = track_name || ' (Unplugged)' WHERE (album_id = 21187 OR album_id = 22184);
+UPDATE a_third_pass SET track_name = track_name || ' (Hell Freezes Over)' WHERE album_id = 20427;
+UPDATE a_third_pass SET track_name = track_name || ' (West 54th)' WHERE album_id = 106917;
+UPDATE a_third_pass SET track_name = track_name || ' (Brixton)' WHERE album_id = 352130;
+UPDATE a_third_pass SET track_name = track_name || ' (Monserrat)' WHERE album_id = 924914;

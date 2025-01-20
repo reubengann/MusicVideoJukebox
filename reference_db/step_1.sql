@@ -111,7 +111,6 @@ LEFT JOIN
     release_group_secondary_type_join stj ON rg.id = stj.release_group
 LEFT JOIN
     release_group_secondary_type st ON stj.secondary_type = st.id
-JOIN us_albums ua ON rg.id = ua.album_id
 WHERE rg.id in (
     165100, --An Emotional Fish	Junk Puppets
     1051317, --Balaam and the Angel, The Greatest Story Ever Told
@@ -145,7 +144,8 @@ WHERE rg.id in (
     54428, --	The Wolfgang Press	Lonely Is an Eyesore
     320312, --	Wool	Budspawn
     1284405, --	Zerra One	The Domino Effect
-    105138 --	soulDecision	No One Does It Better
+    105138, --	soulDecision	No One Does It Better
+    924914 --	Eric Clapton	Music for Monserrat (Benefit Concert)
     );
 
 --standardize artists
