@@ -47,10 +47,10 @@ SELECT
         ORDER BY
             CASE
                 -- Albums take precedence unless a single is more than 1 year earlier
+                WHEN primary_type_name = 'Album' AND secondary_type_name IN ('Soundtrack', 'Live') THEN 4
                 when primary_type_name = 'Album' and sr.earliest_single_year is null then 1
                 WHEN primary_type_name = 'Album' AND sr.earliest_single_year + 1 >= release_year THEN 2
                 WHEN primary_type_name = 'Single' THEN 3
-                WHEN primary_type_name = 'Album' AND secondary_type_name IN ('Soundtrack', 'Live') THEN 4
                 WHEN primary_type_name = 'EP' THEN 5
                 ELSE 6
             END,

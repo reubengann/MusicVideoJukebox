@@ -2,6 +2,7 @@
 {
     public interface IVideoRepo
     {
+        Task<bool> IsDatabaseInitialized();
         Task InitializeDatabase();
         Task AddBasicInfos(List<BasicInfo> basicInfos);
         Task<List<VideoMetadata>> GetAllMetadata();
@@ -16,6 +17,7 @@
         Task DeleteFromPlaylist(int playlistId, int videoId);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
         Task InsertAnalysisResult(VideoAnalysisEntry entry);
+        Task UpdateAnalysisResult(VideoAnalysisEntry entry);
         Task<List<VideoAnalysisEntry>> GetAnalysisResults();
         Task UpdateAnalysisVolume(int videoId, double? lufs);
         Task UpdatePlayStatus(int playlistId, int songOrder);
@@ -26,10 +28,10 @@
     public class VideoAnalysisEntry
     {
         public int VideoId { get; set; }
-        public string? Filename { get; set; }
-        public string VideoCodec { get; set; } = string.Empty;
-        public string VideoResolution { get; set; } = string.Empty;
-        public string AudioCodec { get; set; } = string.Empty;
+        public string Filename { get; set; } = null!;
+        public string? VideoCodec { get; set; }
+        public string? VideoResolution { get; set; }
+        public string? AudioCodec { get; set; }
         public string? Warning { get; set; }
         public double? LUFS { get; set; }
     }

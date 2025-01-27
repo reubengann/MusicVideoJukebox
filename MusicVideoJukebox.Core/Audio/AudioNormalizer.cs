@@ -13,11 +13,11 @@ namespace MusicVideoJukebox.Core.Audio
             this.archiveFolder = archivefolder;
         }
 
-        public async Task<bool> NormalizeAudio(string sourcefolder, string filename, double? lufs, CancellationToken cancellationToken)
+        public async Task<NormalizeAudioResult> NormalizeAudio(string sourcefolder, string filename, double? lufs, CancellationToken cancellationToken)
         {
-            if (lufs == null) return false;
+            if (lufs == null) return NormalizeAudioResult.FAILED;
             double measuredLufs = lufs ?? 0;
-            if (Math.Abs(measuredLufs - targetLufs) < threshold) return false;
+            if (Math.Abs(measuredLufs - targetLufs) < threshold) return NormalizeAudioResult.NOT_NEEDED;
             var gain = targetLufs - measuredLufs;
             string gainFilter = $"volume={gain:+0.00;-0.00}dB";
 
@@ -42,11 +42,11 @@ namespace MusicVideoJukebox.Core.Audio
                 }
                 File.Move(inputPath, archivePath, overwrite: true);
                 File.Move(outputPath, inputPath, overwrite: true);
-                return true;
+                return NormalizeAudioResult.DONE;
             }
             catch
             {
-                return false;
+                return NormalizeAudioResult.FAILED;
             }
         }
     }

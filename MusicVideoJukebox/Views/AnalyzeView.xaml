@@ -15,8 +15,20 @@
                 <RowDefinition Height="520" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <DataGrid ItemsSource="{Binding AnalysisResults}" AutoGenerateColumns="False" SelectionMode="Single" Margin="5" SelectedItem="{Binding SelectedItem}"
-                      MaxHeight="500" BorderThickness="1">
+            <DataGrid ItemsSource="{Binding AnalysisResults}" 
+                      AutoGenerateColumns="False" 
+                      SelectionMode="Extended" 
+                      SelectionUnit="FullRow" 
+                      IsReadOnly="True"
+                      Margin="5"
+                      MaxHeight="500" BorderThickness="1"
+                      PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
+                      >
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, NotifyOnTargetUpdated=True}" />
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="280"/>
                     <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
@@ -34,8 +46,9 @@
             <mah:ProgressRing Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <UniformGrid Margin="5" Grid.Row="1" Rows="1" Width="500">
                 <Button Command="{Binding CancelOperationsCommand}">Cancel</Button>
-                <Button Command="{Binding NormalizeAllCommand}" Margin="5,0,0,0">Normalize All</Button>
-                <Button Command="{Binding ReanalyzeAllCommand}" Margin="5,0,0,0">Reanalyze All</Button>
+                <Button Command="{Binding NormalizeSelectedCommand}" Margin="5,0,0,0">Normalize Selected</Button>
+                <Button Command="{Binding AnalyzeSelectedCommand}" Margin="5,0,0,0">Analyze Selected</Button>
+                <Button Command="{Binding AnalyzeAllCommand}" Margin="5,0,0,0">Analyze All Undone</Button>
             </UniformGrid>
         </Grid>
     </Viewbox>

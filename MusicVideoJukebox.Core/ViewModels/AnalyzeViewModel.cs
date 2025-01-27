@@ -16,10 +16,10 @@ namespace MusicVideoJukebox.Core.ViewModels
         private CancellationTokenSource? cancellationTokenSource;
         private bool isBusy = false;
 
-        public DelegateCommand NormalizeTrackCommand { get; }
+        public DelegateCommand NormalizeSelectedCommand { get; }
         public DelegateCommand CancelOperationsCommand { get; }
-        public DelegateCommand NormalizeAllCommand { get; }
-        public DelegateCommand ReanalyzeAllCommand { get; }
+        public DelegateCommand AnalyzeSelectedCommand { get; }
+        public DelegateCommand AnalyzeAllCommand { get; }
 
         public ObservableCollection<AnalysisResultViewModel> AnalysisResults { get; set; } = [];
         public AnalysisResultViewModel? SelectedItem { get; set; }
@@ -37,28 +37,17 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             this.audioNormalizer = audioNormalizer;
-            NormalizeTrackCommand = new DelegateCommand(NormalizeSelected, () => !IsBusy);
+            NormalizeSelectedCommand = new DelegateCommand(NormalizeSelected, () => !IsBusy);
             CancelOperationsCommand = new DelegateCommand(CancelOperations, () => IsBusy);
-            NormalizeAllCommand = new DelegateCommand(NormalizeAll, () => !IsBusy);
-            ReanalyzeAllCommand = new DelegateCommand(ReanalyzeAll, () => !IsBusy);
+            AnalyzeSelectedCommand = new DelegateCommand(AnalyzeSelected, () => !IsBusy);
+            AnalyzeAllCommand = new DelegateCommand(AnalyzeAll, () => !IsBusy);
         }
 
         private void RefreshButtons()
         {
-            NormalizeTrackCommand.RaiseCanExecuteChanged();
+            NormalizeSelectedCommand.RaiseCanExecuteChanged();
             CancelOperationsCommand.RaiseCanExecuteChanged();
-            NormalizeAllCommand.RaiseCanExecuteChanged();
-            ReanalyzeAllCommand.RaiseCanExecuteChanged();
-        }
-
-        private void ReanalyzeAll()
-        {
-
-        }
-
-        private void NormalizeAll()
-        {
-
+            AnalyzeSelectedCommand.RaiseCanExecuteChanged();
         }
 
         private void CancelOperations()
@@ -66,74 +55,84 @@ namespace MusicVideoJukebox.Core.ViewModels
             cancellationTokenSource?.Cancel();
         }
 
+        private async void AnalyzeSelected()
+        {
+            await AnalyzeSome(AnalysisResults.Where(x => x.IsSelected));
+        }
+
+        private async void AnalyzeAll()
+        {
+            await AnalyzeSome(AnalysisResults.Where(x => x.LUFS == null));
+        }
+
+        private async Task AnalyzeSome(IEnumerable<AnalysisResultViewModel> vms)
+        {
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+            cancellationTokenSource = new CancellationTokenSource();
+            if (!vms.Any()) return;
+            IsBusy = true;
+
+            foreach (var video in vms)
+            {
+                if (cancellationTokenSource.IsCancellationRequested) return;
+                var refreshing = video.LUFS != null;
+                try
+                {
+                    string path = Path.Combine(libraryStore.CurrentState.LibraryPath, video.Filename);
+                    var analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
+                    var warning = analyzeResult.Warning;
+                    if (analyzeResult.AudioStream.LUFS == null)
+                    {
+                        if (!string.IsNullOrEmpty(warning))
+                            warning += ", ";
+                        warning += "LUFS failed";
+                    }
+                    var videoResolutionStr = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS";
+                    video.Warning = warning;
+                    video.VideoCodec = analyzeResult.VideoStream.Codec;
+                    video.VideoResolution = videoResolutionStr;
+                    video.LUFS = analyzeResult.AudioStream.LUFS;
+                    video.AudioCodec = analyzeResult.AudioStream.Codec;
+                    if (refreshing)
+                    {
+                        await videoRepo.UpdateAnalysisResult(video.Entry);
+                    }
+                    else
+                    {
+                        await videoRepo.InsertAnalysisResult(video.Entry);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    video.Warning = ex.Message;
+                }
+            }
+
+            IsBusy = false;
+        }
+
+
         private async void NormalizeSelected()
         {
-            cancellationTokenSource = new CancellationTokenSource();
-            if (SelectedItem == null) return;
             if (libraryStore.CurrentState.LibraryPath == null) return;
+            
+            cancellationTokenSource = new CancellationTokenSource();
+            var selectedItems = AnalysisResults.Where(x => x.IsSelected).ToList();
+            if (selectedItems.Count == 0) return;
             IsBusy = true;
             try
             {
-                var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename, SelectedItem.LUFS, CancellationToken.None);
-                if (!success) return;
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-            if (cancellationTokenSource.IsCancellationRequested) return;
-            string path = Path.Combine(libraryStore.CurrentState.LibraryPath, SelectedItem.Filename);
-            var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
-            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+                if (cancellationTokenSource.IsCancellationRequested) { IsBusy = false; return; }
 
-            // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
-            // If I wasn't being lazy, I would copy the old file back at this point.
-            await videoRepo.UpdateAnalysisVolume(SelectedItem.VideoId, newResult.AudioStream.LUFS);
-            SelectedItem.LUFS = newResult.AudioStream.LUFS;
-        }
-
-        public override async Task Initialize()
-        {
-            _ = Task.Run(LoadThem);
-        }
-
-        public async Task LoadThem()
-        {
-            if (libraryStore.CurrentState.LibraryPath == null) return;
-
-            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var videos = await videoRepo.GetAllMetadata();
-            var existingAnalysis = (await videoRepo.GetAnalysisResults()).ToDictionary(x => x.VideoId, x => x);
-
-            cancellationTokenSource = new CancellationTokenSource();
-
-            foreach (var video in videos)
-            {
-                if (cancellationTokenSource.IsCancellationRequested) return;
-                AnalysisResultViewModel result;
-
-                if (existingAnalysis.ContainsKey(video.VideoId))
+                var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+                foreach (var item in selectedItems)
                 {
-                    var existing = existingAnalysis[video.VideoId];
-                    ArgumentNullException.ThrowIfNull(existing.Filename);
-                    result = new AnalysisResultViewModel
+                    string path = Path.Combine(libraryStore.CurrentState.LibraryPath, item.Filename);
+                    if(item.LUFS == null)
                     {
-                        VideoId = video.VideoId,
-                        Filename = existing.Filename,
-                        VideoCodec = existing.VideoCodec,
-                        VideoResolution = existing.VideoResolution,
-                        AudioCodec = existing.AudioCodec,
-                        LUFS = existing.LUFS,
-                        Warning = existing.Warning,
-                    };
-                }
-                else
-                {
-                    string path = Path.Combine(libraryStore.CurrentState.LibraryPath, video.Filename);
-                    try
-                    {
+                        // Analyze it first
                         var analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
-
                         var warning = analyzeResult.Warning;
                         if (analyzeResult.AudioStream.LUFS == null)
                         {
@@ -141,62 +140,81 @@ namespace MusicVideoJukebox.Core.ViewModels
                                 warning += ", ";
                             warning += "LUFS failed";
                         }
-
-                        await videoRepo.InsertAnalysisResult(new VideoAnalysisEntry
+                        var videoResolutionStr = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS";
+                        item.Warning = warning;
+                        item.VideoCodec = analyzeResult.VideoStream.Codec;
+                        item.VideoResolution = videoResolutionStr;
+                        item.LUFS = analyzeResult.AudioStream.LUFS;
+                        item.AudioCodec = analyzeResult.AudioStream.Codec;
+                        await videoRepo.InsertAnalysisResult(item.Entry);
+                        if (item.LUFS == null)
                         {
-                            VideoCodec = analyzeResult.VideoStream.Codec,
-                            VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
-                            AudioCodec = analyzeResult.AudioStream.Codec,
-                            LUFS = analyzeResult.AudioStream.LUFS,
-                            Warning = warning,
-                            VideoId = video.VideoId,
-                        });
-
-                        result = new AnalysisResultViewModel
-                        {
-                            VideoId = video.VideoId,
-                            Filename = video.Filename,
-                            VideoCodec = analyzeResult.VideoStream.Codec,
-                            VideoResolution = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS",
-                            AudioCodec = analyzeResult.AudioStream.Codec,
-                            LUFS = analyzeResult.AudioStream.LUFS,
-                            Warning = warning,
-                        };
+                            // we cannot continue here
+                            continue;
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        result = new AnalysisResultViewModel
-                        {
-                            VideoId = video.VideoId,
-                            Filename = video.Filename,
-                            VideoCodec = "Error",
-                            VideoResolution = "N/A",
-                            AudioCodec = "Error",
-                            Warning = ex.Message,
-                            LUFS = null
-                        };
-                    }
+                    var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, item.Filename, item.LUFS, CancellationToken.None);
+                    if (success != NormalizeAudioResult.DONE) continue;
+
+                    var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
+                    // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
+                    // If I wasn't being lazy, I would copy the old file back at this point.
+                    await videoRepo.UpdateAnalysisVolume(item.VideoId, newResult.AudioStream.LUFS);
+                    item.LUFS = newResult.AudioStream.LUFS;
                 }
-                // Use dispatcher to update UI
-                threadDispatcher.Invoke(() =>
-                {
-                    AnalysisResults.Add(result);
-                });
+            }
+            catch(OperationCanceledException)
+            {
 
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        public override async Task Initialize()
+        {
+            if (libraryStore.CurrentState.LibraryPath == null) return;
+            var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
+            var videoData = await videoRepo.GetAnalysisResults();
+
+            cancellationTokenSource = new CancellationTokenSource();
+
+            foreach (var video in videoData)
+            {
+                if (cancellationTokenSource.IsCancellationRequested) return;
+
+                // Create an AnalysisResultViewModel for each record
+                var result = new AnalysisResultViewModel(video);
+                AnalysisResults.Add(result);
             }
         }
     }
 
     public class AnalysisResultViewModel : BaseViewModel
     {
-        private double? lufs;
+        private readonly VideoAnalysisEntry entry;
+        public VideoAnalysisEntry Entry => entry;
+        private bool isSelected;
 
-        required public int VideoId { get; set; }
-        required public string Filename { get; set; }
-        required public string VideoCodec { get; set; }
-        required public string VideoResolution { get; set; }
-        required public string AudioCodec { get; set; }
-        required public double? LUFS { get => lufs; set => SetProperty(ref lufs, value); }
-        required public string? Warning { get; set; }
+        public AnalysisResultViewModel(VideoAnalysisEntry entry)
+        {
+            this.entry = entry;
+        }
+
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
+        }
+
+        public int VideoId { get => entry.VideoId; set { SetUnderlyingProperty(entry.VideoId, value, v => entry.VideoId = v); } }
+        public string Filename { get => entry.Filename; set { SetUnderlyingProperty(entry.Filename, value, v => entry.Filename = v); } }
+        public string VideoCodec { get => entry.VideoCodec ?? string.Empty; set { SetUnderlyingProperty(entry.VideoCodec, value, v => entry.VideoCodec = v); } }
+        public string VideoResolution { get => entry.VideoResolution ?? string.Empty; set { SetUnderlyingProperty(entry.VideoResolution, value, v => entry.VideoResolution = v); } }
+        public string AudioCodec { get => entry.AudioCodec ?? string.Empty; set { SetUnderlyingProperty(entry.AudioCodec, value, v => entry.AudioCodec = v); } }
+        public double? LUFS { get => entry.LUFS; set { SetUnderlyingProperty(entry.LUFS, value, v => entry.LUFS = v); } }
+        public string? Warning { get => entry.Warning; set { SetUnderlyingProperty(entry.Warning, value, v => entry.Warning = v); } }
     }
 }

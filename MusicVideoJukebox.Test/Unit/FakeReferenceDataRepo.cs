@@ -7,7 +7,7 @@ namespace MusicVideoJukebox.Test.Unit
         public List<FetchedMetadata> ExactMatches = [];
         public List<FetchedMetadata> NearMatches = [];
 
-        public Task<List<FetchedMetadata>> GetCandidates(string artist, string track)
+        public Task<List<FetchedMetadata>> GetCandidates(string artist, string track, int searchLength = 3)
         {
             return Task.FromResult(NearMatches);
         }

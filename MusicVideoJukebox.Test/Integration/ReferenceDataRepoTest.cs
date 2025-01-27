@@ -63,7 +63,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetCandidates()
         {
             WithTrack("AC/DC", "Dirty Deeds Done Dirty Cheap", "For Those About To Rock (We Salute You)", 1976);
-            var result = await dut.GetCandidates("AC DC", "For those about to rock");
+            var result = await dut.GetCandidates("AC DC", "For those about to rock", 2);
             Assert.Single(result);
             Assert.Equal("AC/DC", result[0].ArtistName);
         }

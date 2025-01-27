@@ -304,10 +304,11 @@ WHERE playlist_id = @id
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             using var conn = new SQLiteConnection(connectionString);
             return (await conn.QueryAsync<VideoAnalysisEntry>(
-                @"SELECT filename, A.video_id, video_codec, video_resolution, 
+                @"SELECT filename, B.video_id, video_codec, video_resolution, 
                  audio_codec, warning, lufs
-                FROM video_analysis A
-                join video B on A.video_id = B.video_id
+                FROM video B left join video_analysis A
+                on A.video_id = B.video_id
+                order by filename
                 ")).ToList();
         }
 
@@ -315,6 +316,13 @@ WHERE playlist_id = @id
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync("UPDATE video_analysis SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
+        }
+
+        public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync(@"UPDATE video_analysis SET lufs = @LUFS, video_codec = @VideoCodec, 
+video_resolution = @VideoResolution, audio_codec = @AudioCodec, warning = Warning WHERE video_id = @VideoId", entry);
         }
 
         public async Task UpdatePlayStatus(int playlistId, int songOrder)
@@ -338,6 +346,16 @@ select B.playlist_id, song_order
 from active_playlist A 
 JOIN playlist_status B ON A.playlist_id = B.playlist_id
 ")).First();
+        }
+
+        public async Task<bool> IsDatabaseInitialized()
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            var ct = await conn.ExecuteScalarAsync<int>(@"SELECT COUNT(*) 
+FROM sqlite_master 
+WHERE type = 'table' 
+AND name IN ('video', 'playlist', 'playlist_video', 'playlist_status', 'active_playlist', 'video_analysis');");
+            return ct == 6;
         }
     }
 }

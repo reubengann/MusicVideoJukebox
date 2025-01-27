@@ -33,21 +33,21 @@ namespace MusicVideoJukebox.Core.Metadata
             return new MetadataGetResult { Success = false };
         }
 
-        int SEARCH_LENGTH = 3;
+        const int SEARCH_LENGTH = 3;
 
-        public async Task <List<FetchedMetadata>> GetCandidates(string artist, string track)
+        public async Task <List<FetchedMetadata>> GetCandidates(string artist, string track, int search_length = SEARCH_LENGTH)
         {
             // Remove "The " prefix from the search terms if it exists
             string processedArtist = artist.ToLower().StartsWith("the ", StringComparison.OrdinalIgnoreCase) ? artist[4..] : artist;
             string processedTrack = track.ToLower().StartsWith("the ", StringComparison.OrdinalIgnoreCase) ? track[4..] : track;
 
-            if (processedArtist.Length > SEARCH_LENGTH)
+            if (processedArtist.Length > search_length)
             {
-                processedArtist = processedArtist[..SEARCH_LENGTH];
+                processedArtist = processedArtist[..search_length];
             }
-            if (processedTrack.Length > SEARCH_LENGTH)
+            if (processedTrack.Length > search_length)
             {
-                processedTrack = processedTrack[..SEARCH_LENGTH];
+                processedTrack = processedTrack[..search_length];
             }
 
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

@@ -167,5 +167,10 @@ namespace MusicVideoJukebox.Test.Fakes
             CurrentActivePlaylistStatus.SongOrder = songOrder;
             return Task.CompletedTask;
         }
+
+        public Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

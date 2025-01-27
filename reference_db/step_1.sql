@@ -146,7 +146,8 @@ WHERE rg.id in (
     1284405, --	Zerra One	The Domino Effect
     105138, --	soulDecision	No One Does It Better
     924914, --	Eric Clapton	Music for Monserrat (Benefit Concert)
-    742213 --	Paul Heaton	The Cross Eyed Rambler
+    742213, --	Paul Heaton	The Cross Eyed Rambler
+    331825 --	Linkin Park	Meteora
     );
 
 --standardize artists

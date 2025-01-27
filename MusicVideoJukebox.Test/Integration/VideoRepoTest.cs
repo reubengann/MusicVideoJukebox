@@ -268,6 +268,18 @@ namespace MusicVideoJukebox.Test.Integration
         }
 
         [Fact]
+        public async Task WhenNoAnalysisGetsTrackWithNullValues()
+        {
+            await dut.InitializeDatabase();
+            WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
+            var results = await dut.GetAnalysisResults();
+            Assert.Single(results);
+            Assert.Equal(1, results[0].VideoId);
+            Assert.Null(results[0].AudioCodec);
+            Assert.Equal("file1.mp4", results[0].Filename);
+        }
+
+        [Fact]
         public async Task CanUpdateLUFS()
         {
             await dut.InitializeDatabase();

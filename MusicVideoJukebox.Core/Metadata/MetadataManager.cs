@@ -24,7 +24,7 @@ namespace MusicVideoJukebox.Core.Metadata
 
         public async Task EnsureCreated()
         {
-            if (fileSystemService.FileExists(filepath))
+            if (await videoRepo.IsDatabaseInitialized())
             {
                 return;
             }
@@ -199,6 +199,11 @@ namespace MusicVideoJukebox.Core.Metadata
         public async Task UpdatePlayStatus(int playlistId, int songOrder)
         {
             await videoRepo.UpdatePlayStatus(playlistId, songOrder);
+        }
+
+        public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+        {
+            await videoRepo.UpdateAnalysisResult(entry);
         }
 
         #endregion

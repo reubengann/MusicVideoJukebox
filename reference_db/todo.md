@@ -1,4 +1,4 @@
-- For those about to rock disappeared (182472)
-- Haircut 100 - Love Plus One we only got the live version
 - Standardize 
-    - Weird Al
+    - Fugees
+    - Bee Gees
+    - Dr Hook

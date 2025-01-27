@@ -123,5 +123,15 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> IsDatabaseInitialized()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
