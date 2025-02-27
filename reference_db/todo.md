@@ -2,3 +2,5 @@
     - Fugees
     - Bee Gees
     - Dr Hook
+    - Red hot chili peppers
+    - N.O.R.E/Noreaga??
