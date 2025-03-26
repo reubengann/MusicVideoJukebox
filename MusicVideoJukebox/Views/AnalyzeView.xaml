@@ -37,19 +37,26 @@
                     <DataGridTextColumn Header="LUFS" Binding="{Binding LUFS}" Width="100"/>
                     <DataGridTextColumn Header="Warning" Binding="{Binding Warning}" Width="150"/>
                 </DataGrid.Columns>
-                <DataGrid.ContextMenu>
+                <!--<DataGrid.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="Normalize" Command="{Binding NormalizeTrackCommand}"/>
                     </ContextMenu>
-                </DataGrid.ContextMenu>
+                </DataGrid.ContextMenu>-->
             </DataGrid>
             <mah:ProgressRing Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <UniformGrid Margin="5" Grid.Row="1" Rows="1" Width="500">
-                <Button Command="{Binding CancelOperationsCommand}">Cancel</Button>
-                <Button Command="{Binding NormalizeSelectedCommand}" Margin="5,0,0,0">Normalize Selected</Button>
-                <Button Command="{Binding AnalyzeSelectedCommand}" Margin="5,0,0,0">Analyze Selected</Button>
-                <Button Command="{Binding AnalyzeAllCommand}" Margin="5,0,0,0">Analyze All Undone</Button>
-            </UniformGrid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <UniformGrid Margin="5" Rows="1" Width="500">
+                    <Button Command="{Binding CancelOperationsCommand}">Cancel</Button>
+                    <Button Command="{Binding NormalizeSelectedCommand}" Margin="5,0,0,0">Normalize Selected</Button>
+                    <!--<Button Command="{Binding AnalyzeSelectedCommand}" Margin="5,0,0,0">Analyze Selected</Button>-->
+                    <Button Command="{Binding AnalyzeAllCommand}" Margin="5,0,0,0">Normalize All</Button>
+                </UniformGrid>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Text="{Binding OperationText}"/>
+            </Grid>
         </Grid>
     </Viewbox>
 </UserControl>

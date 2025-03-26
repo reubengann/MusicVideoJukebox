@@ -4,3 +4,13 @@
     - Dr Hook
     - Red hot chili peppers
     - N.O.R.E/Noreaga??
+    - Pussycat dolls
+    - Jay z occasionally has an umlaut...
+- Andy Bell Don't Cha Know
+- Mr go lucky john mellencamp
+- Dawn Penn No No No should have "You Don't Love Me (No No No)" but it only has suffixes
+- Tom Petty a woman in love should be Hard Promises
+- Joe I wanna know should be from "My Name is Joe"
+- Machine Head "From This Day" should be from Burning Red
+- Shabba Ranks Let's get it on shoudl be from "A Mi Shabba"
+- Digital Underground - Doowutchyalike should be from Sex Packets
