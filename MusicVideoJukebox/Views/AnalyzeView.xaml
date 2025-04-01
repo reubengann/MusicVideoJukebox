@@ -31,11 +31,12 @@
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" Width="280"/>
-                    <DataGridTextColumn Header="Video Codec" Binding="{Binding VideoCodec}" Width="100"/>
-                    <DataGridTextColumn Header="Video Resolution" Binding="{Binding VideoResolution}" Width="150"/>
-                    <DataGridTextColumn Header="Audio Codec" Binding="{Binding AudioCodec}" Width="100"/>
-                    <DataGridTextColumn Header="LUFS" Binding="{Binding LUFS}" Width="100"/>
-                    <DataGridTextColumn Header="Warning" Binding="{Binding Warning}" Width="150"/>
+                    <DataGridTextColumn Header="VCodec" Binding="{Binding VideoCodec}" Width="100"/>
+                    <DataGridTextColumn Header="ACodec" Binding="{Binding AudioCodec}" Width="100"/>
+                    <DataGridTextColumn Header="Width" Binding="{Binding VideoWidth}" Width="70"/>
+                    <DataGridTextColumn Header="Height" Binding="{Binding VideoHeight}" Width="70"/>
+                    <DataGridTextColumn Header="Loudness" Binding="{Binding LUFS}" Width="100"/>
+                    <DataGridTextColumn Header="" Binding="{Binding Warning}" Width="150"/>
                 </DataGrid.Columns>
                 <!--<DataGrid.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

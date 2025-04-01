@@ -16,9 +16,6 @@
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
         Task DeleteFromPlaylist(int playlistId, int videoId);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
-        Task InsertAnalysisResult(VideoAnalysisEntry entry);
-        Task UpdateAnalysisResult(VideoAnalysisEntry entry);
-        Task<List<VideoAnalysisEntry>> GetAnalysisResults();
         Task UpdateAnalysisVolume(int videoId, double? lufs);
         Task UpdatePlayStatus(int playlistId, int songOrder);
         Task UpdateActivePlaylist(int playlistId);
@@ -84,5 +81,11 @@
         public string? Album { get; set; }
         public int? ReleaseYear { get; set; }
         public MetadataStatus Status { get; set; }
+        public int? VideoHeight { get; set; }
+        public int? VideoWidth { get; set; }
+        public string? VideoCodec { get; set; }
+        public string? AudioCodec { get; set; }
+        public string? Warning { get; set; }
+        public double? LUFS { get; set; }
     }
 }

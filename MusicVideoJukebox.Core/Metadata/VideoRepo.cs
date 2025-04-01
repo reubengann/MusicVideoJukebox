@@ -72,7 +72,13 @@ namespace MusicVideoJukebox.Core.Metadata
                 title text NOT NULL, 
                 album text NULL, 
                 artist text NOT NULL,
-                status integer NOT NULL
+                status integer NOT NULL,
+                video_width INTEGER,
+                video_height INTEGER,
+                video_codec TEXT,
+                audio_codec TEXT,
+                warning TEXT,
+                lufs REAL
                 )
             ");
             await conn.ExecuteAsync(@"
@@ -105,18 +111,6 @@ namespace MusicVideoJukebox.Core.Metadata
                 playlist_id integer not null
                 )
                 ");
-            await conn.ExecuteAsync(@"
-                CREATE TABLE IF NOT EXISTS video_analysis (
-                    video_analysis_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    video_id INTEGER NOT NULL,
-                    video_codec TEXT,
-                    video_resolution TEXT,
-                    audio_codec TEXT,
-                    warning TEXT,
-                    lufs REAL,
-                    FOREIGN KEY (video_id) REFERENCES video(video_id) ON DELETE CASCADE
-                );
-            ");
             await SetupTasks(conn);
         }
 
@@ -131,7 +125,7 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, album, artist, status from video")).ToList();
+            return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, album, artist, status, video_width, video_height, video_codec, audio_codec, lufs, warning from video")).ToList();
         }
 
         public async Task<List<Playlist>> GetPlaylists()
@@ -172,7 +166,13 @@ VALUES (@PlaylistName, @Description, @ImagePath, @IsAll) RETURNING playlist_id",
             artist = @Artist,
             album = @Album,
             release_year = @ReleaseYear,
-            status = @Status
+            status = @Status,
+            video_width = @VideoWidth,
+            video_height = @VideoHeight,
+            video_codec = @VideoCodec,
+            audio_codec = @AudioCodec,
+            warning = @Warning,
+            lufs = @LUFS
             WHERE video_id = @VideoId;";
             await conn.ExecuteAsync(query, metadata);
         }
@@ -290,32 +290,10 @@ WHERE playlist_id = @id
             return rows.ToList();
         }
 
-        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
-        {
-            using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync(
-                @"INSERT INTO video_analysis (video_id, video_codec, video_resolution, audio_codec, warning, lufs) 
-          VALUES (@VideoId, @VideoCodec, @VideoResolution, @AudioCodec, @Warning, @LUFS)",
-                entry);
-        }
-
-        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
-        {
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            using var conn = new SQLiteConnection(connectionString);
-            return (await conn.QueryAsync<VideoAnalysisEntry>(
-                @"SELECT filename, B.video_id, video_codec, video_resolution, 
-                 audio_codec, warning, lufs
-                FROM video B left join video_analysis A
-                on A.video_id = B.video_id
-                order by filename
-                ")).ToList();
-        }
-
         public async Task UpdateAnalysisVolume(int videoId, double? lufs)
         {
             using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync("UPDATE video_analysis SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
+            await conn.ExecuteAsync("UPDATE video SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
         }
 
         public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
@@ -354,8 +332,8 @@ JOIN playlist_status B ON A.playlist_id = B.playlist_id
             var ct = await conn.ExecuteScalarAsync<int>(@"SELECT COUNT(*) 
 FROM sqlite_master 
 WHERE type = 'table' 
-AND name IN ('video', 'playlist', 'playlist_video', 'playlist_status', 'active_playlist', 'video_analysis');");
-            return ct == 6;
+AND name IN ('video', 'playlist', 'playlist_video', 'playlist_status', 'active_playlist');");
+            return ct == 5;
         }
     }
 }

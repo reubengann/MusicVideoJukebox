@@ -141,15 +141,6 @@ namespace MusicVideoJukebox.Core.Metadata
             await videoRepo.UpdatePlaylistTrackOrder(playlistId, videoId, order);
         }
 
-        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
-        {
-            await videoRepo.InsertAnalysisResult(entry);
-        }
-
-        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
-        {
-            return await videoRepo.GetAnalysisResults();
-        }
 
         public async Task UpdateAnalysisVolume(int videoId, double? lufs)
         {
@@ -199,11 +190,6 @@ namespace MusicVideoJukebox.Core.Metadata
         public async Task UpdatePlayStatus(int playlistId, int songOrder)
         {
             await videoRepo.UpdatePlayStatus(playlistId, songOrder);
-        }
-
-        public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
-        {
-            await videoRepo.UpdateAnalysisResult(entry);
         }
 
         #endregion

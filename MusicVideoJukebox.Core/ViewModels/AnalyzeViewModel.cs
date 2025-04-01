@@ -158,11 +158,11 @@ namespace MusicVideoJukebox.Core.ViewModels
                     var videoResolutionStr = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS";
                     item.Warning = warning;
                     item.VideoCodec = analyzeResult.VideoStream.Codec;
-                    item.VideoResolution = videoResolutionStr;
+                    item.VideoWidth = analyzeResult.VideoStream.Width;
+                    item.VideoHeight = analyzeResult.VideoStream.Height;
                     item.LUFS = analyzeResult.AudioStream.LUFS;
                     item.AudioCodec = analyzeResult.AudioStream.Codec;
-                    if (!refreshing)
-                        await videoRepo.InsertAnalysisResult(item.Entry);
+                    await videoRepo.UpdateVideoMetadata(item.Entry);
                     if (item.LUFS == null)
                     {
                         // we cannot continue here
@@ -174,7 +174,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
                     // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
                     // If I wasn't being lazy, I would copy the old file back at this point.
-                    await videoRepo.UpdateAnalysisVolume(item.VideoId, newResult.AudioStream.LUFS);
+                    await videoRepo.UpdateVideoMetadata(item.Entry);
                     item.LUFS = newResult.AudioStream.LUFS;
                 }
             }
@@ -193,7 +193,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
             var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var videoData = await videoRepo.GetAnalysisResults();
+            var videoData = await videoRepo.GetAllMetadata();
             videoData = videoData.OrderBy(x => x.Filename.StartsWith("The ") ? x.Filename[4..] : x.Filename).ToList();
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -211,11 +211,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
     public class AnalysisResultViewModel : BaseViewModel
     {
-        private readonly VideoAnalysisEntry entry;
-        public VideoAnalysisEntry Entry => entry;
+        private readonly VideoMetadata entry;
+        public VideoMetadata Entry => entry;
         private bool isSelected;
 
-        public AnalysisResultViewModel(VideoAnalysisEntry entry)
+        public AnalysisResultViewModel(VideoMetadata entry)
         {
             this.entry = entry;
         }
@@ -229,7 +229,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         public int VideoId { get => entry.VideoId; set { SetUnderlyingProperty(entry.VideoId, value, v => entry.VideoId = v); } }
         public string Filename { get => entry.Filename; set { SetUnderlyingProperty(entry.Filename, value, v => entry.Filename = v); } }
         public string VideoCodec { get => entry.VideoCodec ?? string.Empty; set { SetUnderlyingProperty(entry.VideoCodec, value, v => entry.VideoCodec = v); } }
-        public string VideoResolution { get => entry.VideoResolution ?? string.Empty; set { SetUnderlyingProperty(entry.VideoResolution, value, v => entry.VideoResolution = v); } }
+        public int? VideoWidth { get => entry.VideoWidth; set { SetUnderlyingProperty(entry.VideoWidth, value, v => entry.VideoWidth = v); } }
+        public int? VideoHeight { get => entry.VideoHeight; set { SetUnderlyingProperty(entry.VideoHeight, value, v => entry.VideoHeight = v); } }
         public string AudioCodec { get => entry.AudioCodec ?? string.Empty; set { SetUnderlyingProperty(entry.AudioCodec, value, v => entry.AudioCodec = v); } }
         public double? LUFS { get => entry.LUFS; set { SetUnderlyingProperty(entry.LUFS, value, v => entry.LUFS = v); } }
         public string? Warning { get => entry.Warning; set { SetUnderlyingProperty(entry.Warning, value, v => entry.Warning = v); } }

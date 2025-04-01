@@ -21,7 +21,6 @@ namespace MusicVideoJukebox.Test.Integration
             conn.Execute("DROP table video");
             conn.Execute("DROP table playlist");
             conn.Execute("DROP table playlist_video");
-            conn.Execute("DROP table video_analysis");
             conn.Execute("DROP table playlist_status");
             conn.Execute("DROP table active_playlist");
         }
@@ -242,25 +241,12 @@ namespace MusicVideoJukebox.Test.Integration
         }
 
         [Fact]
-        public async Task CanInsertAnalysisResult()
-        {
-            await dut.InitializeDatabase();
-            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            await dut.InsertAnalysisResult(new VideoAnalysisEntry { AudioCodec = "aac", LUFS = -23, VideoCodec = "avi", VideoId = 1, VideoResolution = "640x480", Warning = null });
-            using var conn = new SQLiteConnection(connectionString);
-            var rows = await conn.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM video_analysis");
-            Assert.Equal(1, rows);
-            var codec = await conn.ExecuteScalarAsync<string>("SELECT audio_codec FROM video_analysis");
-            Assert.Equal("aac", codec);
-        }
-
-        [Fact]
         public async Task CanGetAnalysisResults()
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -23);
-            var results = await dut.GetAnalysisResults();
+            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -23, 640, 480);
+            var results = await dut.GetAllMetadata();
             Assert.Single(results);
             Assert.Equal(1, results[0].VideoId);
             Assert.Equal("aac", results[0].AudioCodec);
@@ -272,7 +258,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            var results = await dut.GetAnalysisResults();
+            var results = await dut.GetAllMetadata();
             Assert.Single(results);
             Assert.Equal(1, results[0].VideoId);
             Assert.Null(results[0].AudioCodec);
@@ -284,10 +270,10 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20);
+            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20, 640, 480);
             await dut.UpdateAnalysisVolume(1, -23);
             using var conn = new SQLiteConnection(connectionString);
-            var lufs = await conn.ExecuteScalarAsync<double>("SELECT lufs FROM video_analysis WHERE video_id = 1");
+            var lufs = await conn.ExecuteScalarAsync<double>("SELECT lufs FROM video WHERE video_id = 1");
             Assert.Equal(-23.0, lufs, 0.01);
         }
 
@@ -310,13 +296,14 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(5, songOrder);
         }
 
-        void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs)
+        void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs, int? width, int? height)
         {
             using var conn = new SQLiteConnection(connectionString);
             conn.Execute(
-                @"INSERT INTO video_analysis (video_id, video_codec, video_resolution, audio_codec, warning, lufs) 
-          VALUES (@videoId, @videoCodec, @videoResolution, @audioCodec, @warning, @lufs)",
-                new { videoId, videoCodec, videoResolution, audioCodec, warning, lufs });
+                @"UPDATE video SET video_codec = @videoCodec, audio_codec = @audioCodec, 
+                warning = @warning, lufs = @lufs, video_width = @width, video_height = @height
+                WHERE video_id = @videoId",
+                new { videoId, videoCodec, videoResolution, audioCodec, warning, lufs, width, height });
         }
 
         void WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status, int? year = null)
