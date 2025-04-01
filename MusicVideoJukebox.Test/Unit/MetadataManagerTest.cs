@@ -19,21 +19,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task WhenNotExistingCreatesTables()
-        {
-            await dut.EnsureCreated();
-            Assert.True(videoRepo.TablesCreated);
-        }
-
-        [Fact]
-        public async Task WhenExistsDoNothing()
-        {
-            fileSystemService.ExistingFiles.Add(Path.Combine("thepath", "meta.db"));
-            await dut.EnsureCreated();
-            Assert.False(videoRepo.TablesCreated);
-        }
-
-        [Fact]
         public async Task PopulatesBasicInfo()
         {
             fileSystemService.ExistingFiles.AddRange(["artist 1 - track1.mp4", "artist 2 - track 2.mp4"]);

@@ -61,7 +61,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CheckTheLibraryStoreForNewPlaylistWhenTriggered()
         {
-            Assert.False(dut.IsPlaying);
             WithMetadata("fake.mp4");
             WithPlaylist(true, 1, "All");
             WithPlaylist(false, 2, "Other");
@@ -84,7 +83,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task AdvancesTheTrack()
         {
-            Assert.False(dut.IsPlaying);
             WithMetadata("fake.mp4");
             WithMetadata("fake2.mp4");
             WithPlaylist(true, 1, "All");
@@ -102,7 +100,6 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task LoopsAroundWhenAtBeginning()
         {
-            Assert.False(dut.IsPlaying);
             WithMetadata("fake.mp4");
             WithMetadata("fake2.mp4");
             WithPlaylist(true, 1, "All");

@@ -9,6 +9,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<VideoMetadata> UpdatedEntries = [];
         public List<Tuple<int, int>> AppendedToPlaylist = [];
         public List<VideoAnalysisEntry> AnalysisEntries = [];
+        
 
         public IEnumerable<char>? FolderPath { get; internal set; }
         public Task AddBasicInfos(List<BasicInfo> basicInfos)
@@ -126,7 +127,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task<bool> IsDatabaseInitialized()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(TablesCreated);
         }
 
         public Task UpdateAnalysisResult(VideoAnalysisEntry entry)

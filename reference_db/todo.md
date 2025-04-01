@@ -6,6 +6,7 @@
     - N.O.R.E/Noreaga??
     - Pussycat dolls
     - Jay z occasionally has an umlaut...
+	- Steve Miller band
 - Andy Bell Don't Cha Know
 - Mr go lucky john mellencamp
 - Dawn Penn No No No should have "You Don't Love Me (No No No)" but it only has suffixes
@@ -14,3 +15,4 @@
 - Machine Head "From This Day" should be from Burning Red
 - Shabba Ranks Let's get it on shoudl be from "A Mi Shabba"
 - Digital Underground - Doowutchyalike should be from Sex Packets
+- Dance Hall Days should be Points on a Curve

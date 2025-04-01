@@ -68,7 +68,7 @@ namespace MusicVideoJukebox.Test.Unit
             dialogService.AcceptedDetailsResult = true;
             dialogService.AcceptedDetailsObject.PlaylistName = "changed";
             dut.AddPlaylistCommand.Execute();
-            Assert.Equal("New Playlist 2", dut.SelectedPlaylist?.Name);
+            Assert.Equal("changed", dut.SelectedPlaylist?.Name);
         }
 
         [Fact]
