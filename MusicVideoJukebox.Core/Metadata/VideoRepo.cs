@@ -127,7 +127,7 @@ namespace MusicVideoJukebox.Core.Metadata
         {
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, album, artist, status, video_width, video_height, video_codec, audio_codec, lufs, warning from video")).ToList();
+            return (await conn.QueryAsync<VideoMetadata>("SELECT video_id, filename, release_year, title, album, artist, status, video_width, video_height, video_codec, audio_codec, lufs, warning, lead_in, lead_out from video")).ToList();
         }
 
         public async Task<List<Playlist>> GetPlaylists()

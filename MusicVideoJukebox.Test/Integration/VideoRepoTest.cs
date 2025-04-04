@@ -251,12 +251,13 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -23, 640, 480);
+            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -23, 640, 480, 1.1, 2.2);
             var results = await dut.GetAllMetadata();
             Assert.Single(results);
             Assert.Equal(1, results[0].VideoId);
             Assert.Equal("aac", results[0].AudioCodec);
             Assert.Equal("file1.mp4", results[0].Filename);
+            Assert.Equal(1.1, results[0].LeadIn);
         }
 
         [Fact]
@@ -276,7 +277,7 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1.mp4", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
-            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20, 640, 480);
+            WithVideoAnalysis(1, "avi", "640x480", "aac", null, -20, 640, 480, 1.1, 2.2);
             await dut.UpdateAnalysisVolume(1, -23);
             using var conn = new SQLiteConnection(connectionString);
             var lufs = await conn.ExecuteScalarAsync<double>("SELECT lufs FROM video WHERE video_id = 1");
@@ -302,14 +303,14 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal(5, songOrder);
         }
 
-        void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs, int? width, int? height)
+        void WithVideoAnalysis(int videoId, string videoCodec, string videoResolution, string audioCodec, string? warning, double? lufs, int? width, int? height, double? leadIn, double? leadOut)
         {
             using var conn = new SQLiteConnection(connectionString);
             conn.Execute(
                 @"UPDATE video SET video_codec = @videoCodec, audio_codec = @audioCodec, 
-                warning = @warning, lufs = @lufs, video_width = @width, video_height = @height
+                warning = @warning, lufs = @lufs, video_width = @width, video_height = @height, lead_in = @leadIn, lead_out = @leadOut
                 WHERE video_id = @videoId",
-                new { videoId, videoCodec, videoResolution, audioCodec, warning, lufs, width, height });
+                new { videoId, videoCodec, videoResolution, audioCodec, warning, lufs, width, height, leadIn, leadOut });
         }
 
         void WithVideo(int videoId, string filename, string title, string artist, string album, MetadataStatus status, int? year = null)
