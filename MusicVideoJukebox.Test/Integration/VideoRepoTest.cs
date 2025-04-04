@@ -97,7 +97,11 @@ namespace MusicVideoJukebox.Test.Integration
         {
             await dut.InitializeDatabase();
             WithVideo(1, "file1", "title1", "artist1", "album", MetadataStatus.NotDone);
-            await dut.UpdateMetadata(new VideoMetadata { VideoId = 1, Artist = "artistupdated", Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual });
+            await dut.UpdateMetadata(new VideoMetadata { VideoId = 1, Artist = "artistupdated", 
+                Filename = "file1", Album = "album", Title = "titleupdated", ReleaseYear = 1984, Status = MetadataStatus.Manual,
+                LeadIn = 1.5,
+                LeadOut = 2.5
+            });
             var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             var results = await conn.QueryAsync<VideoMetadata>("select * from video");
@@ -108,6 +112,8 @@ namespace MusicVideoJukebox.Test.Integration
             Assert.Equal("album", result.Album);
             Assert.Equal("titleupdated", result.Title);
             Assert.Equal(1984, result.ReleaseYear);
+            Assert.Equal(1.5, result.LeadIn);
+            Assert.Equal(2.5, result.LeadOut);
         }
 
         [Fact]

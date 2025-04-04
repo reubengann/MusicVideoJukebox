@@ -19,8 +19,8 @@ WITH normalized_tracks AS (
                     , '&', 'and', 'g')
                     , '’', '''' -- normalizes apostrophes
         ))) AS base_name,
-        CASE
-            WHEN afp.track_name ~* '\([^()]*\)$' THEN 'Remove'
+        CASE 
+            WHEN afp.track_name ~* '\(([^()]*(edit|mix|instrumental|version)[^()]*)\)$' THEN 'Remove'
             ELSE 'Keep'
         END AS action
     FROM a_first_pass afp

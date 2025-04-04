@@ -112,42 +112,49 @@ LEFT JOIN
 LEFT JOIN
     release_group_secondary_type st ON stj.secondary_type = st.id
 WHERE rg.id in (
-    165100, --An Emotional Fish	Junk Puppets
-    1051317, --Balaam and the Angel, The Greatest Story Ever Told
-    212130, --	Blancmange, Believe You Me
-    149223,--	China Drum	Goosefair
-    717936,--	Classix Nouveaux	Night People
-    2592000, --	Descendents	Fartathon (Live in St. Louis 1987)
-    968630, --	Gumball	Pandemonic
-    207055, --	Gumball	Revolution on Ice
-    559460, --	The House of Love	You Don't Understand
-    547869,--	Huxton Creepers	12 Days to Paris
-    134541, --	James	Stutter
-    270184, --	Lifter	Turn On Tune Out
-    530234, --	Lifter	huH, Volume 18
-    233274, --	Lime Spiders	Volatile
-    37193, --	Luscious Jackson	Scoop This Too!
-    62057, --	Marvelous 3	Hey! Album
-    38840, --	Matchbox 20	Yourself or Someone Like You
-    1704544, --	Mood Six	The Difference Is ......
-    718729, --	Mood Six	I Saw the Light
-    124719, --	Platinum Blonde	Alien Shores
-    202364, --	Rose Tattoo	Scarred for Life
-    644265, --	The Arrows	Lines Are Open
-    42524, --	The Charlatans	The Charlatans
-    1442173, --	The Cherry Bombz	Coming Down Slow
-    353421, --	The House of Love	Babe Rainbow
-    155444, --	Latin Quarter	Modern Times
-    334764, --	The Long Ryders	State of Our Union
-    255822, --	The Other Ones	The Other Ones
-    871979, --	The Rumble	American Heart & Soul
-    54428, --	The Wolfgang Press	Lonely Is an Eyesore
-    320312, --	Wool	Budspawn
-    1284405, --	Zerra One	The Domino Effect
-    105138, --	soulDecision	No One Does It Better
-    924914, --	Eric Clapton	Music for Monserrat (Benefit Concert)
-    742213, --	Paul Heaton	The Cross Eyed Rambler
-    331825 --	Linkin Park	Meteora
+    165100 --An Emotional Fish	Junk Puppets
+    , 1051317 --Balaam and the Angel, The Greatest Story Ever Told
+    , 212130 --	Blancmange, Believe You Me
+    , 149223--	China Drum	Goosefair
+    , 717936--	Classix Nouveaux	Night People
+    , 2592000 --	Descendents	Fartathon (Live in St. Louis 1987)
+    , 968630 --	Gumball	Pandemonic
+    , 207055 --	Gumball	Revolution on Ice
+    , 559460 --	The House of Love	You Don't Understand
+    , 547869--	Huxton Creepers	12 Days to Paris
+    , 134541 --	James	Stutter
+    , 270184 --	Lifter	Turn On Tune Out
+    , 530234 --	Lifter	huH, Volume 18
+    , 233274 --	Lime Spiders	Volatile
+    , 37193 --	Luscious Jackson	Scoop This Too!
+    , 62057 --	Marvelous 3	Hey! Album
+    , 38840 --	Matchbox 20	Yourself or Someone Like You
+    , 1704544 --	Mood Six	The Difference Is ......
+    , 718729 --	Mood Six	I Saw the Light
+    , 124719 --	Platinum Blonde	Alien Shores
+    , 202364 --	Rose Tattoo	Scarred for Life
+    , 644265 --	The Arrows	Lines Are Open
+    , 42524 --	The Charlatans	The Charlatans
+    , 1442173 --	The Cherry Bombz	Coming Down Slow
+    , 353421 --	The House of Love	Babe Rainbow
+    , 155444 --	Latin Quarter	Modern Times
+    , 334764 --	The Long Ryders	State of Our Union
+    , 255822 --	The Other Ones	The Other Ones
+    , 871979 --	The Rumble	American Heart & Soul
+    , 54428 --	The Wolfgang Press	Lonely Is an Eyesore
+    , 320312 --	Wool	Budspawn
+    , 1284405 --	Zerra One	The Domino Effect
+    , 105138 --	soulDecision	No One Does It Better
+    , 924914 --	Eric Clapton	Music for Monserrat (Benefit Concert)
+    , 742213 --	Paul Heaton	The Cross Eyed Rambler
+    , 331825 --	Linkin Park	Meteora
+    , 621956 -- 30 Seconds to Marks A Beautiful Lie
+    , 3186287-- Alan Walker, Walkerverse Pt. I & II
+    , 2943010 -- Anitta Versions of Me
+    , 2760803 --	Baby Keem & Kendrick Lamar	The Melodic Blue
+    , 1973281 --	Banda Los Recoditos	Sueño XXX
+    , 3860698 --	Beach Bunny	Clueless
+    , 1791853 --	Cashmere Cat feat. Selena Gomez & Tory Lanez	9
     );
 
 --standardize artists

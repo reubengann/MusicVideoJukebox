@@ -78,6 +78,8 @@ namespace MusicVideoJukebox.Core.Metadata
                 video_codec TEXT,
                 audio_codec TEXT,
                 warning TEXT,
+                lead_in REAL DEFAULT 0,
+                lead_out REAL DEFAULT 0,
                 lufs REAL
                 )
             ");
@@ -172,7 +174,9 @@ VALUES (@PlaylistName, @Description, @ImagePath, @IsAll) RETURNING playlist_id",
             video_codec = @VideoCodec,
             audio_codec = @AudioCodec,
             warning = @Warning,
-            lufs = @LUFS
+            lufs = @LUFS,
+            lead_in = @LeadIn,
+            lead_out = @LeadOut
             WHERE video_id = @VideoId;";
             await conn.ExecuteAsync(query, metadata);
         }
@@ -296,12 +300,12 @@ WHERE playlist_id = @id
             await conn.ExecuteAsync("UPDATE video SET lufs = @lufs WHERE video_id = @videoId", new { videoId, lufs });
         }
 
-        public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
-        {
-            using var conn = new SQLiteConnection(connectionString);
-            await conn.ExecuteAsync(@"UPDATE video_analysis SET lufs = @LUFS, video_codec = @VideoCodec, 
-video_resolution = @VideoResolution, audio_codec = @AudioCodec, warning = Warning WHERE video_id = @VideoId", entry);
-        }
+//        public async Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+//        {
+//            using var conn = new SQLiteConnection(connectionString);
+//            await conn.ExecuteAsync(@"UPDATE video_analysis SET lufs = @LUFS, video_codec = @VideoCodec, 
+//video_resolution = @VideoResolution, audio_codec = @AudioCodec, warning = Warning WHERE video_id = @VideoId", entry);
+//        }
 
         public async Task UpdatePlayStatus(int playlistId, int songOrder)
         {

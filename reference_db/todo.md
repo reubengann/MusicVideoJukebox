@@ -10,9 +10,18 @@
 - Andy Bell Don't Cha Know
 - Mr go lucky john mellencamp
 - Dawn Penn No No No should have "You Don't Love Me (No No No)" but it only has suffixes
-- Tom Petty a woman in love should be Hard Promises
 - Joe I wanna know should be from "My Name is Joe"
 - Machine Head "From This Day" should be from Burning Red
 - Shabba Ranks Let's get it on shoudl be from "A Mi Shabba"
 - Digital Underground - Doowutchyalike should be from Sex Packets
 - Dance Hall Days should be Points on a Curve
+- A Tribe Called Quest - Check the Rhyme shoudl be from THe Low End Theory
+- Beyonce crazy in love should be Dangerously in Love
+- Let's go crazy should be purple rain
+- Batdance should be from Batman the soundtrack
+- Robert Miles Children should be Dreamland
+- Salt n pepa push it should be Hot, Cool & Vicious
+- Soul Asylum I will still be laughing should be Candy from a stranger
+- Hello Goodbye should be Magical Mystery Tour
+- The Lox money power and respect should be on album of the same name
+- TLC Get it up should be Poetic Justice

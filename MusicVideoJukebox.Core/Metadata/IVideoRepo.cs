@@ -87,5 +87,7 @@
         public string? AudioCodec { get; set; }
         public string? Warning { get; set; }
         public double? LUFS { get; set; }
+        public double? LeadIn { get; set; } = 0;
+        public double? LeadOut { get; set; } = 0;
     }
 }

@@ -9,7 +9,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
-        public List<VideoAnalysisEntry> AnalysisEntries = [];
+        //public List<VideoAnalysisEntry> AnalysisEntries = [];
         public int SearchCount = 0;
         public PlaylistStatus CurrentActivePlaylistStatus = new();
         public List<ScoredMetadata> ScoredCandidates = [];
@@ -126,24 +126,24 @@ namespace MusicVideoJukebox.Test.Fakes
             return ScoredCandidates;
         }
 
-        public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
-        {
-            await Task.CompletedTask;
-            AnalysisEntries.Add(entry);
-        }
+        //public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
+        //{
+        //    await Task.CompletedTask;
+        //    AnalysisEntries.Add(entry);
+        //}
 
-        public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
-        {
-            await Task.CompletedTask;
-            return AnalysisEntries;
-        }
+        //public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
+        //{
+        //    await Task.CompletedTask;
+        //    return AnalysisEntries;
+        //}
 
-        public Task UpdateAnalysisVolume(int videoId, double? lufs)
-        {
-            var foo = AnalysisEntries.Where(x => x.VideoId == videoId).First();
-            foo.LUFS = lufs;
-            return Task.CompletedTask;
-        }
+        //public Task UpdateAnalysisVolume(int videoId, double? lufs)
+        //{
+        //    var foo = AnalysisEntries.Where(x => x.VideoId == videoId).First();
+        //    foo.LUFS = lufs;
+        //    return Task.CompletedTask;
+        //}
 
         public Task<PlaylistStatus> GetActivePlaylist()
         {
