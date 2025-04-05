@@ -25,26 +25,17 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task WhenInitializingPopulateTheList()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             Assert.Equal(2, dut.Candidates.Count);
         }
 
         [Fact]
-        public async Task WhenInitializingPopulateTheListHighestFirst()
-        {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
-            await dut.Initialize();
-            Assert.Equal(82, dut.Candidates.First().Similarity);
-        }
-        
-        [Fact]
         public async Task CanSearchAgain()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             dut.SearchCommand.Execute(null);
             Assert.Equal(2, metadataManager.SearchCount);
@@ -54,8 +45,8 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CannotSelectCommandIfNothingSelected()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             Assert.False(dut.SelectCommand.CanExecute());
         }
@@ -63,8 +54,8 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task CanSelectCommandIfSomethingSelected()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             dut.SelectedItem = dut.Candidates.First();
             Assert.True(dut.SelectCommand.CanExecute());
@@ -73,8 +64,8 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task ClosesDialogWhenSelecting()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             dut.SelectedItem = dut.Candidates.First();
             Assert.True(dut.SelectCommand.CanExecute());
@@ -87,8 +78,8 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task AcceptedWhenSelecting()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             dut.SelectedItem = dut.Candidates.First();
             Assert.True(dut.SelectCommand.CanExecute());
@@ -99,8 +90,8 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public async Task NoAcceptWhenCanceling()
         {
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album1", ArtistName = "artist1", FirstReleaseDateYear = 1901, Similarity = 81, TrackName = "track1" });
-            metadataManager.ScoredCandidates.Add(new ScoredMetadata { AlbumTitle = "album2", ArtistName = "artist2", FirstReleaseDateYear = 1902, Similarity = 82, TrackName = "track2" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
+            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
             await dut.Initialize();
             dut.SelectedItem = dut.Candidates.First();
             Assert.True(dut.SelectCommand.CanExecute());

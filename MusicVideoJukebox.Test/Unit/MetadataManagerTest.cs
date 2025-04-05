@@ -29,31 +29,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task UpdatesMetadataInRepo()
-        {
-            await dut.UpdateVideoMetadata(new VideoMetadata { Artist = "a", Filename = "b", Title = "c", Status = MetadataStatus.NotDone });
-            Assert.Single(videoRepo.UpdatedEntries);
-        }
-
-        [Fact]
-        public async Task WhenTryingToGetAlbumYearPrefersExactMatch()
-        {
-            referenceDataRepo.ExactMatches.Add(new FetchedMetadata { AlbumTitle = "foo", ArtistName = "artist", TrackName = "title", FirstReleaseDateYear = 1901 });
-            var result = await dut.TryGetAlbumYear("artist", "title");
-            Assert.True(result.Success);
-            Assert.Equal("foo", result.AlbumTitle);
-        }
-
-        [Fact]
-        public async Task WhenNoExactMatchDoFuzzyMatch()
-        {
-            referenceDataRepo.NearMatches.Add(new FetchedMetadata { AlbumTitle = "foo", ArtistName = "artist", TrackName = "title", FirstReleaseDateYear = 1901 });
-            var result = await dut.TryGetAlbumYear("artist1", "title");
-            Assert.True(result.Success);
-            Assert.Equal("foo", result.AlbumTitle);
-        }
-
-        [Fact]
         public async Task NoChangesWhenFileListingMatches()
         {
             fileSystemService.ExistingFiles.AddRange(["artist 1 - track 1.mp4", "artist 2 - track 2.mp4"]);

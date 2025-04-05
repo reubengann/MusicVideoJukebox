@@ -52,37 +52,6 @@ namespace MusicVideoJukebox.Test.Unit
         }
 
         [Fact]
-        public async Task WhenFetchingMetadataPutsNotFound()
-        {
-            await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
-            await dut.Initialize();
-            dut.FetchMetadataCommand.Execute(null);
-            await Task.Delay(10); // overcome the waiting inside the loop :(
-            Assert.True(dut.MetadataEntries.All(x => x.Status == MetadataStatus.NotFound));
-        }
-
-        //FLAKY
-        //FLAKY
-        //FLAKY
-        [Fact]
-        public async Task WhenFoundFillTheData()
-        {
-            await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.ReferenceDataToGet["artist1 title1"] = new GetAlbumYearResult { Success = true, AlbumTitle = "album1", ReleaseYear = 1901 };
-            metadataManagerFactory.ToReturn.ReferenceDataToGet["artist2 title2"] = new GetAlbumYearResult { Success = true, AlbumTitle = "album2", ReleaseYear = 1902 };
-            await dut.Initialize();
-            dut.FetchMetadataCommand.Execute(null);
-            await Task.Delay(100); // overcome the waiting inside the loop :(
-            Assert.True(dut.MetadataEntries.All(x => x.Status == MetadataStatus.Done));
-            Assert.Equal("album1", dut.MetadataEntries[0].Album);
-            Assert.True(dut.MetadataEntries.All(x => x.IsModified));
-        }
-
-        [Fact]
         public async Task WhenResyncingReloadTheTable()
         {
             await libraryStore.SetLibrary(1, "something");

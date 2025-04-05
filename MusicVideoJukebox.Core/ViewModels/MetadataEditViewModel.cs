@@ -91,7 +91,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
-            FetchMetadataCommand = new DelegateCommand(async () => await FetchMetadata());
+            FetchMetadataCommand = new DelegateCommand(LaunchMatchDialog);
             RefreshDatabaseCommand = new DelegateCommand(async () => await ReconcileCurrentFolderContents());
             SaveChangesCommand = CreateSafeAsyncCommand(SaveChanges, CanSaveChanges);
             LaunchMatchDialogCommand = new DelegateCommand(LaunchMatchDialog);
@@ -110,10 +110,10 @@ namespace MusicVideoJukebox.Core.ViewModels
                 ArgumentNullException.ThrowIfNull(result.ScoredMetadata);
                 var scoredMetadata = result.ScoredMetadata;
                 SelectedItem.StartProgrammaticUpdate();
-                SelectedItem.Artist = scoredMetadata.ArtistName;
+                SelectedItem.Artist = scoredMetadata.Artist;
                 SelectedItem.Album = scoredMetadata.AlbumTitle;
-                SelectedItem.Title = scoredMetadata.TrackName;
-                SelectedItem.Year = scoredMetadata.FirstReleaseDateYear;
+                SelectedItem.Title = scoredMetadata.Title;
+                SelectedItem.Year = scoredMetadata.ReleaseYear;
                 SelectedItem.Status = MetadataStatus.Done;
                 SelectedItem.EndProgrammaticUpdate();
             }
@@ -172,29 +172,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 IsBusy = false;
             }
-        }
-
-        private async Task FetchMetadata()
-        {
-            foreach (var entry in MetadataEntries.Where(x => x.Status == MetadataStatus.NotDone))
-            {
-                if (entry.Status != MetadataStatus.NotDone) continue;
-                entry.StartProgrammaticUpdate();
-                var result = await metadataManager.TryGetAlbumYear(entry.Artist, entry.Title);
-                if (result.Success)
-                {
-                    entry.Album = result.AlbumTitle;
-                    entry.Year = result.ReleaseYear;
-                    entry.Status = MetadataStatus.Done;
-                }
-                else
-                {
-                    entry.Status = MetadataStatus.NotFound;
-                }
-                entry.EndProgrammaticUpdate();
-                await Task.Delay(1); // allow a UI update (bleh)
-            }
-            OnPropertyChanged(); // force an update to enable the save button
         }
 
         private async Task ReconcileCurrentFolderContents()

@@ -46,49 +46,6 @@ namespace MusicVideoJukebox.Core.Metadata
             return new BasicInfo { Artist = artist, Title = title, Filename = filename };
         }
 
-        public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
-        {
-            var maybeExactResult = await referenceDataRepo.TryGetExactMatch(artist, track);
-            if (maybeExactResult.Success)
-            {
-                ArgumentNullException.ThrowIfNull(maybeExactResult.FetchedMetadata);
-                return new GetAlbumYearResult { Success = true, AlbumTitle = maybeExactResult.FetchedMetadata.AlbumTitle, ReleaseYear = maybeExactResult.FetchedMetadata.FirstReleaseDateYear };
-            }
-            // fuzzy match
-            var bestMatch = (await GetScoredCandidates(artist, track))
-            .Where(x => x.Similarity >= similarityThreshold)
-            .OrderByDescending(x => x.Similarity)
-            .FirstOrDefault();
-            if (bestMatch != null)
-            {
-                return new GetAlbumYearResult { Success = true, AlbumTitle = bestMatch.AlbumTitle, ReleaseYear = bestMatch.FirstReleaseDateYear };
-            }
-            return new GetAlbumYearResult { Success = false };
-        }
-
-        public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)
-        {
-            var partialMatches = await referenceDataRepo.GetCandidates(artist, track);
-            return partialMatches.Select(x => new ScoredMetadata { 
-                AlbumTitle = x.AlbumTitle, 
-                ArtistName = x.ArtistName, 
-                FirstReleaseDateYear = x.FirstReleaseDateYear,
-                TrackName = x.TrackName,
-                Similarity = GetSimilarity($"{artist} {track}", $"{x.ArtistName} {x.TrackName}")
-            }).ToList();
-        }
-
-        public async Task UpdateVideoMetadata(VideoMetadata entry)
-        {
-            await videoRepo.UpdateMetadata(entry);
-        }
-
-        private int GetSimilarity(string target, string item)
-        {
-            int similarity = Fuzz.WeightedRatio(target, item, PreprocessMode.Full);
-            return similarity;
-        }
-
         public async Task<bool> Resync()
         {
             var anyChanges = false;
@@ -133,6 +90,11 @@ namespace MusicVideoJukebox.Core.Metadata
                 order++;
             }
             return shuffledTracks;
+        }
+
+        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        {
+            return referenceDataRepo.SearchReferenceDb(artist, title);
         }
     }
 

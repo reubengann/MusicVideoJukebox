@@ -13,9 +13,9 @@ namespace MusicVideoJukebox.Test.Fakes
         public FakeVideoRepo ConcreteVideoRepo => videoRepo;
 
         public int SearchCount = 0;
-        public List<ScoredMetadata> ScoredCandidates = [];
+        public List<SearchResult> ScoredCandidates = [];
         public bool WasShuffled = false;
-        public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
+        public Dictionary<string, SearchResult> ReferenceDataToGet = [];
         public bool SayChangesWereMade = false;
 
         private FakeVideoRepo videoRepo = new();
@@ -31,16 +31,6 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             CreatedMetadataFolders.Add(folderPath);
-        }
-
-        public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
-        {
-            await Task.CompletedTask;
-            if (ReferenceDataToGet.ContainsKey($"{artist} {track}"))
-            {
-                return ReferenceDataToGet[$"{artist} {track}"];
-            }
-            return new GetAlbumYearResult { Success = false };
         }
 
         public Task<bool> Resync()
@@ -66,16 +56,15 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)
-        {
-            SearchCount++;
-            await Task.CompletedTask;
-            return ScoredCandidates;
-        }
-
         public Task UpdateAnalysisResult(VideoAnalysisEntry entry)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        {
+            SearchCount++;
+            return Task.FromResult(ScoredCandidates);
         }
     }
 }

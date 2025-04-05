@@ -4,22 +4,12 @@ namespace MusicVideoJukebox.Test.Unit
 {
     internal class FakeReferenceDataRepo : IReferenceDataRepo
     {
-        public List<FetchedMetadata> ExactMatches = [];
-        public List<FetchedMetadata> NearMatches = [];
+        public List<SearchResult> ToReturn = [];
 
-        public Task<List<FetchedMetadata>> GetCandidates(string artist, string track, int searchLength = 3)
-        {
-            return Task.FromResult(NearMatches);
-        }
 
-        public async Task<MetadataGetResult> TryGetExactMatch(string artist, string track)
+        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
         {
-            await Task.CompletedTask;
-            if (ExactMatches.Any())
-            {
-                return new MetadataGetResult { Success = true, FetchedMetadata = ExactMatches[0] };
-            }
-            return new MetadataGetResult { Success = false };
+            return Task.FromResult(ToReturn);
         }
     }
 }

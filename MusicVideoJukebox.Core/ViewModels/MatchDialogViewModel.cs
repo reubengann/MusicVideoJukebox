@@ -14,13 +14,13 @@ namespace MusicVideoJukebox.Core.ViewModels
         private bool isLoading;
         private int windowHeight;
         private int windowWidth;
-        private ScoredMetadata? selectedItem;
+        private SearchResult? selectedItem;
         public event Action? RequestClose;
 
         public int WindowHeight { get => windowHeight; set => SetProperty(ref windowHeight, value); }
         public int WindowWidth { get => windowWidth; set => SetProperty(ref windowWidth, value); }
-        public ObservableCollection<ScoredMetadata> Candidates { get; set; } = [];
-        public ScoredMetadata? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); SelectCommand.RaiseCanExecuteChanged(); } }
+        public ObservableCollection<SearchResult> Candidates { get; set; } = [];
+        public SearchResult? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); SelectCommand.RaiseCanExecuteChanged(); } }
 
         public bool Accepted { get; set; } = false;
 
@@ -65,7 +65,6 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private async void SearchAgain()
         {
-            Candidates.Clear();
             await DoTheSearch();
         }
 
@@ -80,15 +79,11 @@ namespace MusicVideoJukebox.Core.ViewModels
 
             try
             {
-                var maybeExactMatch = await metadataManager.TryGetAlbumYear(SearchArtist, SearchTitle);
-                if (maybeExactMatch.Success)
+                var results = await metadataManager.SearchReferenceDb(SearchArtist, SearchTitle);
+                Candidates.Clear();
+                foreach (var item in results)
                 {
-                    Candidates.Add(new ScoredMetadata { AlbumTitle = maybeExactMatch.AlbumTitle, ArtistName = SearchArtist, FirstReleaseDateYear = maybeExactMatch.ReleaseYear, Similarity = 100, TrackName = SearchTitle });
-                }
-                var candidates = await metadataManager.GetScoredCandidates(SearchArtist, SearchTitle);
-                foreach (var candidate in candidates.OrderByDescending(x => x.Similarity))
-                {
-                    Candidates.Add(candidate);
+                    Candidates.Add(item);
                 }
             }
             finally

@@ -1,8 +1,9 @@
 ﻿namespace MusicVideoJukebox.Core.Metadata
 {
-    public class GetAlbumYearResult 
-    { 
-        public bool Success { get; set; }
+    public class SearchResult 
+    {
+        public string Title { get; set; } = null!;
+        public string Artist { get; set; } = null!;
         public string? AlbumTitle { get; set; }
         public int? ReleaseYear { get; set; }
     }
@@ -12,11 +13,10 @@
     public interface IMetadataManager
     {
         Task EnsureCreated();
-        Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track);
         Task<bool> Resync();
         Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId);
         Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId);
-        public Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track);
+        Task<List<SearchResult>> SearchReferenceDb(string artist, string title);
 
         IVideoRepo VideoRepo { get; }
     }
