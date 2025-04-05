@@ -18,29 +18,19 @@
         <Grid Width="640" Height="360">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="240"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition Height="120"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
-            
-            
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5" >
-                <Label>Artist</Label>
-                <TextBox Width="200" Text="{Binding SearchArtist, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                <Label>Title</Label>
-                <TextBox Width="200" Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            </StackPanel>
-            <Button Grid.Column="1" Margin="5" Command="{Binding SearchCommand}">Search again</Button>
-            
             <DataGrid
                 AutoGenerateColumns="False" 
                 SelectionMode="Single" 
                 Margin="5" 
-                Grid.Row="1"
+                Grid.Row="0"
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding Candidates}"
                 SelectedItem="{Binding SelectedItem}"
@@ -50,12 +40,42 @@
                     <DataGridTextColumn Header="Artist" Binding="{Binding ArtistName}" Width="175"/>
                     <DataGridTextColumn Header="Album" Binding="{Binding AlbumTitle}" Width="100"/>
                     <DataGridTextColumn Header="Year" Binding="{Binding FirstReleaseDateYear}"/>
-                    <DataGridTextColumn Header="Score" Binding="{Binding Similarity}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            
+
+            <Grid Grid.Row="1" Margin="5" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Artist" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchArtist, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Title" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Album" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchAlbum, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Year" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding SearchYear, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label>Query</Label>
+                <TextBox Margin="5, 0"/>
+            </StackPanel>
+
             <UniformGrid Rows="1" Grid.Column="1" Grid.Row="2">
-                <Button Margin="5" Command="{Binding SelectCommand}">Select</Button>
+                <Button Margin="5" Command="{Binding SearchCommand}">Search</Button>
+                <Button Margin="5" Command="{Binding SelectCommand}">Save</Button>
                 <Button Margin="5" Command="{Binding CancelCommand}">Cancel</Button>
             </UniformGrid>
 

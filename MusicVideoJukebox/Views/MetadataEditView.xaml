@@ -26,9 +26,9 @@
             </Grid.RowDefinitions>
 
             <!-- Editable DataGrid -->
-            <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+            <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                       SelectedItem="{Binding SelectedItem}"
-                      Padding="5">
+                      Padding="5" SelectionMode="Single" SelectionUnit="FullRow">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Status" SortMemberPath="Status">
                         <DataGridTemplateColumn.HeaderStyle>
@@ -61,20 +61,12 @@
 
                     <!--<DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />-->
                 </DataGrid.Columns>
-                    <DataGrid.ContextMenu>
-                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                            <MenuItem Header="Launch Match Dialog"
-                      Command="{Binding LaunchMatchDialogCommand}"
-                       />
-                        </ContextMenu>
-                    </DataGrid.ContextMenu>
                 </DataGrid>
 
             <!-- Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                <Button Content="Fill Metadata" Command="{Binding FetchMetadataCommand}" Margin="5,0" />
-                <Button Content="Refresh Database" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
-                <Button Content="Save Changes" Command="{Binding SaveChangesCommand}" />
+                <Button Content="Edit" Command="{Binding EditMetadataCommand}" Margin="5,0" />
+                <Button Content="Refresh Folder" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
             </StackPanel>
         </Grid>
         </Viewbox>
