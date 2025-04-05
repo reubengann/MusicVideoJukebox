@@ -20,6 +20,10 @@
         Task UpdatePlayStatus(int playlistId, int songOrder);
         Task UpdateActivePlaylist(int playlistId);
         Task<PlaylistStatus> GetActivePlaylist();
+        Task<int> AddTag(string tagName);
+        Task AddTagToVideo(int videoId, int tagId);
+        Task RemoveTagFromVideo(int videoId, int tagId);
+        Task<List<string>> GetTagsForVideo(int videoId);
     }
 
     public class VideoAnalysisEntry

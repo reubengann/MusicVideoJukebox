@@ -70,12 +70,12 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Recheck();
             SetPlaylist(2);
             await dut.Recheck();
-            Assert.Equal(2, metadataManagerFactory.ToReturn.LastPlaylistQueried);
+            Assert.Equal(2, metadataManagerFactory.ToReturn.ConcreteVideoRepo.LastPlaylistQueried);
         }
 
         void SetPlaylist(int playlistId)
         {
-            metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.PlaylistId = playlistId;
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.CurrentActivePlaylistStatus.PlaylistId = playlistId;
             libraryStore.CurrentPlaylistId = playlistId;
         }
 
@@ -88,13 +88,13 @@ namespace MusicVideoJukebox.Test.Unit
             WithPlaylist(true, 1, "All");
             WithPlaylistTrack("", "c:\\afile.mp4", "", 1);
             WithPlaylistTrack("", "c:\\afile2.mp4", "", 2);
-            metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.SongOrder = 1;
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.CurrentActivePlaylistStatus.SongOrder = 1;
             await libraryStore.SetLibrary(1, "something");
             await dut.Recheck();
             Assert.Equal("c:\\afile.mp4", dut.CurrentPlaylistTrack?.FileName);
             dut.SkipNextCommand.Execute(null);
             Assert.Equal("c:\\afile2.mp4", dut.CurrentPlaylistTrack?.FileName);
-            Assert.Equal(2, metadataManagerFactory.ToReturn.CurrentActivePlaylistStatus.SongOrder);
+            Assert.Equal(2, metadataManagerFactory.ToReturn.ConcreteVideoRepo.CurrentActivePlaylistStatus.SongOrder);
         }
 
         [Fact]
@@ -114,17 +114,17 @@ namespace MusicVideoJukebox.Test.Unit
 
         void WithMetadata(string filename)
         {
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "", Filename = filename, Title = "" });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "", Filename = filename, Title = "" });
         }
 
         void WithPlaylist(bool isAll, int playlistId, string playlistName)
         {
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = isAll, PlaylistId = playlistId, PlaylistName = playlistName });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.Playlists.Add(new Playlist { IsAll = isAll, PlaylistId = playlistId, PlaylistName = playlistName });
         }
 
         void WithPlaylistTrack(string artist, string filename, string title, int playOrder)
         {
-            metadataManagerFactory.ToReturn.PlaylistTracks.Add(new PlaylistTrack { Artist = artist, FileName = filename, Title = title, PlayOrder = playOrder });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.PlaylistTracks.Add(new PlaylistTrack { Artist = artist, FileName = filename, Title = title, PlayOrder = playOrder });
         }
     }
 }

@@ -11,6 +11,8 @@ namespace MusicVideoJukebox.Core.Metadata
         private readonly IFileSystemService fileSystemService;
         private readonly IReferenceDataRepo referenceDataRepo;
 
+        public IVideoRepo VideoRepo => videoRepo;
+
         const int similarityThreshold = 80;
 
         public MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService, IReferenceDataRepo referenceDataRepo)
@@ -126,73 +128,12 @@ namespace MusicVideoJukebox.Core.Metadata
             int order = 1;
             foreach (var track in shuffledTracks)
             {
-                await UpdatePlaylistTrackOrder(playlistId, track.VideoId, order);
+                await VideoRepo.UpdatePlaylistTrackOrder(playlistId, track.VideoId, order);
                 track.PlayOrder = order;
                 order++;
             }
             return shuffledTracks;
         }
-
-        #region Passthrough methods
-
-
-        public async Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
-        {
-            await videoRepo.UpdatePlaylistTrackOrder(playlistId, videoId, order);
-        }
-
-
-        public async Task UpdateAnalysisVolume(int videoId, double? lufs)
-        {
-            await videoRepo.UpdateAnalysisVolume(videoId, lufs);
-        }
-
-        public async Task<List<VideoMetadata>> GetAllMetadata()
-        {
-            return await videoRepo.GetAllMetadata();
-        }
-
-        public Task<List<Playlist>> GetPlaylists()
-        {
-            return videoRepo.GetPlaylists();
-        }
-
-        public async Task<int> SavePlaylist(Playlist playlist)
-        {
-            return await videoRepo.InsertPlaylist(playlist);
-        }
-
-        public async Task UpdatePlaylist(Playlist playlist)
-        {
-            await videoRepo.UpdatePlaylistDetails(playlist);
-        }
-
-        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
-        {
-            return await videoRepo.GetPlaylistTracks(playlistId);
-        }
-
-        public async Task<int> AppendSongToPlaylist(int playlistId, int videoId)
-        {
-            return await videoRepo.AppendSongToPlaylist(playlistId, videoId);
-        }
-
-        public async Task<PlaylistStatus> GetActivePlaylist()
-        {
-            return await videoRepo.GetActivePlaylist();
-        }
-
-        public async Task UpdateActivePlaylist(int playlistId)
-        {
-            await videoRepo.UpdateActivePlaylist(playlistId);
-        }
-
-        public async Task UpdatePlayStatus(int playlistId, int songOrder)
-        {
-            await videoRepo.UpdatePlayStatus(playlistId, songOrder);
-        }
-
-        #endregion
     }
 
     public static class FileNameHelpers

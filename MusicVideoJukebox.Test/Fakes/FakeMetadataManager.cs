@@ -7,21 +7,21 @@ namespace MusicVideoJukebox.Test.Fakes
         public string folderPath;
 
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
-        public List<VideoMetadata> MetadataEntries { get; internal set; } = [];
+        
         public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
-        //public List<VideoAnalysisEntry> AnalysisEntries = [];
+
+        public IVideoRepo VideoRepo => videoRepo;
+        public FakeVideoRepo ConcreteVideoRepo => videoRepo;
+
         public int SearchCount = 0;
-        public PlaylistStatus CurrentActivePlaylistStatus = new();
         public List<ScoredMetadata> ScoredCandidates = [];
-
         public bool WasShuffled = false;
-
-        public List<Playlist> Playlists = [];
-        public List<PlaylistTrack> PlaylistTracks = [];
         public Dictionary<string, GetAlbumYearResult> ReferenceDataToGet = [];
-        public List<Tuple<int, int>> AddedToPlaylist = [];
         public bool SayChangesWereMade = false;
-        public int? LastPlaylistQueried = null;
+
+        private FakeVideoRepo videoRepo = new();
+
+        
 
         public FakeMetadataManager(string folderPath)
         {
@@ -32,18 +32,6 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             await Task.CompletedTask;
             CreatedMetadataFolders.Add(folderPath);
-        }
-
-        public async Task<List<VideoMetadata>> GetAllMetadata()
-        {
-            await Task.CompletedTask;
-            return MetadataEntries;
-        }
-
-        public Task UpdateVideoMetadata(VideoMetadata entry)
-        {
-            MetadataEntriesUpdated.Add(entry);
-            return Task.CompletedTask;
         }
 
         public async Task<GetAlbumYearResult> TryGetAlbumYear(string artist, string track)
@@ -61,50 +49,17 @@ namespace MusicVideoJukebox.Test.Fakes
             return Task.FromResult(SayChangesWereMade);
         }
 
-        public Task<List<Playlist>> GetPlaylists()
-        {
-            return Task.FromResult(Playlists);
-        }
-
-        public async Task<int> SavePlaylist(Playlist playlist)
-        {
-            Playlists.Add(playlist);
-            var id = Playlists.Count;
-            //playlist.PlaylistId = id;
-            return id;
-        }
-
-        public async Task UpdatePlaylist(Playlist playlist)
-        {
-            foreach (var item in Playlists)
-            {
-                if (item.PlaylistId == playlist.PlaylistId)
-                {
-                    item.PlaylistName = playlist.PlaylistName;
-                    item.Description = playlist.Description;
-                    item.ImagePath = playlist.ImagePath;
-                    return;
-                }
-            }
-        }
-
         public async Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId)
         {
             await Task.CompletedTask;
             int i = 0;
-            return PlaylistTracks.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title, PlayOrder = i++ }).ToList();
-        }
-
-        public Task<int> AppendSongToPlaylist(int playlistId, int videoId)
-        {
-            AddedToPlaylist.Add(new Tuple<int, int> (playlistId, videoId));
-            return Task.FromResult(1);
+            return (await VideoRepo.GetPlaylistTracks(playlistId)).Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title, PlayOrder = i++ }).ToList();
         }
 
         public Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId)
         {
             WasShuffled = true;
-            return Task.FromResult(MetadataEntries.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title }).ToList());
+            return Task.FromResult(videoRepo.MetadataEntries.Select(x => new PlaylistTrackForViewmodel { Artist = x.Artist, Title = x.Title }).ToList());
         }
 
         public Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
@@ -112,60 +67,11 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
-        {
-            LastPlaylistQueried = playlistId;
-            await Task.CompletedTask;
-            return new List<PlaylistTrack>(PlaylistTracks);
-        }
-
         public async Task<List<ScoredMetadata>> GetScoredCandidates(string artist, string track)
         {
             SearchCount++;
             await Task.CompletedTask;
             return ScoredCandidates;
-        }
-
-        //public async Task InsertAnalysisResult(VideoAnalysisEntry entry)
-        //{
-        //    await Task.CompletedTask;
-        //    AnalysisEntries.Add(entry);
-        //}
-
-        //public async Task<List<VideoAnalysisEntry>> GetAnalysisResults()
-        //{
-        //    await Task.CompletedTask;
-        //    return AnalysisEntries;
-        //}
-
-        //public Task UpdateAnalysisVolume(int videoId, double? lufs)
-        //{
-        //    var foo = AnalysisEntries.Where(x => x.VideoId == videoId).First();
-        //    foo.LUFS = lufs;
-        //    return Task.CompletedTask;
-        //}
-
-        public Task<PlaylistStatus> GetActivePlaylist()
-        {
-            return Task.FromResult(CurrentActivePlaylistStatus);
-        }
-
-        public Task UpdateCurrentSongOrder(int songOrder)
-        {
-            CurrentActivePlaylistStatus.SongOrder = songOrder;
-            return Task.CompletedTask;
-        }
-
-        public Task UpdateActivePlaylist(int playlistId)
-        {
-            CurrentActivePlaylistStatus.PlaylistId = playlistId;
-            return Task.CompletedTask;
-        }
-
-        public Task UpdatePlayStatus(int playlistId, int songOrder)
-        {
-            CurrentActivePlaylistStatus.SongOrder = songOrder;
-            return Task.CompletedTask;
         }
 
         public Task UpdateAnalysisResult(VideoAnalysisEntry entry)

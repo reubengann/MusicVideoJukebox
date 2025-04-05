@@ -27,7 +27,7 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task OnInitializeLoadPlaylists()
         {
             await libraryStore.SetLibrary(1, "foo");
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1,  PlaylistName = "All songs" });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1,  PlaylistName = "All songs" });
             await dut.Initialize();
             Assert.Single(dut.Items);
         }
@@ -36,9 +36,9 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task SetsPlaylistOnSelect()
         {
             await libraryStore.SetLibrary(1, "foo");
-            metadataManagerFactory.ToReturn.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All songs" });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.Playlists.Add(new Playlist { IsAll = true, PlaylistId = 1, PlaylistName = "All songs" });
             var other = new Playlist { IsAll = false, PlaylistId = 2, PlaylistName = "Other" };
-            metadataManagerFactory.ToReturn.Playlists.Add(other);
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.Playlists.Add(other);
             await dut.Initialize();
             dut.SelectPlaylistCommand.Execute(new PlaylistViewModel(other, libraryStore));
             Assert.Equal(2, libraryStore.CurrentPlaylistId);

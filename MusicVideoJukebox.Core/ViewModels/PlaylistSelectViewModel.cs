@@ -30,7 +30,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private async void SelectPlaylist(PlaylistViewModel model)
         {
             libraryStore.CurrentPlaylistId = model.Playlist.PlaylistId;
-            await metadataManager.UpdateActivePlaylist(model.Playlist.PlaylistId);
+            await metadataManager.VideoRepo.UpdateActivePlaylist(model.Playlist.PlaylistId);
             await navigationService.NavigateToNothing();
         }
 
@@ -38,7 +38,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var playlists = await metadataManager.GetPlaylists();
+            var playlists = await metadataManager.VideoRepo.GetPlaylists();
             foreach (var playlist in playlists)
             {
                 Items.Add(new PlaylistViewModel(playlist, libraryStore));

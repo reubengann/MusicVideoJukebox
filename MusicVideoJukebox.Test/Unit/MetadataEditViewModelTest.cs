@@ -26,8 +26,8 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task OnInitializePopulateTable() 
         {
             await libraryStore.SetLibrary(1, "");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             await dut.Initialize();
             Assert.Equal(2, dut.MetadataEntries.Count);
             Assert.False(dut.SaveChangesCommand.CanExecute());
@@ -37,8 +37,8 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task SaveChangedOnes()
         {
             await libraryStore.SetLibrary(1, "");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             await dut.Initialize();
             Assert.False(dut.SaveChangesCommand.CanExecute());
             dut.MetadataEntries[0].Title = "artist1changed";
@@ -55,8 +55,8 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task WhenFetchingMetadataPutsNotFound()
         {
             await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             await dut.Initialize();
             dut.FetchMetadataCommand.Execute(null);
             await Task.Delay(10); // overcome the waiting inside the loop :(
@@ -70,8 +70,8 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task WhenFoundFillTheData()
         {
             await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             metadataManagerFactory.ToReturn.ReferenceDataToGet["artist1 title1"] = new GetAlbumYearResult { Success = true, AlbumTitle = "album1", ReleaseYear = 1901 };
             metadataManagerFactory.ToReturn.ReferenceDataToGet["artist2 title2"] = new GetAlbumYearResult { Success = true, AlbumTitle = "album2", ReleaseYear = 1902 };
             await dut.Initialize();
@@ -86,11 +86,11 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task WhenResyncingReloadTheTable()
         {
             await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             metadataManagerFactory.ToReturn.SayChangesWereMade = true;
             await dut.Initialize();
-            metadataManagerFactory.ToReturn.MetadataEntries.RemoveAt(1);
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.RemoveAt(1);
             dut.RefreshDatabaseCommand.Execute(null);
             Assert.Single(dut.MetadataEntries);
         }
@@ -99,8 +99,8 @@ namespace MusicVideoJukebox.Test.Unit
         public async Task LaunchesDialogOnRightClickSelect()
         {
             await libraryStore.SetLibrary(1, "something");
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
-            metadataManagerFactory.ToReturn.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist1", Filename = "filename1", Title = "title1", Status = MetadataStatus.NotDone });
+            metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             metadataManagerFactory.ToReturn.SayChangesWereMade = true;
             await dut.Initialize();
             dut.SelectedItem = dut.MetadataEntries[0];

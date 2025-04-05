@@ -1,4 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
+using Xunit.Sdk;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
@@ -9,7 +10,28 @@ namespace MusicVideoJukebox.Test.Fakes
         public List<VideoMetadata> UpdatedEntries = [];
         public List<Tuple<int, int>> AppendedToPlaylist = [];
         public List<VideoAnalysisEntry> AnalysisEntries = [];
-        
+        public List<Playlist> Playlists = [];
+        public List<PlaylistTrack> PlaylistTracks = [];
+        public PlaylistStatus CurrentActivePlaylistStatus = new();
+        public int? LastPlaylistQueried = null;
+
+        public Task UpdateCurrentSongOrder(int songOrder)
+        {
+            CurrentActivePlaylistStatus.SongOrder = songOrder;
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateActivePlaylist(int playlistId)
+        {
+            CurrentActivePlaylistStatus.PlaylistId = playlistId;
+            return Task.CompletedTask;
+        }
+
+        public Task UpdatePlayStatus(int playlistId, int songOrder)
+        {
+            CurrentActivePlaylistStatus.SongOrder = songOrder;
+            return Task.CompletedTask;
+        }
 
         public IEnumerable<char>? FolderPath { get; internal set; }
         public Task AddBasicInfos(List<BasicInfo> basicInfos)
@@ -49,7 +71,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task<List<Playlist>> GetPlaylists()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Playlists);
         }
 
         public Task<List<PlaylistTrackForViewmodel>> GetPlaylistTrackForViewmodels(int playlistId)
@@ -57,9 +79,11 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
+        public async Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId)
         {
-            throw new NotImplementedException();
+            LastPlaylistQueried = playlistId;
+            await Task.CompletedTask;
+            return new List<PlaylistTrack>(PlaylistTracks);
         }
 
         public Task<int> GetTrackCountForPlaylist(int playlistId)
@@ -81,7 +105,10 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task<int> InsertPlaylist(Playlist playlist)
         {
-            throw new NotImplementedException();
+            Playlists.Add(playlist);
+            var id = Playlists.Count;
+            playlist.PlaylistId = id;
+            return Task.FromResult(id);
         }
 
         public Task UpdateAnalysisVolume(int videoId, double? lufs)
@@ -97,7 +124,17 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task UpdatePlaylistDetails(Playlist playlist)
         {
-            throw new NotImplementedException();
+            foreach (var item in Playlists)
+            {
+                if (item.PlaylistId == playlist.PlaylistId)
+                {
+                    item.PlaylistName = playlist.PlaylistName;
+                    item.Description = playlist.Description;
+                    item.ImagePath = playlist.ImagePath;
+                    return Task.CompletedTask;
+                }
+            }
+            throw new Exception("Playlist not found");
         }
 
         public Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order)
@@ -105,24 +142,9 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public Task UpdatePlayStatus(int playlistId, int videoId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateActivePlaylist(int playlistId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<PlaylistStatus> GetActivePlaylist()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateCurrentSongOrder(int songOrder)
-        {
-            throw new NotImplementedException();
+            return Task.FromResult(CurrentActivePlaylistStatus);
         }
 
         public Task<bool> IsDatabaseInitialized()
@@ -131,6 +153,26 @@ namespace MusicVideoJukebox.Test.Fakes
         }
 
         public Task UpdateAnalysisResult(VideoAnalysisEntry entry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> AddTag(string tagName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddTagToVideo(int videoId, int tagId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveTagFromVideo(int videoId, int tagId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<string>> GetTagsForVideo(int videoId)
         {
             throw new NotImplementedException();
         }

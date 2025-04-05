@@ -24,7 +24,7 @@ namespace MusicVideoJukebox.Core.Libraries
             {
                 // also load the playlist
                 var mm = metadataManagerFactory.Create(CurrentState.LibraryPath);
-                var activePlaylist = mm.GetActivePlaylist();
+                var activePlaylist = mm.VideoRepo.GetActivePlaylist();
                 CurrentPlaylistId = activePlaylist.Id;
             }
         }

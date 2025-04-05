@@ -75,7 +75,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 var vm = new PlaylistDetailsEditDialogViewModel(SelectedPlaylist.Playlist, dialogService, imageScalerService, libraryStore);
                 dialogService.ShowEditPlaylistDetailsDialog(vm);
                 if (!vm.Accepted) return;
-                await metadataManager.UpdatePlaylist(vm.NewPlaylist);
+                await metadataManager.VideoRepo.UpdatePlaylistDetails(vm.NewPlaylist);
                 SelectedPlaylist.UpdateDetails(vm.PlaylistDescription, vm.PlaylistIcon);
                 SelectedPlaylist.Name = vm.NewPlaylist.PlaylistName;
             }
@@ -101,7 +101,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 dialogService.ShowEditPlaylistDetailsDialog(vm);
                 if (!vm.Accepted) return;
                 newPlaylist = vm.NewPlaylist;
-                var newId = await metadataManager.SavePlaylist(vm.NewPlaylist);
+                var newId = await metadataManager.VideoRepo.InsertPlaylist(vm.NewPlaylist);
                 newPlaylist.PlaylistId = newId;
             }
             catch
@@ -232,7 +232,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             foreach (var track in selectedTracks)
             {
                 count++;
-                var playlistVideoId = await metadataManager.AppendSongToPlaylist(SelectedPlaylist.Playlist.PlaylistId, track.Metadata.VideoId);
+                var playlistVideoId = await metadataManager.VideoRepo.AppendSongToPlaylist(SelectedPlaylist.Playlist.PlaylistId, track.Metadata.VideoId);
                 PlaylistTracks.Add(new PlaylistTrackViewModel(new PlaylistTrackForViewmodel { Artist = track.Artist, Title = track.Title, PlaylistId = SelectedPlaylist.Id, PlaylistVideoId = playlistVideoId, PlayOrder = count, VideoId = track.Metadata.VideoId }));
             }
         }
@@ -262,12 +262,12 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
             metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var playlists = await metadataManager.GetPlaylists();
+            var playlists = await metadataManager.VideoRepo.GetPlaylists();
             foreach (var pl in playlists)
             {
                 Playlists.Add(new PlaylistViewModel(pl, libraryStore));
             }
-            var avail = await metadataManager.GetAllMetadata();
+            var avail = await metadataManager.VideoRepo.GetAllMetadata();
             foreach (var a in avail)
             {
                 AvailableTracks.Add(new AvailableTrackViewModel(a));

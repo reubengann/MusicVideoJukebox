@@ -19,27 +19,27 @@
         public PlaylistTrack Next()
         {
             currentIndex = (currentIndex + 1) % CurrentTracks.Count;
-            _ = metadataManager.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
+            _ = metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
             return CurrentTrack;
         }
 
         public PlaylistTrack Previous()
         {
             currentIndex = (currentIndex - 1 + CurrentTracks.Count) % CurrentTracks.Count;
-            _ = metadataManager.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
+            _ = metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
             return CurrentTrack;
         }
 
         public async Task<PlaylistTrack?> Resume()
         {
-            var activePlaylistStatus = await metadataManager.GetActivePlaylist(); // this is guaranteed to always be set.
+            var activePlaylistStatus = await metadataManager.VideoRepo.GetActivePlaylist(); // this is guaranteed to always be set.
             CurrentPlaylistId = activePlaylistStatus.PlaylistId;
-            CurrentTracks = await metadataManager.GetPlaylistTracks(activePlaylistStatus.PlaylistId);
+            CurrentTracks = await metadataManager.VideoRepo.GetPlaylistTracks(activePlaylistStatus.PlaylistId);
             if (CurrentTracks.Count == 0) return null; // We cannot proceed until there are songs.
             if (activePlaylistStatus.SongOrder == null)
             {
                 currentIndex = 0;
-                await metadataManager.UpdatePlayStatus(CurrentPlaylistId, 1);
+                await metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, 1);
             }
             else
             {
@@ -53,7 +53,7 @@
             var previousTrack = CurrentTrack;
 
             // Refresh the tracks
-            CurrentTracks = await metadataManager.GetPlaylistTracks(CurrentPlaylistId);
+            CurrentTracks = await metadataManager.VideoRepo.GetPlaylistTracks(CurrentPlaylistId);
 
             // What if all tracks were removed?
             if (CurrentTracks.Count == 0)
@@ -77,7 +77,7 @@
                     // Update the currentIndex
                     // Update the database
                     currentIndex = 0;
-                    await metadataManager.UpdatePlayStatus(CurrentPlaylistId, 1);
+                    await metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, 1);
                 }
                 else
                 {
@@ -93,7 +93,7 @@
             {
                 // The song is still in the playlist.
                 currentIndex = CurrentTracks.IndexOf(maybeSameSongInNewOrder);
-                await metadataManager.UpdatePlayStatus(CurrentPlaylistId, maybeSameSongInNewOrder.PlayOrder);
+                await metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, maybeSameSongInNewOrder.PlayOrder);
                 return new RestoreStateResult { NeedsToChangeTrack = false };
             }
         }

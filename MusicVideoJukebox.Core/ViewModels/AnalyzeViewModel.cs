@@ -162,7 +162,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     item.VideoHeight = analyzeResult.VideoStream.Height;
                     item.LUFS = analyzeResult.AudioStream.LUFS;
                     item.AudioCodec = analyzeResult.AudioStream.Codec;
-                    await videoRepo.UpdateVideoMetadata(item.Entry);
+                    await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
                     if (item.LUFS == null)
                     {
                         // we cannot continue here
@@ -174,7 +174,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
                     // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
                     // If I wasn't being lazy, I would copy the old file back at this point.
-                    await videoRepo.UpdateVideoMetadata(item.Entry);
+                    await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
                     item.LUFS = newResult.AudioStream.LUFS;
                 }
             }
@@ -193,7 +193,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
             var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-            var videoData = await videoRepo.GetAllMetadata();
+            var videoData = await videoRepo.VideoRepo.GetAllMetadata();
             videoData = videoData.OrderBy(x => x.Filename.StartsWith("The ") ? x.Filename[4..] : x.Filename).ToList();
 
             cancellationTokenSource = new CancellationTokenSource();

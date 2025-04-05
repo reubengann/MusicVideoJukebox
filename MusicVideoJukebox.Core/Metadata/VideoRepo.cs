@@ -113,6 +113,21 @@ namespace MusicVideoJukebox.Core.Metadata
                 playlist_id integer not null
                 )
                 ");
+            await conn.ExecuteAsync(@"
+        create table if not exists tag (
+        tag_id integer primary key autoincrement,
+        name text not null unique
+        )
+        ");
+            await conn.ExecuteAsync(@"
+        create table if not exists video_tag (
+        video_id integer not null,
+        tag_id integer not null,
+        foreign key (video_id) references video (video_id) on delete cascade,
+        foreign key (tag_id) references tags (tag_id) on delete cascade,
+        primary key (video_id, tag_id)
+        )
+        ");
             await SetupTasks(conn);
         }
 
@@ -336,8 +351,45 @@ JOIN playlist_status B ON A.playlist_id = B.playlist_id
             var ct = await conn.ExecuteScalarAsync<int>(@"SELECT COUNT(*) 
 FROM sqlite_master 
 WHERE type = 'table' 
-AND name IN ('video', 'playlist', 'playlist_video', 'playlist_status', 'active_playlist');");
-            return ct == 5;
+AND name IN ('video');");
+            return ct == 1;
+        }
+
+        public async Task<int> AddTag(string tagName)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            return await conn.ExecuteScalarAsync<int>(@"
+        INSERT INTO tags (name) 
+        VALUES (@tagName) 
+        ON CONFLICT(name) DO NOTHING 
+        RETURNING tag_id;", new { tagName });
+        }
+
+        public async Task AddTagToVideo(int videoId, int tagId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync(@"
+        INSERT INTO video_tags (video_id, tag_id) 
+        VALUES (@videoId, @tagId) 
+        ON CONFLICT(video_id, tag_id) DO NOTHING;", new { videoId, tagId });
+        }
+
+        public async Task RemoveTagFromVideo(int videoId, int tagId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.ExecuteAsync(@"
+        DELETE FROM video_tags 
+        WHERE video_id = @videoId AND tag_id = @tagId;", new { videoId, tagId });
+        }
+
+        public async Task<List<string>> GetTagsForVideo(int videoId)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            return (await conn.QueryAsync<string>(@"
+        SELECT t.name 
+        FROM tags t
+        JOIN video_tags vt ON t.tag_id = vt.tag_id
+        WHERE vt.video_id = @videoId;", new { videoId })).ToList();
         }
     }
 }

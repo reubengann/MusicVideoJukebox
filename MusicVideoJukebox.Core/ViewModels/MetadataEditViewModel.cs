@@ -159,7 +159,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 {
                     if (entry.IsModified)
                     {
-                        await metadataManager.UpdateVideoMetadata(entry.MetadataObject);
+                        await metadataManager.VideoRepo.UpdateMetadata(entry.MetadataObject);
                         entry.Reset();
                     }
                 }
@@ -215,7 +215,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public async Task LoadMetadata()
         {
-            var metadata = await metadataManager.GetAllMetadata();
+            var metadata = await metadataManager.VideoRepo.GetAllMetadata();
             MetadataEntries.Clear();
             foreach (var entry in metadata)
             {
