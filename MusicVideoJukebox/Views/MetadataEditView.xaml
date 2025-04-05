@@ -65,8 +65,9 @@
             <!-- Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
                     <CheckBox Content="Hide Complete Entries" IsChecked="{Binding HideCompleteEntries}" Margin="5,0" />
-                    <Button Content="Edit" Command="{Binding EditMetadataCommand}" Margin="5,0" />
                 <Button Content="Refresh Folder" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
+                <Button Content="Edit Selected" Command="{Binding EditMetadataCommand}" Margin="5,0" />
+                <Button Content="Edit All Undone" Command="{Binding EditAllUndoneCommand}" Margin="5,0" />
             </StackPanel>
         </Grid>
         </Viewbox>

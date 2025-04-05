@@ -101,6 +101,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         public ICommand EditMetadataCommand { get; }
         public ICommand RefreshDatabaseCommand { get; }
+        public ICommand EditAllUndoneCommand { get; }
 
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly LibraryStore libraryStore;
@@ -115,9 +116,28 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             EditMetadataCommand = new DelegateCommand(LaunchMatchDialog);
             RefreshDatabaseCommand = new DelegateCommand(async () => await ReconcileCurrentFolderContents());
+            EditAllUndoneCommand = new DelegateCommand(DoAllUndone);
             this.metadataManagerFactory = metadataManagerFactory;
             this.libraryStore = libraryStore;
             this.dialogService = dialogService;
+        }
+
+        private void DoAllUndone()
+        {
+            foreach(var entry in MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
+            {
+                var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(entry.VideoMetadata, metadataManager));
+                if (result.Accepted)
+                {
+                    ArgumentNullException.ThrowIfNull(result.ScoredMetadata);
+                    var scoredMetadata = result.ScoredMetadata;
+                    entry.RefreshUI();
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
 
         private void LaunchMatchDialog()
