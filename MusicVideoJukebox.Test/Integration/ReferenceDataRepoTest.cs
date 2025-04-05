@@ -27,7 +27,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task CanGetPartialMatch()
         {
             //WithTrack("Annie Lennox", "Diva", "Why", 1992);
-            var result = await dut.SearchReferenceDb("Robert Miles", "Children");
+            var result = await dut.SearchReferenceDb("Robert Miles%Children");
             Assert.NotEmpty(result);
             Assert.Equal("Children (Full Length)", result[0].Title);
         }
@@ -36,7 +36,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task NormalizesDiacritics()
         {
             //WithTrack("Annie Lennox", "Diva", "Why", 1992);
-            var result = await dut.SearchReferenceDb("Mýa", "Pussycats");
+            var result = await dut.SearchReferenceDb("Mýa%Pussycats");
             Assert.NotEmpty(result);
             Assert.Equal("Pussycats", result[0].Title);
         }
@@ -45,7 +45,7 @@ namespace MusicVideoJukebox.Test.Integration
         public async Task RemovesSpecialCharacters()
         {
             //WithTrack("Annie Lennox", "Diva", "Why", 1992);
-            var result = await dut.SearchReferenceDb("AC/DC", "Dirty Deeds");
+            var result = await dut.SearchReferenceDb("AC/DC%Dirty Deeds");
             Assert.NotEmpty(result);
             Assert.Equal("Dirty Deeds Done Dirt Cheap", result[0].Title);
         }

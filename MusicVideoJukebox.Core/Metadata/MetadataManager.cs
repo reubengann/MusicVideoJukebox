@@ -92,9 +92,9 @@ namespace MusicVideoJukebox.Core.Metadata
             return shuffledTracks;
         }
 
-        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        public Task<List<SearchResult>> SearchReferenceDb(string queryString)
         {
-            return referenceDataRepo.SearchReferenceDb(artist, title);
+            return referenceDataRepo.SearchReferenceDb(queryString);
         }
     }
 

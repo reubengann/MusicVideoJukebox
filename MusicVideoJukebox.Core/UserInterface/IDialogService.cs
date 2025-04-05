@@ -24,7 +24,7 @@ namespace MusicVideoJukebox.Core.UserInterface
     public class MetadataMatchDialogResult
     {
         public bool Accepted { get; set; }
-        public SearchResult? ScoredMetadata { get; set; }
+        public VideoMetadata? ScoredMetadata { get; set; }
     }
 
     public interface IDialogService

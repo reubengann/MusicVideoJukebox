@@ -61,7 +61,7 @@ namespace MusicVideoJukebox.Test.Fakes
             throw new NotImplementedException();
         }
 
-        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        public Task<List<SearchResult>> SearchReferenceDb(string queryString)
         {
             SearchCount++;
             return Task.FromResult(ScoredCandidates);

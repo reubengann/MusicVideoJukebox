@@ -26,6 +26,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
+            
             <DataGrid
                 AutoGenerateColumns="False" 
                 SelectionMode="Single" 
@@ -42,7 +43,10 @@
                     <DataGridTextColumn Header="Year" Binding="{Binding FirstReleaseDateYear}"/>
                 </DataGrid.Columns>
             </DataGrid>
-
+            <mah:ProgressRing IsActive="{Binding IsLoading}" Width="50" Height="50" Grid.Row="0"
+Grid.ColumnSpan="2"
+      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            
             <Grid Grid.Row="1" Margin="5" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -56,31 +60,30 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Grid.Column="0" Content="Artist" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchArtist, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding EntryArtist, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Title" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding EntryTitle, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Album" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding SearchAlbum, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding EntryAlbum, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                 <Label Grid.Row="3" Grid.Column="0" Content="Year" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding SearchYear, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding EntryYear, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
             </Grid>
 
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <Label>Query</Label>
-                <TextBox Margin="5, 0"/>
+                <TextBox Margin="5, 0" Text="{Binding QueryString, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <UniformGrid Rows="1" Grid.Column="1" Grid.Row="2">
                 <Button Margin="5" Command="{Binding SearchCommand}">Search</Button>
-                <Button Margin="5" Command="{Binding SelectCommand}">Save</Button>
+                <Button Margin="5" Command="{Binding SaveCommand}">Save</Button>
                 <Button Margin="5" Command="{Binding CancelCommand}">Cancel</Button>
             </UniformGrid>
 
-            <mah:ProgressRing IsActive="{Binding IsLoading}" Width="50" Height="50" Grid.RowSpan="2" Grid.ColumnSpan="2" 
-                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            
         </Grid>
     </Viewbox>
 </Window>

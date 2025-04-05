@@ -9,8 +9,6 @@ namespace MusicVideoJukebox.Core.ViewModels
     {
         private readonly VideoMetadata metadata;
         private readonly IMetadataManager metadataManager;
-        private string searchArtist;
-        private string searchTitle;
         private bool isLoading;
         private int windowHeight;
         private int windowWidth;
@@ -20,31 +18,32 @@ namespace MusicVideoJukebox.Core.ViewModels
         public int WindowHeight { get => windowHeight; set => SetProperty(ref windowHeight, value); }
         public int WindowWidth { get => windowWidth; set => SetProperty(ref windowWidth, value); }
         public ObservableCollection<SearchResult> Candidates { get; set; } = [];
-        public SearchResult? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); SelectCommand.RaiseCanExecuteChanged(); } }
+        public SearchResult? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
 
+        private string queryString;
+        public string QueryString { get => queryString; set => SetProperty(ref queryString, value); }
+        
         public bool Accepted { get; set; } = false;
 
         public ICommand SearchCommand { get; }
         public ICommand CancelCommand { get; }
-        public DelegateCommand SelectCommand { get; }
+        public DelegateCommand SaveCommand { get; }
+        public VideoMetadata Metadata => metadata;
 
-        public string SearchArtist { get => searchArtist; set { SetProperty(ref searchArtist, value); } }
-        public string SearchTitle { get => searchTitle; set => SetProperty(ref searchTitle, value); }
-        public bool IsLoading
-        {
-            get => isLoading;
-            set => SetProperty(ref isLoading, value);
-        }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         public MatchDialogViewModel(VideoMetadata metadata, IMetadataManager metadataManager)
         {
             SearchCommand = new DelegateCommand(SearchAgain);
-            SelectCommand = new DelegateCommand(Select, CanSelect);
+            SaveCommand = new DelegateCommand(Save, CanSave);
             CancelCommand = new DelegateCommand(Cancel);
+            entryArtist = metadata.Artist;
+            entryTitle = metadata.Title;
+            entryAlbum = metadata.Album ?? "";
+            entryYear = metadata.ReleaseYear?.ToString() ?? "";
+            queryString = $"{metadata.Artist}%{metadata.Title}";
             this.metadata = metadata;
             this.metadataManager = metadataManager;
-            searchArtist = metadata.Artist;
-            searchTitle = metadata.Title;
         }
 
         private void Cancel()
@@ -52,13 +51,25 @@ namespace MusicVideoJukebox.Core.ViewModels
             RequestClose?.Invoke();
         }
 
-        private bool CanSelect()
+        private bool CanSave()
         {
-            return SelectedItem != null;
+            return !string.IsNullOrEmpty(EntryArtist)
+                && !string.IsNullOrEmpty(EntryTitle)
+                && (string.IsNullOrEmpty(EntryYear) || int.TryParse(EntryYear, out _));
         }
 
-        private void Select()
+
+        private async void Save()
         {
+            if (!CanSave())
+            {
+                return;
+            }
+            metadata.Artist = EntryArtist;
+            metadata.Title = EntryTitle;
+            metadata.Album = EntryAlbum;
+            metadata.ReleaseYear = string.IsNullOrEmpty(EntryYear) ? null : int.Parse(EntryYear);
+            await metadataManager.VideoRepo.UpdateMetadata(metadata);
             Accepted = true;
             RequestClose?.Invoke();
         }
@@ -79,7 +90,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
             try
             {
-                var results = await metadataManager.SearchReferenceDb(SearchArtist, SearchTitle);
+                var results = await metadataManager.SearchReferenceDb(QueryString);
                 Candidates.Clear();
                 foreach (var item in results)
                 {
@@ -91,5 +102,21 @@ namespace MusicVideoJukebox.Core.ViewModels
                 IsLoading = false;
             }
         }
+
+        private string entryArtist;
+
+        public string EntryArtist { get => entryArtist; set { SetProperty(ref entryArtist, value); SaveCommand.RaiseCanExecuteChanged(); } }
+
+        private string entryTitle;
+
+        public string EntryTitle { get => entryTitle; set { SetProperty(ref entryTitle, value); SaveCommand.RaiseCanExecuteChanged(); } }
+
+        private string entryAlbum;
+
+        public string EntryAlbum { get => entryAlbum; set => SetProperty(ref entryAlbum, value); }
+
+        private string entryYear;
+
+        public string EntryYear { get => entryYear; set { SetProperty(ref entryYear, value); SaveCommand.RaiseCanExecuteChanged(); } }
     }
 }

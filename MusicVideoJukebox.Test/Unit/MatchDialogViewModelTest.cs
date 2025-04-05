@@ -18,8 +18,7 @@ namespace MusicVideoJukebox.Test.Unit
         [Fact]
         public void Prepopulates()
         {
-            Assert.Equal("artist1", dut.SearchArtist);
-            Assert.Equal("track1", dut.SearchTitle);
+            Assert.Equal("artist1%track1", dut.QueryString);
         }
 
         [Fact]
@@ -39,64 +38,6 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             dut.SearchCommand.Execute(null);
             Assert.Equal(2, metadataManager.SearchCount);
-        }
-
-
-        [Fact]
-        public async Task CannotSelectCommandIfNothingSelected()
-        {
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
-            await dut.Initialize();
-            Assert.False(dut.SelectCommand.CanExecute());
-        }
-
-        [Fact]
-        public async Task CanSelectCommandIfSomethingSelected()
-        {
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
-            await dut.Initialize();
-            dut.SelectedItem = dut.Candidates.First();
-            Assert.True(dut.SelectCommand.CanExecute());
-        }
-
-        [Fact]
-        public async Task ClosesDialogWhenSelecting()
-        {
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
-            await dut.Initialize();
-            dut.SelectedItem = dut.Candidates.First();
-            Assert.True(dut.SelectCommand.CanExecute());
-            bool closed = false;
-            dut.RequestClose += () => closed = true;
-            dut.SelectCommand.Execute();
-            Assert.True(closed);
-        }
-
-        [Fact]
-        public async Task AcceptedWhenSelecting()
-        {
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
-            await dut.Initialize();
-            dut.SelectedItem = dut.Candidates.First();
-            Assert.True(dut.SelectCommand.CanExecute());
-            dut.SelectCommand.Execute();
-            Assert.True(dut.Accepted);
-        }
-
-        [Fact]
-        public async Task NoAcceptWhenCanceling()
-        {
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album1", Artist = "artist1", ReleaseYear = 1901, Title = "track1" });
-            metadataManager.ScoredCandidates.Add(new SearchResult { AlbumTitle = "album2", Artist = "artist2", ReleaseYear = 1902, Title = "track2" });
-            await dut.Initialize();
-            dut.SelectedItem = dut.Candidates.First();
-            Assert.True(dut.SelectCommand.CanExecute());
-            dut.CancelCommand.Execute(null);
-            Assert.False(dut.Accepted);
         }
     }
 }

@@ -15,21 +15,19 @@ namespace MusicVideoJukebox.Core.Metadata
             connectionString = $"Data Source={dbPath};Pooling=False;";
         }
 
-        public async Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        public async Task<List<SearchResult>> SearchReferenceDb(string queryString)
         {
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             using var conn = new SQLiteConnection(connectionString);
-            var normalizedArtist = NormalizeString(artist);
-            var normalizedTitle = NormalizeString(title);
-            var query = $"%{normalizedArtist}%{normalizedTitle}%";
+            var normalizedArtist = "%" + string.Join("%", queryString.Split("%").Select(x => NormalizeString(x))) + "%";
             var result = await conn.QueryAsync<SearchResult>(@"
                 select track_name title, artist_name artist, album_title, release_year
                 from tracks t
                 join albums al on t.album_id = al.album_id
                 join artists ar on t.artist_id = ar.artist_id
-                where artist_title like @query
+                where artist_title like @normalizedArtist
                 limit 50
-            ", new { query });
+            ", new { normalizedArtist });
             return result.ToList();
         }
 

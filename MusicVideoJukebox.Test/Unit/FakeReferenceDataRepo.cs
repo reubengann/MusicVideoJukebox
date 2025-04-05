@@ -7,7 +7,7 @@ namespace MusicVideoJukebox.Test.Unit
         public List<SearchResult> ToReturn = [];
 
 
-        public Task<List<SearchResult>> SearchReferenceDb(string artist, string title)
+        public Task<List<SearchResult>> SearchReferenceDb(string queryString)
         {
             return Task.FromResult(ToReturn);
         }

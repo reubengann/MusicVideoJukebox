@@ -76,7 +76,7 @@ namespace MusicVideoJukebox
             var result = dialog.ShowDialog();
             if (vm.Accepted)
             {
-                return new MetadataMatchDialogResult { Accepted = true, ScoredMetadata = vm.SelectedItem };
+                return new MetadataMatchDialogResult { Accepted = true, ScoredMetadata = vm.Metadata };
             }
             else
             {

@@ -16,7 +16,7 @@
         Task<bool> Resync();
         Task<List<PlaylistTrackForViewmodel>> GetPlaylistTracksForViewmodel(int playlistId);
         Task<List<PlaylistTrackForViewmodel>> ShuffleTracks(int playlistId);
-        Task<List<SearchResult>> SearchReferenceDb(string artist, string title);
+        Task<List<SearchResult>> SearchReferenceDb(string query);
 
         IVideoRepo VideoRepo { get; }
     }
