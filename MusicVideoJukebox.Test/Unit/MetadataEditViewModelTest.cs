@@ -43,7 +43,7 @@ namespace MusicVideoJukebox.Test.Unit
             metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.Add(new VideoMetadata { Artist = "artist2", Filename = "filename2", Title = "title2", Status = MetadataStatus.NotDone });
             metadataManagerFactory.ToReturn.SayChangesWereMade = true;
             await dut.Initialize();
-            dut.SelectedItem = dut.MetadataEntries[0];
+            dut.SelectedItem = dut.FilteredMetadataEntries[0];
             dut.EditMetadataCommand.Execute(null);
             Assert.True(dialogService.ShowedMatchDialog);
         }

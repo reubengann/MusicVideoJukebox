@@ -7,33 +7,95 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
 {
-    public class MetadataEntryViewModel : BaseViewModel
+    public class VideoMetadataViewModel : BaseViewModel
     {
-        public int VideoId { get => videoMetadata.VideoId; }
-        public string Filename { get => videoMetadata.Filename; }
-        public string Title { get => videoMetadata.Title; set => SetUnderlyingProperty(videoMetadata.Title, value, v => videoMetadata.Title = v); }
-        public string Artist { get => videoMetadata.Artist; set => SetUnderlyingProperty(videoMetadata.Artist, value, v => videoMetadata.Artist = v); }
-        public string? Album { get => videoMetadata.Album; set => SetUnderlyingProperty(videoMetadata.Album, value, v => videoMetadata.Album = v); }
-        public int? Year { get => videoMetadata.ReleaseYear; set => SetUnderlyingProperty(videoMetadata.ReleaseYear, value, v => videoMetadata.ReleaseYear = v); }
+        private readonly VideoMetadata metadata;
+        public VideoMetadata VideoMetadata => metadata;
+        public VideoMetadataViewModel(VideoMetadata metadata)
+        {
+            this.metadata = metadata;
+        }
+
+        public string Title { get => metadata.Title; set => SetUnderlyingProperty(metadata.Title, value, v => metadata.Title = v); }
+        public string Artist
+        {
+            get => metadata.Artist;
+            set => SetUnderlyingProperty(metadata.Artist, value, v => metadata.Artist = v);
+        }
+        public string? Album
+        {
+            get => metadata.Album;
+            set => SetUnderlyingProperty(metadata.Album, value, v => metadata.Album = v);
+        }
+        public int? ReleaseYear
+        {
+            get => metadata.ReleaseYear;
+            set => SetUnderlyingProperty(metadata.ReleaseYear, value, v => metadata.ReleaseYear = v);
+        }
         public MetadataStatus Status
         {
-            get => videoMetadata.Status;
-            set { videoMetadata.Status = value; SetUnderlyingProperty(videoMetadata.Status, value, v => videoMetadata.Status = v); }
+            get => metadata.Status;
+            set => SetUnderlyingProperty(metadata.Status, value, v => metadata.Status = v);
         }
 
-        public MetadataEntryViewModel(VideoMetadata videoMetadata)
+        internal void RefreshUI()
         {
-            this.videoMetadata = videoMetadata;
+            OnPropertyChanged(nameof(Artist));
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(Album));
+            OnPropertyChanged(nameof(ReleaseYear));
+            OnPropertyChanged(nameof(Status));
         }
-
-        private readonly VideoMetadata videoMetadata;
-
-        public VideoMetadata MetadataObject => videoMetadata;
     }
 
     public class MetadataEditViewModel : AsyncInitializeableViewModel
     {
-        public ObservableCollection<MetadataEntryViewModel> MetadataEntries { get; } = new ObservableCollection<MetadataEntryViewModel>();
+        private ObservableCollection<VideoMetadataViewModel> metadataEntries = new();
+        private ObservableCollection<VideoMetadataViewModel> filteredMetadataEntries = new();
+
+        public ObservableCollection<VideoMetadataViewModel> MetadataEntries
+        {
+            get => metadataEntries;
+            set
+            {
+                if (SetProperty(ref metadataEntries, value))
+                {
+                    FilterMetadataEntries();
+                }
+            }
+        }
+
+        private bool hideCompleteEntries;
+        public bool HideCompleteEntries
+        {
+            get => hideCompleteEntries;
+            set
+            {
+                if (SetProperty(ref hideCompleteEntries, value))
+                {
+                    FilterMetadataEntries();
+                }
+            }
+        }
+
+        private void FilterMetadataEntries()
+        {
+            if (HideCompleteEntries)
+            {
+                FilteredMetadataEntries = [.. MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done )];
+            }
+            else
+            {
+                FilteredMetadataEntries = [.. MetadataEntries];
+            }
+        }
+
+
+        public ObservableCollection<VideoMetadataViewModel> FilteredMetadataEntries
+        {
+            get => filteredMetadataEntries;
+            set => SetProperty(ref filteredMetadataEntries, value);
+        }
 
         public bool IsBusy { get => isBusy; set { isBusy = value; SetProperty(ref isBusy, value); } }
 
@@ -45,9 +107,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IDialogService dialogService;
         private IMetadataManager metadataManager = null!;
         private bool isBusy;
-        private MetadataEntryViewModel? selectedItem;
+        private VideoMetadataViewModel? selectedItem;
 
-        public MetadataEntryViewModel? SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
+        public VideoMetadataViewModel? SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public MetadataEditViewModel(IMetadataManagerFactory metadataManagerFactory, LibraryStore libraryStore, IDialogService dialogService)
         {
@@ -61,18 +123,14 @@ namespace MusicVideoJukebox.Core.ViewModels
         private void LaunchMatchDialog()
         {
             if (SelectedItem == null) return;
-            var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(SelectedItem.MetadataObject, metadataManager));
+            var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(SelectedItem.VideoMetadata, metadataManager));
             if (result.Accepted)
             {
                 ArgumentNullException.ThrowIfNull(result.ScoredMetadata);
                 var scoredMetadata = result.ScoredMetadata;
                 // I think technically this isn't totally needed. The viewmodel does need to be told to update, but I don't think
                 // each field needs to be set because we passed a reference to the constructor.
-                SelectedItem.Artist = scoredMetadata.Artist;
-                SelectedItem.Album = scoredMetadata.Album;
-                SelectedItem.Title = scoredMetadata.Title;
-                SelectedItem.Year = scoredMetadata.ReleaseYear;
-                SelectedItem.Status = MetadataStatus.Done;
+                SelectedItem.RefreshUI();
             }
         }
 
@@ -98,8 +156,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             MetadataEntries.Clear();
             foreach (var entry in metadata)
             {
-                MetadataEntries.Add(new MetadataEntryViewModel(entry));
+                MetadataEntries.Add(new VideoMetadataViewModel(entry));
             }
+            FilterMetadataEntries();
         }
     }
 }

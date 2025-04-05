@@ -35,12 +35,14 @@
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding Candidates}"
                 SelectedItem="{Binding SelectedItem}"
+                CanUserAddRows="False"
+                IsReadOnly="True"
                       >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding TrackName}" Width="200" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding ArtistName}" Width="175"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200" />
+                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="175"/>
                     <DataGridTextColumn Header="Album" Binding="{Binding AlbumTitle}" Width="100"/>
-                    <DataGridTextColumn Header="Year" Binding="{Binding FirstReleaseDateYear}"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding ReleaseYear}"/>
                 </DataGrid.Columns>
             </DataGrid>
             <mah:ProgressRing IsActive="{Binding IsLoading}" Width="50" Height="50" Grid.Row="0"
@@ -73,6 +75,8 @@ Grid.ColumnSpan="2"
             </Grid>
 
             <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label>Filename</Label>
+                <Label Content="{Binding Metadata.Filename}"></Label>
                 <Label>Query</Label>
                 <TextBox Margin="5, 0" Text="{Binding QueryString, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>

@@ -18,7 +18,15 @@ namespace MusicVideoJukebox.Core.ViewModels
         public int WindowHeight { get => windowHeight; set => SetProperty(ref windowHeight, value); }
         public int WindowWidth { get => windowWidth; set => SetProperty(ref windowWidth, value); }
         public ObservableCollection<SearchResult> Candidates { get; set; } = [];
-        public SearchResult? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
+        public SearchResult? SelectedItem { get => selectedItem; set { 
+                SetProperty(ref selectedItem, value);
+                if (selectedItem == null) return;
+                EntryArtist = selectedItem.Artist;
+                EntryTitle = selectedItem.Title;
+                EntryAlbum = selectedItem.AlbumTitle ?? "";
+                EntryYear = selectedItem.ReleaseYear?.ToString() ?? "";
+            } 
+        }
 
         private string queryString;
         public string QueryString { get => queryString; set => SetProperty(ref queryString, value); }
@@ -69,6 +77,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             metadata.Title = EntryTitle;
             metadata.Album = EntryAlbum;
             metadata.ReleaseYear = string.IsNullOrEmpty(EntryYear) ? null : int.Parse(EntryYear);
+            metadata.Status = MetadataStatus.Done;
             await metadataManager.VideoRepo.UpdateMetadata(metadata);
             Accepted = true;
             RequestClose?.Invoke();

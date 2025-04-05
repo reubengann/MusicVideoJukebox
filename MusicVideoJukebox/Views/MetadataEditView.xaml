@@ -25,8 +25,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Editable DataGrid -->
-            <DataGrid Grid.Row="0" ItemsSource="{Binding MetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                <DataGrid Grid.Row="0" ItemsSource="{Binding FilteredMetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                       SelectedItem="{Binding SelectedItem}"
                       Padding="5" SelectionMode="Single" SelectionUnit="FullRow">
                 <DataGrid.Columns>
@@ -49,7 +48,7 @@
                     <DataGridTextColumn Width="300" Header="Artist" Binding="{Binding Artist}" />
                     <DataGridTextColumn Width="300" Header="Title" Binding="{Binding Title}" />
                     <DataGridTextColumn Width="300" Header="Album" Binding="{Binding Album}" />
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}">
+                    <DataGridTextColumn Header="Year" Binding="{Binding ReleaseYear}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -65,7 +64,8 @@
 
             <!-- Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                <Button Content="Edit" Command="{Binding EditMetadataCommand}" Margin="5,0" />
+                    <CheckBox Content="Hide Complete Entries" IsChecked="{Binding HideCompleteEntries}" Margin="5,0" />
+                    <Button Content="Edit" Command="{Binding EditMetadataCommand}" Margin="5,0" />
                 <Button Content="Refresh Folder" Command="{Binding RefreshDatabaseCommand}" Margin="5,0" />
             </StackPanel>
         </Grid>
