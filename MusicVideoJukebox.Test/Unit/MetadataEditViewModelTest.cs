@@ -46,7 +46,7 @@ namespace MusicVideoJukebox.Test.Unit
             Assert.True(dut.MetadataEntries[0].IsModified);
             dut.SaveChangesCommand.Execute();
             Assert.False(dialogService.ShowedError);
-            Assert.Single(metadataManagerFactory.ToReturn.MetadataEntriesUpdated);
+            Assert.Single(metadataManagerFactory.ToReturn.ConcreteVideoRepo.UpdatedEntries);
             Assert.False(dut.MetadataEntries[0].IsModified);
             Assert.False(dut.SaveChangesCommand.CanExecute());
         }

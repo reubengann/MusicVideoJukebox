@@ -46,9 +46,9 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-                    <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
-                    <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
+                    <DataGridTextColumn Width="300" Header="Artist" Binding="{Binding Artist}" />
+                    <DataGridTextColumn Width="300" Header="Title" Binding="{Binding Title}" />
+                    <DataGridTextColumn Width="300" Header="Album" Binding="{Binding Album}" />
                     <DataGridTextColumn Header="Year" Binding="{Binding Year}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -59,7 +59,7 @@
                     </DataGridTextColumn>
 
 
-                    <DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />
+                    <!--<DataGridTextColumn Header="Filename" Binding="{Binding Filename}" IsReadOnly="True" />-->
                 </DataGrid.Columns>
                     <DataGrid.ContextMenu>
                         <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

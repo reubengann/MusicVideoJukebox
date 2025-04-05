@@ -8,7 +8,6 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public List<string> CreatedMetadataFolders { get; internal set; } = [];
         
-        public List<VideoMetadata> MetadataEntriesUpdated { get; internal set; } = [];
 
         public IVideoRepo VideoRepo => videoRepo;
         public FakeVideoRepo ConcreteVideoRepo => videoRepo;

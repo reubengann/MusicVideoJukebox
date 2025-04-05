@@ -124,7 +124,7 @@ namespace MusicVideoJukebox.Core.Metadata
         video_id integer not null,
         tag_id integer not null,
         foreign key (video_id) references video (video_id) on delete cascade,
-        foreign key (tag_id) references tags (tag_id) on delete cascade,
+        foreign key (tag_id) references tag (tag_id) on delete cascade,
         primary key (video_id, tag_id)
         )
         ");
@@ -369,7 +369,7 @@ AND name IN ('video');");
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync(@"
-        INSERT INTO video_tags (video_id, tag_id) 
+        INSERT INTO video_tag (video_id, tag_id) 
         VALUES (@videoId, @tagId) 
         ON CONFLICT(video_id, tag_id) DO NOTHING;", new { videoId, tagId });
         }
@@ -378,7 +378,7 @@ AND name IN ('video');");
         {
             using var conn = new SQLiteConnection(connectionString);
             await conn.ExecuteAsync(@"
-        DELETE FROM video_tags 
+        DELETE FROM video_tag 
         WHERE video_id = @videoId AND tag_id = @tagId;", new { videoId, tagId });
         }
 
@@ -387,8 +387,8 @@ AND name IN ('video');");
             using var conn = new SQLiteConnection(connectionString);
             return (await conn.QueryAsync<string>(@"
         SELECT t.name 
-        FROM tags t
-        JOIN video_tags vt ON t.tag_id = vt.tag_id
+        FROM tag t
+        JOIN video_tag vt ON t.tag_id = vt.tag_id
         WHERE vt.video_id = @videoId;", new { videoId })).ToList();
         }
     }
