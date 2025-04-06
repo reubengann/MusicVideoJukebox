@@ -49,9 +49,19 @@ namespace MusicVideoJukebox.Core.ViewModels
             entryTitle = metadata.Title;
             entryAlbum = metadata.Album ?? "";
             entryYear = metadata.ReleaseYear?.ToString() ?? "";
-            queryString = $"{metadata.Artist}%{metadata.Title}";
+            queryString = $"{RemoveThePrefix(metadata.Artist)}%{RemoveThePrefix(metadata.Title)}";
             this.metadata = metadata;
             this.metadataManager = metadataManager;
+        }
+
+        private string RemoveThePrefix(string input)
+        {
+            const string prefix = "the ";
+            if (input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return input.Substring(prefix.Length);
+            }
+            return input;
         }
 
         private void Cancel()

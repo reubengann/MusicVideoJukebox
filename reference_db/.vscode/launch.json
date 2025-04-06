@@ -10,6 +10,15 @@
       "console": "integratedTerminal",
       "justMyCode": true,
       "args": ["create", "--recreate"]
+    },
+    {
+      "name": "deploy",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "make_reference_db.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["deploy"]
     }
   ]
 }

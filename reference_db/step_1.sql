@@ -60,8 +60,8 @@ LEFT JOIN
 JOIN us_albums ua ON rg.id = ua.album_id
 WHERE
     r.status = 1 --Official releases
-    AND (r.comment = '' or r."comment" ilike 'explicit'); -- Standard releases only
-
+    AND (r.comment = '' or r."comment" ilike 'explicit') -- Standard releases only
+    AND (rg.name not ilike '%What I Call Music%');
 -- Individual corrections
 UPDATE a_first_pass SET track_name = 'World (The Price of Love)' where recording_artist_id = 846 and track_name = 'World';
 UPDATE a_first_pass SET track_name = REGEXP_REPLACE(track_name, '^92°(.*)', '92°F\1') where recording_artist_id = 2127 and track_name like '92°%' AND track_name NOT LIKE '92°F%';

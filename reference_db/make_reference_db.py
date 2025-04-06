@@ -1,4 +1,7 @@
 import argparse
+import os
+from pathlib import Path
+import shutil
 import sys
 
 from src.create_db import create_db
@@ -14,6 +17,7 @@ def main() -> int:
 
     # Add commands
     create_p = subp.add_parser("create", help="Create DB")
+    create_p = subp.add_parser("deploy")
     dump_p = subp.add_parser("dump", help="Dump Song Ids")
 
     # Add command line arguments to the commands
@@ -26,6 +30,12 @@ def main() -> int:
             return 0
         case "dump":
             dump_ids()
+            return 0
+        case "deploy":
+            here = Path(".")
+            target_folder = here.resolve().parent / "MusicVideoJukeBox"
+            db_file = Path("reference.sqlite")
+            shutil.copy2(db_file, target_folder)
             return 0
         case _:
             parser.print_help()

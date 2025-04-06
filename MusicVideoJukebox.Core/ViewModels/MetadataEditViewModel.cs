@@ -82,7 +82,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             if (HideCompleteEntries)
             {
-                FilteredMetadataEntries = [.. MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done )];
+                FilteredMetadataEntries = [.. MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done)];
             }
             else
             {
@@ -124,7 +124,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void DoAllUndone()
         {
-            foreach(var entry in MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
+            foreach (var entry in MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
             {
                 var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(entry.VideoMetadata, metadataManager));
                 if (result.Accepted)
@@ -174,11 +174,21 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             var metadata = await metadataManager.VideoRepo.GetAllMetadata();
             MetadataEntries.Clear();
-            foreach (var entry in metadata)
+            foreach (var entry in metadata.OrderBy(x => RemoveThe(x.Artist)).ThenBy(x => x.Title))
             {
                 MetadataEntries.Add(new VideoMetadataViewModel(entry));
             }
             FilterMetadataEntries();
+        }
+
+        private string RemoveThe(string input)
+        {
+            const string prefix = "the ";
+            if (input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return input.Substring(prefix.Length);
+            }
+            return input;
         }
     }
 }
