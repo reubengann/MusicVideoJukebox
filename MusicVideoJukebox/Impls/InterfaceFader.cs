@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
@@ -61,6 +62,7 @@ namespace MusicVideoJukebox
             {
                 element.BeginAnimation(opacityProperty, fadeOutAnimation);
             }
+            Mouse.OverrideCursor = Cursors.None;
         }
 
         public void DisableFading()
@@ -80,6 +82,7 @@ namespace MusicVideoJukebox
         {
             if (!enabled) return;
             MaybeFadeButtonsIn();
+            Mouse.OverrideCursor = null;
         }
 
         private void MaybeFadeButtonsIn()

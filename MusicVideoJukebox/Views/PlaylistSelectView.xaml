@@ -34,7 +34,7 @@
             </Button>
 
             <ScrollViewer x:Name="scrollviewer" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,0,0,90">
-                <ItemsControl ItemsSource="{Binding Items}" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <ItemsControl ItemsSource="{Binding Items}" HorizontalAlignment="Center" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -42,9 +42,9 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <mah:Tile Width="250" Height="380" Cursor="Hand" 
+                            <mah:Tile Width="250" Height="380" Cursor="Hand"
                                    TitleFontSize="16" HorizontalTitleAlignment="Center" FontWeight="Bold"
-                                      >
+                                     VerticalContentAlignment="Top" >
                                 <mah:Tile.Style>
                                     <Style TargetType="mah:Tile">
                                         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}" />
@@ -65,7 +65,7 @@
                                     <Image Source="{Binding ImagePath}" Width="140" Height="140"/>
                                     <TextBlock Text="{Binding Name}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
                                                TextWrapping="Wrap" TextAlignment="Center" Margin="5" />
-                                    <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                                    <TextBlock Width="140" Text="{Binding Description}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
                                                TextWrapping="Wrap" TextAlignment="Center" Margin="5" />
                                 </StackPanel>
                             </mah:Tile>
