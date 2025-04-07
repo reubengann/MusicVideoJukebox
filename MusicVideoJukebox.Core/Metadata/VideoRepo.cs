@@ -339,9 +339,9 @@ WHERE playlist_id = @id
             using var conn = new SQLiteConnection(connectionString);
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             return (await conn.QueryAsync<PlaylistStatus>(@"
-select A.playlist_id, coalesce(song_order, 1) song_order
+select B.playlist_id, song_order
 from active_playlist A 
-left JOIN playlist_status B ON A.playlist_id = B.playlist_id
+JOIN playlist_status B ON A.playlist_id = B.playlist_id
 ")).First();
         }
 
