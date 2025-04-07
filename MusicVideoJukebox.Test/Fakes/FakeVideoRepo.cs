@@ -1,11 +1,11 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
-using Xunit.Sdk;
 
 namespace MusicVideoJukebox.Test.Fakes
 {
     internal class FakeVideoRepo : IVideoRepo
     {
         public bool TablesCreated = false;
+        public bool RanTableCreate = false;
         public List<VideoMetadata> MetadataEntries = [];
         public List<VideoMetadata> UpdatedEntries = [];
         public List<Tuple<int, int>> AppendedToPlaylist = [];
@@ -49,6 +49,7 @@ namespace MusicVideoJukebox.Test.Fakes
         public async Task InitializeDatabase()
         {
             await Task.CompletedTask;
+            RanTableCreate = true;
             TablesCreated = true;
         }
 
@@ -179,7 +180,7 @@ namespace MusicVideoJukebox.Test.Fakes
 
         public Task UpdatePlaylistTrackOrderBatch(List<(int playlistId, int videoId, int order)> updates)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

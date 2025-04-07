@@ -25,7 +25,32 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.EnsureCreated();
             Assert.True(videoRepo.TablesCreated);
             Assert.Equal(2, videoRepo.MetadataEntries.Count);
-            Assert.Equal(new[] { "artist 1", "artist 2" }.ToHashSet(), videoRepo.MetadataEntries.Select(x => x.Artist).ToHashSet());
+            Assert.Equal(["artist 1", "artist 2"], videoRepo.MetadataEntries.Select(x => x.Artist).ToHashSet());
+        }
+
+        [Fact]
+        public async Task CanGetPlaylistTracksForViewmodel()
+        {
+            videoRepo.PlaylistTracks.Add(new PlaylistTrack { VideoId = 1, PlaylistId = 1, Artist = "", FileName = "", Title =""});
+            videoRepo.PlaylistTracks.Add(new PlaylistTrack { VideoId = 1, PlaylistId = 1, Artist = "", FileName = "", Title =""});
+            var result = await dut.GetPlaylistTracksForViewmodel(1);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public async Task WhenShufflingAlsoResetPlayOrder()
+        {
+            videoRepo.CurrentActivePlaylistStatus.SongOrder = 5;
+            await dut.ShuffleTracks(1);
+            Assert.Equal(1, videoRepo.CurrentActivePlaylistStatus.SongOrder);
+        }
+
+        [Fact]
+        public async Task DoesNotRunTableCreateIfAlreadyInitialized()
+        {
+            videoRepo.TablesCreated = true;
+            await dut.EnsureCreated();
+            Assert.False(videoRepo.RanTableCreate);
         }
 
         [Fact]

@@ -1,28 +1,13 @@
-﻿using FuzzySharp.PreProcess;
-using FuzzySharp;
-
-namespace MusicVideoJukebox.Core.Metadata
+﻿namespace MusicVideoJukebox.Core.Metadata
 {
-    public class MetadataManager : IMetadataManager
+    public class MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService, IReferenceDataRepo referenceDataRepo) : IMetadataManager
     {
-        private readonly string filepath;
-        private readonly string folderPath;
-        private readonly IVideoRepo videoRepo;
-        private readonly IFileSystemService fileSystemService;
-        private readonly IReferenceDataRepo referenceDataRepo;
+        private readonly string folderPath = folderPath;
+        private readonly IVideoRepo videoRepo = videoRepo;
+        private readonly IFileSystemService fileSystemService = fileSystemService;
+        private readonly IReferenceDataRepo referenceDataRepo = referenceDataRepo;
 
         public IVideoRepo VideoRepo => videoRepo;
-
-        const int similarityThreshold = 80;
-
-        public MetadataManager(string folderPath, IVideoRepo videoRepo, IFileSystemService fileSystemService, IReferenceDataRepo referenceDataRepo)
-        {
-            this.folderPath = folderPath;
-            filepath = Path.Combine(folderPath, "meta.db");
-            this.videoRepo = videoRepo;
-            this.fileSystemService = fileSystemService;
-            this.referenceDataRepo = referenceDataRepo;
-        }
 
         public async Task EnsureCreated()
         {
@@ -91,6 +76,7 @@ namespace MusicVideoJukebox.Core.Metadata
                 order++;
             }
             await VideoRepo.UpdatePlaylistTrackOrderBatch(updates);
+            await VideoRepo.UpdatePlayStatus(playlistId, 1);
             return shuffledTracks;
         }
 
