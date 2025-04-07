@@ -391,5 +391,30 @@ AND name IN ('video');");
         JOIN video_tag vt ON t.tag_id = vt.tag_id
         WHERE vt.video_id = @videoId;", new { videoId })).ToList();
         }
+
+        public async Task UpdatePlaylistTrackOrderBatch(List<(int playlistId, int videoId, int order)> updates)
+        {
+            using var conn = new SQLiteConnection(connectionString);
+            await conn.OpenAsync();
+            using var transaction = await conn.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var update in updates)
+                {
+                    await conn.ExecuteAsync(
+                        "UPDATE playlist_video SET play_order = @order WHERE video_id = @videoId and playlist_id = @playlistId",
+                        new { update.playlistId, update.videoId, update.order },
+                        transaction);
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

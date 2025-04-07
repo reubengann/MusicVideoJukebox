@@ -176,5 +176,10 @@ namespace MusicVideoJukebox.Test.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdatePlaylistTrackOrderBatch(List<(int playlistId, int videoId, int order)> updates)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

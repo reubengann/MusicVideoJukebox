@@ -148,8 +148,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 ArgumentNullException.ThrowIfNull(result.ScoredMetadata);
                 var scoredMetadata = result.ScoredMetadata;
-                // I think technically this isn't totally needed. The viewmodel does need to be told to update, but I don't think
-                // each field needs to be set because we passed a reference to the constructor.
                 SelectedItem.RefreshUI();
             }
         }

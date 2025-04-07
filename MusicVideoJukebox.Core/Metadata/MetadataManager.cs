@@ -83,12 +83,14 @@ namespace MusicVideoJukebox.Core.Metadata
             var shuffledTracks = tracks.OrderBy(_ => Guid.NewGuid()).ToList();
 
             int order = 1;
+            var updates = new List<(int playlistId, int videoId, int order)>();
             foreach (var track in shuffledTracks)
             {
-                await VideoRepo.UpdatePlaylistTrackOrder(playlistId, track.VideoId, order);
+                updates.Add((playlistId, track.VideoId, order));
                 track.PlayOrder = order;
                 order++;
             }
+            await VideoRepo.UpdatePlaylistTrackOrderBatch(updates);
             return shuffledTracks;
         }
 

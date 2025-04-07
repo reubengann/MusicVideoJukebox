@@ -14,6 +14,7 @@
         Task<int> AppendSongToPlaylist(int playlistId, int videoId);
         Task<int> GetTrackCountForPlaylist(int playlistId);
         Task UpdatePlaylistTrackOrder(int playlistId, int videoId, int order);
+        Task UpdatePlaylistTrackOrderBatch(List<(int playlistId, int videoId, int order)> updates);
         Task DeleteFromPlaylist(int playlistId, int videoId);
         Task<List<PlaylistTrack>> GetPlaylistTracks(int playlistId);
         Task UpdateAnalysisVolume(int videoId, double? lufs);
