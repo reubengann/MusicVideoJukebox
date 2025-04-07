@@ -247,6 +247,28 @@ namespace MusicVideoJukebox.Test.Integration
         }
 
         [Fact]
+        public async Task CaRemovePlaylistTracks()
+        {
+            await dut.InitializeDatabase();
+            WithVideo(1, "", "title 1", "artist 1", "album 1", MetadataStatus.Done, year: 1962);
+            WithVideo(2, "", "title 2", "artist 2", "album 2", MetadataStatus.Done);
+            WithVideo(3, "video3.mp4", "title 3", "artist 3", "album 3", MetadataStatus.Done);
+            await dut.AppendSongToPlaylist(1, 1);
+            await dut.AppendSongToPlaylist(1, 2);
+            await dut.AppendSongToPlaylist(1, 3);
+            await dut.DeleteFromPlaylist(1, 2);
+            var tracks = await dut.GetPlaylistTracks(1);
+            Assert.Equal(2, tracks.Count);
+            Assert.Equal("album 1", tracks[0].Album);
+            Assert.Equal(1, tracks[0].PlaylistId);
+            Assert.Equal(1962, tracks[0].ReleaseYear);
+            Assert.Equal("artist 3", tracks[1].Artist);
+            Assert.Equal(3, tracks[1].VideoId);
+            Assert.Equal(1, tracks[1].PlaylistId);
+            Assert.Equal(2, tracks[1].PlayOrder);
+        }
+
+        [Fact]
         public async Task CanGetAnalysisResults()
         {
             await dut.InitializeDatabase();
