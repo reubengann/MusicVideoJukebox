@@ -23,6 +23,9 @@ namespace MusicVideoJukebox.Core.ViewModels
         bool scrubbedRecently = false;
         bool isScrubbing = false;
         bool infoDisplayed = false;
+        double adjustedVideoLength = 0;
+        double leadIn = 0;
+        double leadOut = 0;
 
         public VideoInfoViewModel? InfoViewModel { get; private set; }
         public double Volume
@@ -45,7 +48,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public double VideoLengthSeconds => mediaPlayer.LengthSeconds;
         public double VideoPositionTime
         {
-            get => mediaPlayer.CurrentTimeSeconds;
+            get => mediaPlayer.CurrentTimeSeconds - leadIn;
             set
             {
                 if (scrubbedRecently) return;
@@ -96,9 +99,14 @@ namespace MusicVideoJukebox.Core.ViewModels
             scrubDebounceTimer.Tick += ScrubDebounceTimer_Tick;
 
             fadesWhenInactive.VisibilityChanged += FadesWhenInactive_VisibilityChanged;
-
+            mediaPlayer.MediaOpened += MediaPlayer_MediaOpened; ;
             // TEMP
             Volume = 1;
+        }
+
+        private void MediaPlayer_MediaOpened()
+        {
+            adjustedVideoLength = VideoLengthSeconds - leadIn - leadOut;
         }
 
         private void FadesWhenInactive_VisibilityChanged(object? sender, VisibilityChangedEventArgs e)
@@ -150,7 +158,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (isScrubbing) return;
 
             bool isInStartGutter = VideoPositionTime > VIDEO_INFO_START_GUTTER && VideoPositionTime < VIDEO_INFO_END_GUTTER;
-            bool isInEndGutter = VideoPositionTime > VideoLengthSeconds - VIDEO_INFO_END_GUTTER && VideoPositionTime < VideoLengthSeconds - VIDEO_INFO_START_GUTTER;
+            bool isInEndGutter = VideoPositionTime > adjustedVideoLength - VIDEO_INFO_END_GUTTER && VideoPositionTime < VideoLengthSeconds - VIDEO_INFO_START_GUTTER;
 
             if (infoDisplayed && !(isInStartGutter || isInEndGutter))
             {
@@ -161,6 +169,10 @@ namespace MusicVideoJukebox.Core.ViewModels
             {
                 mediaPlayer.FadeInfoIn();
                 infoDisplayed = true;
+            }
+            if (VideoPositionTime >= adjustedVideoLength)
+            {
+                DonePlaying();
             }
 
             OnPropertyChanged(nameof(VideoPositionTime));
@@ -193,10 +205,16 @@ namespace MusicVideoJukebox.Core.ViewModels
             CurrentPlaylistTrack = track;
             if (track == null) return;
             mediaPlayer.SetSource(new Uri(Path.Combine(libraryStore.CurrentState.LibraryPath, track.FileName)));
+            adjustedVideoLength = double.MaxValue; // will be set once loaded
+            leadIn = track.LeadIn;
+            leadOut = track.LeadOut;
             InfoViewModel = new VideoInfoViewModel(track);
+            mediaPlayer.CurrentTimeSeconds = track.LeadIn;
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
         }
+
+
 
         public async Task Recheck()
         {

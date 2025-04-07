@@ -10,6 +10,8 @@ namespace MusicVideoJukebox.Test.Unit
         public string FilePlaying = "";
         public bool ShowingInfo = false;
 
+        public event Action? MediaOpened;
+
         public double LengthSeconds => InternalLength;
 
         public double CurrentTimeSeconds { get => InternalPosition; set { InternalPosition = value; } }

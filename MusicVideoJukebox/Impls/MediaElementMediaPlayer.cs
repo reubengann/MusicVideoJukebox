@@ -7,11 +7,24 @@ using MusicVideoJukebox.Views;
 
 namespace MusicVideoJukebox
 {
-    public class MediaElementMediaPlayer(MediaElement media, VideoInfoDisplay videoInfoDisplay, DependencyProperty opacityProperty) : IMediaPlayer
+    public class MediaElementMediaPlayer : IMediaPlayer
     {
-        private readonly MediaElement media = media;
-        private readonly VideoInfoDisplay videoInfoDisplay = videoInfoDisplay;
-        private readonly DependencyProperty opacityProperty = opacityProperty;
+        private readonly MediaElement media;
+        private readonly VideoInfoDisplay videoInfoDisplay;
+        private readonly DependencyProperty opacityProperty;
+
+        public MediaElementMediaPlayer(MediaElement media, VideoInfoDisplay videoInfoDisplay, DependencyProperty opacityProperty)
+        {
+            this.media = media;
+            this.videoInfoDisplay = videoInfoDisplay;
+            this.opacityProperty = opacityProperty;
+            media.MediaOpened += Media_MediaOpened;
+        }
+
+        private void Media_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            MediaOpened?.Invoke();
+        }
 
         public void SetSource(Uri source) => media.Source = source;
 
@@ -61,5 +74,7 @@ namespace MusicVideoJukebox
             set => media.Position = TimeSpan.FromSeconds(value);
         }
         public double Volume { get => media.Volume; set => media.Volume = value; }
+
+        public event Action? MediaOpened;
     }
 }

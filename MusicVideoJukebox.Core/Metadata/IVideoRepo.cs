@@ -49,6 +49,8 @@
         public string? Album { get; set; }
         public int? ReleaseYear { get; set; }
         required public string FileName { get; set; }
+        public float LeadIn { get; set; } = 0;
+        public float LeadOut { get; set; } = 0;
     }
 
     public class PlaylistTrackForViewmodel

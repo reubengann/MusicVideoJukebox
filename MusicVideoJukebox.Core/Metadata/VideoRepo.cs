@@ -299,7 +299,7 @@ WHERE playlist_id = @id
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             using var conn = new SQLiteConnection(connectionString);
             var rows = await conn.QueryAsync<PlaylistTrack>(@"
-                SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title, B.album, B.release_year, B.filename
+                SELECT playlist_video_id, playlist_id, A.video_id, play_order, artist, B.title, B.album, B.release_year, B.filename, B.lead_in, B.lead_out
                 FROM playlist_video A
                 JOIN video B
                 on A.video_id = B.video_id
