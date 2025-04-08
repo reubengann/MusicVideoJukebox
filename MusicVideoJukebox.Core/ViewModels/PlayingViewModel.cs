@@ -26,6 +26,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         double adjustedVideoLength = 0;
         double leadIn = 0;
         double leadOut = 0;
+        public ICommand RestartPlaylistCommand => restartPlaylistCommand ??= new DelegateCommand(RestartPlaylist);
+
 
         public VideoInfoViewModel? InfoViewModel { get; private set; }
         public double Volume
@@ -88,6 +90,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             PauseCommand = new DelegateCommand(Pause);
             SkipNextCommand = new DelegateCommand(SkipNext);
             SkipPreviousCommand = new DelegateCommand(SkipPrevious);
+            restartPlaylistCommand = new DelegateCommand(RestartPlaylist);
             this.mediaPlayer = mediaElementMediaPlayer;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.metadataManagerFactory = metadataManagerFactory;
@@ -254,6 +257,15 @@ namespace MusicVideoJukebox.Core.ViewModels
             playlistNavigator = new PlaylistNavigator(metadataManager);
             SetSource(await playlistNavigator.Resume());
             currentPlaylistId = playlistNavigator.CurrentPlaylistId;
+        }
+
+        private DelegateCommand restartPlaylistCommand;
+
+        private void RestartPlaylist()
+        {
+            if (playlistNavigator == null) return;
+            mediaPlayer.HideInfoImmediate();
+            SetSource(playlistNavigator.Reset());
         }
     }
 }

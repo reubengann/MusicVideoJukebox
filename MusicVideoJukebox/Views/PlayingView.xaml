@@ -19,6 +19,12 @@
         <local:BoolToColumnConverter x:Key="BoolToMarginConverter" />
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Restart playlist" Command="{Binding RestartPlaylistCommand}"/>
+                <MenuItem Header="Jump To" />
+            </ContextMenu>
+        </Grid.ContextMenu>
         <MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>
         <Grid x:Name="InfoHolder">
 

@@ -16,6 +16,13 @@
         public PlaylistTrack CurrentTrack => CurrentTracks[currentIndex];
         public int SongOrder => currentIndex + 1;
 
+        public PlaylistTrack Reset()
+        {
+            currentIndex = 0;
+            _ = metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
+            return CurrentTrack;
+        }
+
         public PlaylistTrack Next()
         {
             currentIndex = (currentIndex + 1) % CurrentTracks.Count;
