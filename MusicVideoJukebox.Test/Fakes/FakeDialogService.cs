@@ -53,6 +53,11 @@ namespace MusicVideoJukebox.Test.Fakes
             return MatchDialogResultToReturn;
         }
 
+        public void ShowPopupPlaylist(PlaylistTrackSelectionViewModel vm)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ShutDownApp()
         {
         }

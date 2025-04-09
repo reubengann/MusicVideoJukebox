@@ -17,6 +17,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         private readonly IMetadataManagerFactory metadataManagerFactory;
         private readonly IFadesWhenInactive fadesWhenInactive;
         private readonly LibraryStore libraryStore;
+        private readonly IDialogService dialogService;
         IMetadataManager? metadataManager;
         int? currentLibraryId;
         PlaylistNavigator? playlistNavigator;
@@ -26,7 +27,8 @@ namespace MusicVideoJukebox.Core.ViewModels
         double adjustedVideoLength = 0;
         double leadIn = 0;
         double leadOut = 0;
-        public ICommand RestartPlaylistCommand => restartPlaylistCommand ??= new DelegateCommand(RestartPlaylist);
+        public ICommand RestartPlaylistCommand { get; }
+        public ICommand ShowPopupPlaylistCommand { get; }
 
 
         public VideoInfoViewModel? InfoViewModel { get; private set; }
@@ -83,19 +85,23 @@ namespace MusicVideoJukebox.Core.ViewModels
             IUIThreadTimerFactory uIThreadTimerFactory, 
             IMetadataManagerFactory metadataManagerFactory,
             IFadesWhenInactive fadesWhenInactive,
-            LibraryStore libraryStore
+            LibraryStore libraryStore,
+            IDialogService dialogService
             )
         {
             PlayCommand = new DelegateCommand(Play);
             PauseCommand = new DelegateCommand(Pause);
             SkipNextCommand = new DelegateCommand(SkipNext);
             SkipPreviousCommand = new DelegateCommand(SkipPrevious);
-            restartPlaylistCommand = new DelegateCommand(RestartPlaylist);
+            RestartPlaylistCommand = new DelegateCommand(RestartPlaylist);
+            
+            ShowPopupPlaylistCommand = new DelegateCommand(PerformShowPopupPlaylistCommmand);
             this.mediaPlayer = mediaElementMediaPlayer;
             this.uIThreadTimerFactory = uIThreadTimerFactory;
             this.metadataManagerFactory = metadataManagerFactory;
             this.fadesWhenInactive = fadesWhenInactive;
             this.libraryStore = libraryStore;
+            this.dialogService = dialogService;
             progressUpdateTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             scrubDebounceTimer = uIThreadTimerFactory.Create(TimeSpan.FromMilliseconds(500));
             progressUpdateTimer.Tick += ProgressTimerTick;
@@ -147,13 +153,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             if (playlistNavigator == null) return;
             mediaPlayer.HideInfoImmediate();
             SetSource(playlistNavigator.Next());
-        }
-
-        private void LibraryStore_LibraryChanged()
-        {
-            if (libraryStore.CurrentState.LibraryPath == null) return;
-            metadataManager = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-
         }
 
         private void ProgressTimerTick(object? sender, EventArgs e)
@@ -259,13 +258,26 @@ namespace MusicVideoJukebox.Core.ViewModels
             currentPlaylistId = playlistNavigator.CurrentPlaylistId;
         }
 
-        private DelegateCommand restartPlaylistCommand;
-
         private void RestartPlaylist()
         {
             if (playlistNavigator == null) return;
             mediaPlayer.HideInfoImmediate();
             SetSource(playlistNavigator.Reset());
+        }
+
+        private async void PerformShowPopupPlaylistCommmand()
+        {
+            if (playlistNavigator == null) return;
+            fadesWhenInactive.DisableFading();
+            if (metadataManager == null || currentPlaylistId == null) return;
+            var vm = new PlaylistTrackSelectionViewModel(metadataManager);
+            await vm.Load(currentPlaylistId.Value);
+            dialogService.ShowPopupPlaylist(vm);
+            fadesWhenInactive.EnableFading();
+            if (vm.Accepted && vm.SelectedTrack != null)
+            {
+                SetSource(playlistNavigator.Jump(vm.SelectedTrack.PlayOrder));
+            }
         }
     }
 }

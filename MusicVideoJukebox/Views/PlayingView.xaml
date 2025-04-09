@@ -22,7 +22,7 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Restart playlist" Command="{Binding RestartPlaylistCommand}"/>
-                <MenuItem Header="Jump To" />
+                <MenuItem Header="Jump To" Command="{Binding ShowPopupPlaylistCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
         <MediaElement x:Name="media" LoadedBehavior="Manual" UnloadedBehavior="Manual" ScrubbingEnabled="True"/>

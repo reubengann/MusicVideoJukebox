@@ -23,6 +23,13 @@
             return CurrentTrack;
         }
 
+        public PlaylistTrack Jump(int playlistOrder)
+        {
+            currentIndex = playlistOrder - 1;
+            _ = metadataManager.VideoRepo.UpdatePlayStatus(CurrentPlaylistId, SongOrder);
+            return CurrentTrack;
+        }
+
         public PlaylistTrack Next()
         {
             currentIndex = (currentIndex + 1) % CurrentTracks.Count;

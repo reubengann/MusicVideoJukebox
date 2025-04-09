@@ -34,6 +34,7 @@ namespace MusicVideoJukebox.Core.UserInterface
         SingleFilePickerResult PickSingleFile(string filter);
         MetadataMatchDialogResult ShowMatchDialog(MatchDialogViewModel vm);
         void ShowEditPlaylistDetailsDialog(PlaylistDetailsEditDialogViewModel vm);
+        void ShowPopupPlaylist(PlaylistTrackSelectionViewModel vm);
 
         void ShowError(string message);
         void ShutDownApp();

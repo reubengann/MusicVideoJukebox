@@ -26,7 +26,7 @@ namespace MusicVideoJukebox.Test.Unit
             iuiThreadFactory.ToReturn.Add(new FakeUiThreadTimer());
 
             FakeMetadataManagerFactory metadataManagerFactory = new FakeMetadataManagerFactory();
-            vm = new PlayingViewModel(new FakeMediaPlayer2(), iuiThreadFactory, metadataManagerFactory, interfaceFader, new LibraryStore(librarySetRepo, metadataManagerFactory));
+            vm = new PlayingViewModel(new FakeMediaPlayer2(), iuiThreadFactory, metadataManagerFactory, interfaceFader, new LibraryStore(librarySetRepo, metadataManagerFactory), null);
             var serviceProvider = Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
             {
                 services.AddSingleton<FakeAsyncInitializableViewModel>();

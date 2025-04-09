@@ -98,5 +98,15 @@ namespace MusicVideoJukebox
         {
             Application.Current.Shutdown();
         }
+
+        public void ShowPopupPlaylist(PlaylistTrackSelectionViewModel vm)
+        {
+            vm.WindowHeight = (int)(parent.ActualHeight * 0.8);
+            vm.WindowWidth = (int)(parent.ActualWidth * 0.8);
+            var dialog = new PlaylistTrackSelectionDialog(vm);
+            dialog.Owner = parent;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var result = dialog.ShowDialog();
+        }
     }
 }
