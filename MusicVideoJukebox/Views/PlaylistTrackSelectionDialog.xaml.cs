@@ -33,5 +33,18 @@ namespace MusicVideoJukebox.Views
         {
             Close();
         }
+
+        private void TrackDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var viewModel = DataContext as PlaylistTrackSelectionViewModel;
+            if (viewModel?.SelectedTrack != null)
+            {
+                // Trigger the OKCommand logic
+                if (viewModel.OKCommand.CanExecute(null))
+                {
+                    viewModel.OKCommand.Execute(null);
+                }
+            }
+        }
     }
 }

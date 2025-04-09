@@ -53,7 +53,8 @@
           CanUserResizeRows="False"
           CanUserResizeColumns="False"
           CanUserSortColumns="False"
-                      x:Name="TrackDataGrid">
+                      x:Name="TrackDataGrid"
+                      MouseDoubleClick="TrackDataGrid_MouseDoubleClick">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding PlayOrder}" Width="50">
