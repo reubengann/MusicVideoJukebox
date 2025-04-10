@@ -1,12 +1,8 @@
 ﻿using MusicVideoJukebox.Core.ViewModels;
-using System;
 using System.Windows;
 
 namespace MusicVideoJukebox.Views
 {
-    /// <summary>
-    /// Interaction logic for Window1.xaml
-    /// </summary>
     public partial class PlaylistTrackSelectionDialog : Window
     {
         PlaylistTrackSelectionViewModel vm;

@@ -16,12 +16,21 @@ namespace MusicVideoJukebox.Core.ViewModels
         public int? ReleaseYear => meta.ReleaseYear;
         public VideoMetadata Metadata => meta;
 
+        private bool isInPlaylist;
+        public bool IsInPlaylist { 
+            get => isInPlaylist; 
+            set => SetProperty(ref isInPlaylist, value); 
+        }
+
         private bool isSelected;
 
         public bool IsSelected
         {
             get => isSelected;
-            set => SetProperty(ref isSelected, value);
+            set 
+            { 
+                SetProperty(ref isSelected, value); 
+            }
         }
     }
 }

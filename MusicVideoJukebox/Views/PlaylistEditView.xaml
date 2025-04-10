@@ -106,20 +106,25 @@
                             CanUserSortColumns="True"
                             IsReadOnly="True"
                             SelectionMode="Extended"
-                            SelectionUnit="FullRow"
+                            SelectionChanged="DataGrid_SelectionChanged"
                             >
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsInPlaylist}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray5}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <!-- Artist Column -->
-                                <DataGridTextColumn Header="Artist" Binding="{Binding Metadata.Artist}" />
+                                <DataGridTextColumn Header="Artist" Binding="{Binding Metadata.Artist}" Width="180" />
                                 <!-- Title Column -->
-                                <DataGridTextColumn Header="Title" Binding="{Binding Metadata.Title}" />
+                                <DataGridTextColumn Header="Title" Binding="{Binding Metadata.Title}" Width="180"/>
                                 <!-- Year Column -->
-                                <DataGridTextColumn Header="Year" Binding="{Binding Metadata.ReleaseYear}" />
+                                <DataGridTextColumn Header="Year" Binding="{Binding Metadata.ReleaseYear}" Width="70"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
@@ -142,7 +147,9 @@
                         <Label Content="Tracks in Playlist" HorizontalAlignment="Center" FontWeight="Bold" />
                         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding PlaylistTracks}" 
                                   CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="2"
-                                  MaxHeight="400" >
+                                  MaxHeight="400" 
+                                  SelectedItem="{Binding SelectedTrackInPlaylist}"
+                                  >
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="#" Binding="{Binding PlaylistOrder}" Width="30" />
                                 <DataGridTextColumn Header="Title" Binding="{Binding Name}" Width="*" />

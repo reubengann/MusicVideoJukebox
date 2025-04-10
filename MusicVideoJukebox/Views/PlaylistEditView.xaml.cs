@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicVideoJukebox.Core.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,24 @@ namespace MusicVideoJukebox.Views
         public PlaylistEditView()
         {
             InitializeComponent();
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is DataGrid dataGrid)
+            {
+                // Deselect items that were removed
+                foreach (AvailableTrackViewModel item in e.RemovedItems)
+                {
+                    item.IsSelected = false;
+                }
+
+                // Select items that were added
+                foreach (AvailableTrackViewModel item in e.AddedItems)
+                {
+                    item.IsSelected = true;
+                }
+            }
         }
     }
 }

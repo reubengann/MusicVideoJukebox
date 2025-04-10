@@ -24,6 +24,9 @@ namespace MusicVideoJukebox.Core.ViewModels
                 OnPropertyChanged(nameof(PlaylistTracks));
             }
         }
+
+        public PlaylistTrackViewModel? SelectedTrackInPlaylist { get; set; }
+
         public DelegateCommand AddPlaylistCommand { get; }
         public DelegateCommand EditPlaylistDetailsCommand { get; }
         public DelegateCommand DeletePlaylistCommand { get; }
@@ -130,6 +133,18 @@ namespace MusicVideoJukebox.Core.ViewModels
             PlaylistTracks = new ObservableCollection<PlaylistTrackViewModel>(
             tracks.OrderBy(x => x.PlayOrder).Select(track => new PlaylistTrackViewModel(track))
             );
+            var videoIdsInPlaylist = PlaylistTracks.Select(x => x.PlaylistTrack.VideoId).ToHashSet();
+            foreach (var availableTrack in AvailableTracks)
+            {
+                if (videoIdsInPlaylist.Contains(availableTrack.Metadata.VideoId))
+                {
+                    availableTrack.IsInPlaylist = true;
+                }
+                else
+                {
+                    availableTrack.IsInPlaylist = false;
+                }
+            }
         }
 
         public bool IsPlaylistMutable
@@ -145,7 +160,7 @@ namespace MusicVideoJukebox.Core.ViewModels
         public bool CanEditTracks => SelectedPlaylist != null && SelectedPlaylist.Id > 0;
 
         public ObservableCollection<PlaylistViewModel> Playlists { get; set; } = [];
-        public ObservableCollection<AvailableTrackViewModel> AvailableTracks { get; set; } = [];
+        private List<AvailableTrackViewModel> AvailableTracks = [];
         public ObservableCollection<AvailableTrackViewModel> FilteredAvailableTracks { get; set; } = [];
 
         private string availableTracksFilter = string.Empty;
@@ -213,9 +228,21 @@ namespace MusicVideoJukebox.Core.ViewModels
             return true;
         }
 
-        private void DeleteTrackFromPlaylist()
+        private async void DeleteTrackFromPlaylist()
         {
-
+            if (SelectedPlaylist == null || SelectedTrackInPlaylist == null) return;
+            var videoIdToRemove = SelectedTrackInPlaylist.PlaylistTrack.VideoId;
+            await metadataManager.VideoRepo.DeleteFromPlaylist(SelectedPlaylist.Id, videoIdToRemove);
+            await LoadTracksForSelectedPlaylist();
+            if (PlaylistTracks.Any(x => x.PlaylistTrack.VideoId == videoIdToRemove)) return;
+            foreach (var availableTrack in AvailableTracks)
+            {
+                if (videoIdToRemove == availableTrack.Metadata.VideoId)
+                {
+                    availableTrack.IsInPlaylist = true;
+                    break;
+                }
+            }
         }
 
         private bool CanAddTrackToPlaylist()
@@ -227,14 +254,24 @@ namespace MusicVideoJukebox.Core.ViewModels
         private async void AddTracksToPlaylist()
         {
             if (SelectedPlaylist == null) return;
-            var selectedTracks = FilteredAvailableTracks.Where(x => x.IsSelected);
+            var selectedTracks = FilteredAvailableTracks.Where(x => x.IsSelected).ToList();
             int count = PlaylistTracks.Count;
             foreach (var track in selectedTracks)
             {
                 count++;
                 var playlistVideoId = await metadataManager.VideoRepo.AppendSongToPlaylist(SelectedPlaylist.Playlist.PlaylistId, track.Metadata.VideoId);
                 PlaylistTracks.Add(new PlaylistTrackViewModel(new PlaylistTrackForViewmodel { Artist = track.Artist, Title = track.Title, PlaylistId = SelectedPlaylist.Id, PlaylistVideoId = playlistVideoId, PlayOrder = count, VideoId = track.Metadata.VideoId }));
+                foreach (var availableTrack in AvailableTracks)
+                {
+                    if (track.Metadata.VideoId == availableTrack.Metadata.VideoId)
+                    {
+                        availableTrack.IsInPlaylist = true;
+                        break;
+                    }
+                }
             }
+
+            
         }
 
         private bool CanDeletePlaylist()
