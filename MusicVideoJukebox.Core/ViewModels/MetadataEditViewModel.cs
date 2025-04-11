@@ -71,7 +71,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             FilteredMetadataEntries.Clear();
             if (HideCompleteEntries)
             {
-                foreach (var entry in metadataEntries.Where(entry => entry.Status == MetadataStatus.Done))
+                foreach (var entry in metadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
                 {
                     FilteredMetadataEntries.Add(entry);
                 }
