@@ -32,7 +32,7 @@ namespace MusicVideoJukebox.Test.Unit
             await dut.Initialize();
             metadataManagerFactory.ToReturn.ConcreteVideoRepo.MetadataEntries.RemoveAt(1);
             dut.RefreshDatabaseCommand.Execute(null);
-            Assert.Single(dut.MetadataEntries);
+            Assert.Single(dut.FilteredMetadataEntries);
         }
 
         [Fact]
