@@ -12,12 +12,12 @@
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
     <Viewbox>
         <ScrollViewer Height="580">
-            <Grid Width="1050" Height="800" Margin="5">
+            <Grid Width="1050" Height="680" Margin="5">
                 <!-- Row Definitions -->
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="300"/>
+                    <RowDefinition Height="180"/>
                     <!-- Playlist Info -->
-                    <RowDefinition Height="550"/>
+                    <RowDefinition Height="475"/>
                     <!-- Main Content -->
                 </Grid.RowDefinitions>
 
@@ -33,11 +33,15 @@
                     <!-- Playlists List -->
                     <StackPanel Grid.Column="0" Margin="0,0,10,0">
                         <Label Content="Playlists" FontWeight="Bold" />
-                        <ListBox BorderThickness="2" Height="250" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" DisplayMemberPath="Name"/>
+                        <ListBox BorderThickness="2" Height="100" 
+                                 ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}" 
+                                 DisplayMemberPath="Name"
+                                 PreviewMouseWheel="ListBox_PreviewMouseWheel"
+                                 />
                     </StackPanel>
 
                     <!-- Playlist Details -->
-                    <Grid Grid.Column="1" Margin="10,0,0,0">
+                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
@@ -50,7 +54,7 @@
 
                         <!-- Description and Buttons -->
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10">
-                            <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
                                 <TextBlock Text="{Binding SelectedPlaylist.Description}" TextWrapping="Wrap" Margin="0,0,0,10"
                                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                             </ScrollViewer>

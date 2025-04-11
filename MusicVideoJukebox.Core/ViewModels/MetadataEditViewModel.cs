@@ -53,18 +53,6 @@ namespace MusicVideoJukebox.Core.ViewModels
         private ObservableCollection<VideoMetadataViewModel> metadataEntries = new();
         private ObservableCollection<VideoMetadataViewModel> filteredMetadataEntries = new();
 
-        public ObservableCollection<VideoMetadataViewModel> MetadataEntries
-        {
-            get => metadataEntries;
-            set
-            {
-                if (SetProperty(ref metadataEntries, value))
-                {
-                    FilterMetadataEntries();
-                }
-            }
-        }
-
         private bool hideCompleteEntries;
         public bool HideCompleteEntries
         {
@@ -80,13 +68,20 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void FilterMetadataEntries()
         {
+            FilteredMetadataEntries.Clear();
             if (HideCompleteEntries)
             {
-                FilteredMetadataEntries = [.. MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done)];
+                foreach (var entry in metadataEntries.Where(entry => entry.Status == MetadataStatus.Done))
+                {
+                    FilteredMetadataEntries.Add(entry);
+                }
             }
             else
             {
-                FilteredMetadataEntries = [.. MetadataEntries];
+                foreach (var entry in metadataEntries)
+                {
+                    FilteredMetadataEntries.Add(entry);
+                }
             }
         }
 
@@ -124,7 +119,7 @@ namespace MusicVideoJukebox.Core.ViewModels
 
         private void DoAllUndone()
         {
-            foreach (var entry in MetadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
+            foreach (var entry in metadataEntries.Where(entry => entry.Status != MetadataStatus.Done))
             {
                 var result = dialogService.ShowMatchDialog(new MatchDialogViewModel(entry.VideoMetadata, metadataManager));
                 if (result.Accepted)
@@ -171,10 +166,10 @@ namespace MusicVideoJukebox.Core.ViewModels
         public async Task LoadMetadata()
         {
             var metadata = await metadataManager.VideoRepo.GetAllMetadata();
-            MetadataEntries.Clear();
+            metadataEntries.Clear();
             foreach (var entry in metadata.OrderBy(x => RemoveThe(x.Artist)).ThenBy(x => x.Title))
             {
-                MetadataEntries.Add(new VideoMetadataViewModel(entry));
+                metadataEntries.Add(new VideoMetadataViewModel(entry));
             }
             FilterMetadataEntries();
         }
@@ -188,5 +183,32 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             return input;
         }
+
+        public void SortItems(string sortMemberPath, bool ascending)
+        {
+            IOrderedEnumerable<VideoMetadataViewModel> sortedEntries = sortMemberPath switch
+            {
+                "Status" => ascending ? FilteredMetadataEntries.OrderBy(x => x.Status) : FilteredMetadataEntries.OrderByDescending(x => x.Status),
+                "Artist" => ascending ? FilteredMetadataEntries.OrderBy(x => x.Artist) : FilteredMetadataEntries.OrderByDescending(x => x.Artist),
+                "Title" => ascending ? FilteredMetadataEntries.OrderBy(x => x.Title) : FilteredMetadataEntries.OrderByDescending(x => x.Title),
+                "Album" => ascending ? FilteredMetadataEntries.OrderBy(x => x.Album) : FilteredMetadataEntries.OrderByDescending(x => x.Album),
+                "Year" => ascending ? FilteredMetadataEntries.OrderBy(x => x.ReleaseYear) : FilteredMetadataEntries.OrderByDescending(x => x.ReleaseYear),
+                _ => throw new Exception("Invalid field")
+            };
+
+            if (sortedEntries is null)
+                return;
+
+            if (sortMemberPath != "Artist")
+                sortedEntries = sortedEntries.ThenBy(x => x.Artist);
+            else
+                sortedEntries = sortedEntries.ThenBy(x => x.Title);
+
+            // Reorder the collection in place
+            var sortedList = sortedEntries.ToList();
+            metadataEntries = [..sortedList];
+            FilterMetadataEntries();
+        }
+
     }
 }

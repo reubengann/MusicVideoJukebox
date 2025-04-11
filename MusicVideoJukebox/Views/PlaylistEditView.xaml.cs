@@ -43,5 +43,35 @@ namespace MusicVideoJukebox.Views
                 }
             }
         }
+
+        private void ListBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is ListBox listBox)
+            {
+                var scrollViewer = FindScrollViewer(listBox);
+                if (scrollViewer != null)
+                {
+                    double offsetChange = e.Delta > 0 ? -1 : 1; // Adjust the scroll amount here
+                    scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + offsetChange);
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private static ScrollViewer? FindScrollViewer(DependencyObject obj)
+        {
+            if (obj is ScrollViewer viewer)
+                return viewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(obj, i);
+                var result = FindScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
     }
 }

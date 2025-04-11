@@ -27,7 +27,9 @@
 
                 <DataGrid Grid.Row="0" ItemsSource="{Binding FilteredMetadataEntries}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                       SelectedItem="{Binding SelectedItem}"
-                      Padding="5" SelectionMode="Single" SelectionUnit="FullRow">
+                      Padding="5" SelectionMode="Single" SelectionUnit="FullRow"
+                          PreviewTextInput="DataGrid_PreviewTextInput"
+                          Sorting="DataGrid_Sorting">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Status" SortMemberPath="Status">
                         <DataGridTemplateColumn.HeaderStyle>
@@ -45,10 +47,10 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Width="300" Header="Artist" Binding="{Binding Artist}" />
-                    <DataGridTextColumn Width="300" Header="Title" Binding="{Binding Title}" />
-                    <DataGridTextColumn Width="300" Header="Album" Binding="{Binding Album}" />
-                    <DataGridTextColumn Header="Year" Binding="{Binding ReleaseYear}">
+                    <DataGridTextColumn Width="300" Header="Artist" Binding="{Binding Artist}" SortMemberPath="Artist" />
+                    <DataGridTextColumn Width="300" Header="Title" Binding="{Binding Title}" SortMemberPath="Title" />
+                    <DataGridTextColumn Width="300" Header="Album" Binding="{Binding Album}" SortMemberPath="Album" />
+                    <DataGridTextColumn Header="Year" Binding="{Binding ReleaseYear}" SortMemberPath="Year">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
