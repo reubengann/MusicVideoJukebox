@@ -17,10 +17,15 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
         <local:BoolToColumnConverter x:Key="BoolToMarginConverter" />
+        <local:FractionConverter x:Key="FractionConverter" />
     </UserControl.Resources>
     <Grid Background="Black" Width="1920" Height="1080">
         <Grid.ContextMenu>
             <ContextMenu>
+                <ContextMenu.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding WindowWidth, Source={StaticResource WindowSizeProvider}, Converter={StaticResource FractionConverter}, ConverterParameter=0.001}" 
+                ScaleY="{Binding WindowHeight, Source={StaticResource WindowSizeProvider}, Converter={StaticResource FractionConverter}, ConverterParameter=0.0019}" />
+                </ContextMenu.LayoutTransform>
                 <MenuItem Header="Restart playlist" Command="{Binding RestartPlaylistCommand}"/>
                 <MenuItem Header="Jump To" Command="{Binding ShowPopupPlaylistCommand}" />
             </ContextMenu>

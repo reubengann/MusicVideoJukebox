@@ -29,6 +29,17 @@ namespace MusicVideoJukebox
         public MainWindow()
         {
             InitializeComponent();
+
+            var sizeProvider = (WindowSizeProvider)Application.Current.Resources["WindowSizeProvider"];
+            sizeProvider.WindowWidth = this.ActualWidth;
+            sizeProvider.WindowHeight = this.ActualHeight;
+
+            this.SizeChanged += (s, e) =>
+            {
+                sizeProvider.WindowWidth = this.ActualWidth;
+                sizeProvider.WindowHeight = this.ActualHeight;
+            };
+
             serviceProvider = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build().Services;
             this.vm = serviceProvider.GetRequiredService<MainWindowViewModel>();
             interfaceFader = serviceProvider.GetRequiredService<IFadesWhenInactive>();
