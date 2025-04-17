@@ -191,6 +191,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             mediaPlayer.Pause();
             IsPlaying = false;
             progressUpdateTimer.Stop();
+            fadesWhenInactive.DisableFading();
         }
 
         private void Play()
@@ -198,6 +199,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             mediaPlayer.Play();
             IsPlaying = true;
             progressUpdateTimer.Start();
+            fadesWhenInactive.EnableFading();
         }
 
         private void SetSource(PlaylistTrack? track)
@@ -215,8 +217,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             OnPropertyChanged(nameof(VideoPositionTime));
             OnPropertyChanged(nameof(InfoViewModel));
         }
-
-
 
         public async Task Recheck()
         {

@@ -69,6 +69,7 @@ namespace MusicVideoJukebox
         {
             enabled = false;
             _timer.Stop();
+            ShowImmediate();
         }
 
         public void EnableFading()
@@ -83,6 +84,18 @@ namespace MusicVideoJukebox
             if (!enabled) return;
             MaybeFadeButtonsIn();
             Mouse.OverrideCursor = null;
+        }
+
+        public void ShowImmediate()
+        {
+            foreach (var element in elements)
+            {
+                element.Visibility = Visibility.Visible;
+                element.Opacity = 1;
+            }
+            sidebarShown = true;
+            fadingIn = false;
+            fadingOut = false;
         }
 
         private void MaybeFadeButtonsIn()

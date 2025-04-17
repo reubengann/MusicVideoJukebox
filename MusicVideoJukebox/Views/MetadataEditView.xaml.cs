@@ -42,7 +42,7 @@ namespace MusicVideoJukebox.Views
             if (dataGrid?.ItemsSource is IEnumerable<VideoMetadataViewModel> tracks)
             {
                 var matchingItem = tracks.FirstOrDefault(track =>
-                    track.Artist.StartsWith(_searchText, StringComparison.OrdinalIgnoreCase));
+                    RemoveThe(track.Artist).StartsWith(_searchText, StringComparison.OrdinalIgnoreCase));
 
                 if (matchingItem != null)
                 {
@@ -55,6 +55,16 @@ namespace MusicVideoJukebox.Views
                     }), System.Windows.Threading.DispatcherPriority.Background);
                 }
             }
+        }
+
+        private string RemoveThe(string input)
+        {
+            const string prefix = "the ";
+            if (input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return input.Substring(prefix.Length);
+            }
+            return input;
         }
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)

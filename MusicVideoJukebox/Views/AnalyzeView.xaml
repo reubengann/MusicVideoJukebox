@@ -23,6 +23,7 @@
                       Margin="5"
                       MaxHeight="500" BorderThickness="1"
                       PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
+                      PreviewTextInput="DataGrid_PreviewTextInput"
                       >
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">

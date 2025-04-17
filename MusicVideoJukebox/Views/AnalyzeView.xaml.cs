@@ -1,6 +1,8 @@
 ﻿using MusicVideoJukebox.Core.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -72,8 +74,57 @@ namespace MusicVideoJukebox.Views
                 items[i].IsSelected = true;
             }
         }
-    }
 
+        private string _searchText = string.Empty;
+        private DateTime _lastKeyPressTime = DateTime.MinValue;
+
+        private void DataGrid_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            const int searchTimeoutMilliseconds = 1000; // Reset search after 1 second of inactivity
+            var currentTime = DateTime.Now;
+
+            // Reset search text if the last key press was too long ago
+            if ((currentTime - _lastKeyPressTime).TotalMilliseconds > searchTimeoutMilliseconds)
+            {
+                _searchText = string.Empty;
+            }
+
+            _lastKeyPressTime = currentTime;
+
+            // Append the new character to the search text
+            _searchText += e.Text;
+
+            // Find the first matching item
+            var dataGrid = sender as DataGrid;
+            if (dataGrid?.ItemsSource is IEnumerable<AnalysisResultViewModel> tracks)
+            {
+                var matchingItem = tracks.FirstOrDefault(track =>
+                    RemoveThe(track.Filename).StartsWith(_searchText, StringComparison.OrdinalIgnoreCase));
+
+                if (matchingItem != null)
+                {
+                    // Select and scroll to the matching item
+                    dataGrid.SelectedItem = matchingItem;
+                    dataGrid.UpdateLayout();
+                    dataGrid.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        dataGrid.ScrollIntoView(matchingItem);
+                    }), System.Windows.Threading.DispatcherPriority.Background);
+                }
+            }
+        }
+
+        private static string RemoveThe(string s)
+        {
+            // Remove the "The " prefix from the string
+            if (s.StartsWith("The ", StringComparison.OrdinalIgnoreCase))
+            {
+                return s[4..];
+            }
+            return s;
+        }
+
+    }
     public static class VisualTreeHelperExtensions
     {
         public static T? GetParentOfType<T>(this DependencyObject child) where T : DependencyObject

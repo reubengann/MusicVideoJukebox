@@ -62,6 +62,15 @@ namespace MusicVideoJukebox.Core.ViewModels
         //    await AnalyzeSome(AnalysisResults.Where(x => x.IsSelected));
         //}
 
+        const double targetLufs = -23;
+        const double threshold = 2;
+
+        private bool NeedsNormalization(double? lufs)
+        {
+            if (lufs == null) return true;
+            return Math.Abs(lufs.Value - targetLufs) >= threshold;
+        }
+
         private async void AnalyzeAll()
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
@@ -72,7 +81,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                 AnalysisResults.Clear();
                 await Initialize();
             }
-            await NormalizeSome(AnalysisResults.Where(x => x.LUFS == null));
+            await NormalizeSome(AnalysisResults.Where(x => NeedsNormalization(x.LUFS)));
         }
 
         private async void NormalizeSelected()
@@ -128,10 +137,13 @@ namespace MusicVideoJukebox.Core.ViewModels
         //}
 
 
+        
+
         private async Task NormalizeSome(IEnumerable<AnalysisResultViewModel> selectedItems)
         {
             if (libraryStore.CurrentState.LibraryPath == null) return;
-            
+            var total = selectedItems.Count();
+            var numDone = 0;
             cancellationTokenSource = new CancellationTokenSource();
             //var selectedItems = AnalysisResults.Where(x => x.IsSelected).ToList();
             if (!selectedItems.Any()) return;
@@ -143,8 +155,9 @@ namespace MusicVideoJukebox.Core.ViewModels
                 var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
                 foreach (var item in selectedItems)
                 {
+                    numDone++;
                     var refreshing = item.LUFS != null;
-                    OperationText = $"Normalizing {item.Filename}";
+                    OperationText = $"Normalizing {item.Filename} ({total - numDone} remaining)";
                     string path = Path.Combine(libraryStore.CurrentState.LibraryPath, item.Filename);
                     // Analyze it first
                     var analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
@@ -155,7 +168,19 @@ namespace MusicVideoJukebox.Core.ViewModels
                             warning += ", ";
                         warning += "LUFS failed";
                     }
-                    var videoResolutionStr = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS";
+                    if (!NeedsNormalization(analyzeResult.AudioStream.LUFS))
+                    {
+                        // Something has gone wrong. We wouldn't be here if we had the correct volume.
+                        // Re-set the row in the database.
+                        item.Warning = warning;
+                        item.VideoCodec = analyzeResult.VideoStream.Codec;
+                        item.VideoWidth = analyzeResult.VideoStream.Width;
+                        item.VideoHeight = analyzeResult.VideoStream.Height;
+                        item.LUFS = analyzeResult.AudioStream.LUFS;
+                        item.AudioCodec = analyzeResult.AudioStream.Codec;
+                        await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
+                        continue;
+                    }
                     item.Warning = warning;
                     item.VideoCodec = analyzeResult.VideoStream.Codec;
                     item.VideoWidth = analyzeResult.VideoStream.Width;
@@ -165,22 +190,28 @@ namespace MusicVideoJukebox.Core.ViewModels
                     await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
                     if (item.LUFS == null)
                     {
-                        // we cannot continue here
+                        item.Warning = $"{warning};Analyze failed";
+                        await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
                         continue;
                     }
                     var success = await audioNormalizer.NormalizeAudio(libraryStore.CurrentState.LibraryPath, item.Filename, item.LUFS, CancellationToken.None);
-                    if (success != NormalizeAudioResult.DONE) continue;
+                    if (success != NormalizeAudioResult.DONE)
+                    {
+                        item.Warning = $"{warning};Normalize returned {success}";
+                        await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
+                        continue;
+                    }
 
-                    var newResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
+                    analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
                     // This step can't be canceled. Otherwise, we might leave the database in an incorrect state.
                     // If I wasn't being lazy, I would copy the old file back at this point.
+                    item.LUFS = analyzeResult.AudioStream.LUFS;
                     await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
-                    item.LUFS = newResult.AudioStream.LUFS;
                 }
             }
             catch(OperationCanceledException)
             {
-
+                OperationText = "Canceled";
             }
             finally
             {
