@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.Text.RegularExpressions;
-using Xabe.FFmpeg;
+﻿using Xabe.FFmpeg;
 
 namespace MusicVideoJukebox.Core.Audio
 {
@@ -111,7 +109,6 @@ namespace MusicVideoJukebox.Core.Audio
 
                     try
                     {
-                        // Parse the JSON block
                         var jsonObject = System.Text.Json.JsonDocument.Parse(json);
                         if (jsonObject.RootElement.TryGetProperty("input_i", out var inputIProperty))
                         {

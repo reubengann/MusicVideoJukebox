@@ -1,5 +1,4 @@
-﻿using MusicVideoJukebox.Core.ViewModels;
-using System;
+﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;

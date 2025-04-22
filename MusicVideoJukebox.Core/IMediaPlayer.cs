@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MusicVideoJukebox.Core
+﻿namespace MusicVideoJukebox.Core
 {
     public interface IMediaPlayer
     {

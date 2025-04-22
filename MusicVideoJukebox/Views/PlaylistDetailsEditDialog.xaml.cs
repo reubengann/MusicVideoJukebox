@@ -3,9 +3,6 @@ using System.Windows;
 
 namespace MusicVideoJukebox.Views
 {
-    /// <summary>
-    /// Interaction logic for PlaylistDetailsEditDialog.xaml
-    /// </summary>
     public partial class PlaylistDetailsEditDialog : Window
     {
         private readonly PlaylistDetailsEditDialogViewModel vm;

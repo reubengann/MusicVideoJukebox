@@ -1,6 +1,5 @@
 ﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Navigation;
-using MusicVideoJukebox.Core.UserInterface;
 using Prism.Commands;
 using System.Windows.Input;
 
@@ -8,9 +7,6 @@ namespace MusicVideoJukebox.Core.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private bool isLibrarySelected = false;
-        private bool isPlaylistSelected = false;
-        private IFadesWhenInactive interfaceFader = null!;
         private readonly INavigationService navigationService;
         private readonly LibraryStore libraryStore;
 

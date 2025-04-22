@@ -1,11 +1,6 @@
-﻿using Prism.Commands;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 
-//namespace MusicVideoJukebox.Core
-//{
 public class BaseViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;

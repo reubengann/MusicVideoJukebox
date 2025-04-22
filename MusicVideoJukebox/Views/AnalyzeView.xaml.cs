@@ -10,9 +10,6 @@ using System.Windows.Media;
 
 namespace MusicVideoJukebox.Views
 {
-    /// <summary>
-    /// Interaction logic for StreamVolumeView.xaml
-    /// </summary>
     public partial class AnalyzeView : UserControl
     {
         public AnalyzeView()

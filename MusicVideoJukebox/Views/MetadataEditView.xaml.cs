@@ -8,9 +8,6 @@ using System.Windows.Input;
 
 namespace MusicVideoJukebox.Views
 {
-    /// <summary>
-    /// Interaction logic for MetadataEditView.xaml
-    /// </summary>
     public partial class MetadataEditView : UserControl
     {
         private string _searchText = string.Empty;

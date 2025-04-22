@@ -1,7 +1,6 @@
 ﻿using MusicVideoJukebox.Core.UserInterface;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
@@ -48,9 +47,10 @@ namespace MusicVideoJukebox
                 Duration = TimeSpan.FromSeconds(0.5) // Adjust the duration as needed
             };
 
-            fadeOutAnimation.Completed += (s, e) => { 
-                fadingOut = false; 
-                VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false)); 
+            fadeOutAnimation.Completed += (s, e) =>
+            {
+                fadingOut = false;
+                VisibilityChanged?.Invoke(this, new VisibilityChangedEventArgs(false));
                 sidebarShown = false;
                 foreach (var element in elements)
                 {
@@ -114,7 +114,8 @@ namespace MusicVideoJukebox
             {
                 //Debug.WriteLine("Sidebar already shown so ignoring input");
                 return;
-            };
+            }
+            ;
 
             sidebarShown = true;
 

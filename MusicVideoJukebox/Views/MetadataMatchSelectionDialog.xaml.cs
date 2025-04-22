@@ -3,9 +3,6 @@ using System.Windows;
 
 namespace MusicVideoJukebox.Views
 {
-    /// <summary>
-    /// Interaction logic for MetadataMatchSelectionDialog.xaml
-    /// </summary>
     public partial class MetadataMatchSelectionDialog : Window
     {
         private readonly MatchDialogViewModel vm;

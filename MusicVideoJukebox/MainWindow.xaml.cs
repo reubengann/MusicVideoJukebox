@@ -12,7 +12,6 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace MusicVideoJukebox
 {
@@ -155,7 +154,7 @@ namespace MusicVideoJukebox
             services.AddTransient<PlaylistSelectViewModel>();
             services.AddTransient<AnalyzeViewModel>();
             services.AddSingleton<IDialogService>(x => new WindowsDialogService(this));
-            
+
             services.AddSingleton<IStreamAnalyzer, StreamAnalyzer>();
             services.AddSingleton<IImageScalerService, GdiImageScalerService>();
             services.AddSingleton<IAudioNormalizer>(s => new AudioNormalizer(@"E:\Videos\Music Videos\bkup")); //TEMP

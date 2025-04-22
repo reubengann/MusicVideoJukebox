@@ -41,7 +41,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             this.audioNormalizer = audioNormalizer;
             NormalizeSelectedCommand = new DelegateCommand(NormalizeSelected, () => !IsBusy);
             CancelOperationsCommand = new DelegateCommand(CancelOperations, () => IsBusy);
-            //AnalyzeSelectedCommand = new DelegateCommand(AnalyzeSelected, () => !IsBusy);
             AnalyzeAllCommand = new DelegateCommand(AnalyzeAll, () => !IsBusy);
         }
 
@@ -49,18 +48,12 @@ namespace MusicVideoJukebox.Core.ViewModels
         {
             NormalizeSelectedCommand.RaiseCanExecuteChanged();
             CancelOperationsCommand.RaiseCanExecuteChanged();
-            //AnalyzeSelectedCommand.RaiseCanExecuteChanged();
         }
 
         private void CancelOperations()
         {
             cancellationTokenSource?.Cancel();
         }
-
-        //private async void AnalyzeSelected()
-        //{
-        //    await AnalyzeSome(AnalysisResults.Where(x => x.IsSelected));
-        //}
 
         const double targetLufs = -23;
         const double threshold = 2;
@@ -89,54 +82,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             await NormalizeSome(AnalysisResults.Where(x => x.IsSelected));
         }
 
-        //private async Task AnalyzeSome(IEnumerable<AnalysisResultViewModel> vms)
-        //{
-        //    if (libraryStore.CurrentState.LibraryPath == null) return;
-        //    var videoRepo = metadataManagerFactory.Create(libraryStore.CurrentState.LibraryPath);
-        //    cancellationTokenSource = new CancellationTokenSource();
-        //    if (!vms.Any()) return;
-        //    IsBusy = true;
-
-        //    foreach (var video in vms)
-        //    {
-        //        if (cancellationTokenSource.IsCancellationRequested) return;
-        //        var refreshing = video.LUFS != null;
-        //        try
-        //        {
-        //            string path = Path.Combine(libraryStore.CurrentState.LibraryPath, video.Filename);
-        //            var analyzeResult = await streamAnalyzer.Analyze(path, cancellationTokenSource.Token);
-        //            var warning = analyzeResult.Warning;
-        //            if (analyzeResult.AudioStream.LUFS == null)
-        //            {
-        //                if (!string.IsNullOrEmpty(warning))
-        //                    warning += ", ";
-        //                warning += "LUFS failed";
-        //            }
-        //            var videoResolutionStr = $"{analyzeResult.VideoStream.Width}x{analyzeResult.VideoStream.Height} @ {analyzeResult.VideoStream.Framerate:F2} FPS";
-        //            video.Warning = warning;
-        //            video.VideoCodec = analyzeResult.VideoStream.Codec;
-        //            video.VideoResolution = videoResolutionStr;
-        //            video.LUFS = analyzeResult.AudioStream.LUFS;
-        //            video.AudioCodec = analyzeResult.AudioStream.Codec;
-        //            if (refreshing)
-        //            {
-        //                await videoRepo.UpdateAnalysisResult(video.Entry);
-        //            }
-        //            else
-        //            {
-        //                await videoRepo.InsertAnalysisResult(video.Entry);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            video.Warning = ex.Message;
-        //        }
-        //    }
-
-        //    IsBusy = false;
-        //}
-
-
         
 
         private async Task NormalizeSome(IEnumerable<AnalysisResultViewModel> selectedItems)
@@ -145,8 +90,9 @@ namespace MusicVideoJukebox.Core.ViewModels
             var total = selectedItems.Count();
             var numDone = 0;
             cancellationTokenSource = new CancellationTokenSource();
-            //var selectedItems = AnalysisResults.Where(x => x.IsSelected).ToList();
+            
             if (!selectedItems.Any()) return;
+
             IsBusy = true;
             try
             {
@@ -208,6 +154,7 @@ namespace MusicVideoJukebox.Core.ViewModels
                     item.LUFS = analyzeResult.AudioStream.LUFS;
                     await videoRepo.VideoRepo.UpdateMetadata(item.Entry);
                 }
+                OperationText = "";
             }
             catch(OperationCanceledException)
             {
@@ -215,7 +162,6 @@ namespace MusicVideoJukebox.Core.ViewModels
             }
             finally
             {
-                OperationText = "";
                 IsBusy = false;
             }
         }

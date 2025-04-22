@@ -1,5 +1,4 @@
-﻿
-using MusicVideoJukebox.Core.Libraries;
+﻿using MusicVideoJukebox.Core.Libraries;
 using MusicVideoJukebox.Core.Metadata;
 using MusicVideoJukebox.Core.Navigation;
 using Prism.Commands;

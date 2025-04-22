@@ -1,7 +1,6 @@
 ﻿using MusicVideoJukebox.Core.Metadata;
 using Prism.Commands;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace MusicVideoJukebox.Core.ViewModels
@@ -15,7 +14,7 @@ namespace MusicVideoJukebox.Core.ViewModels
     }
 
 
-    public class PlaylistTrackSelectionViewModel :BaseViewModel
+    public class PlaylistTrackSelectionViewModel : BaseViewModel
     {
         private readonly IMetadataManager metadataManager;
         public ICommand CancelCommand { get; set; }
@@ -30,7 +29,7 @@ namespace MusicVideoJukebox.Core.ViewModels
             FilteredTracks.Clear();
             foreach (var track in AllTracks)
             {
-                if (string.IsNullOrEmpty(FilterText) 
+                if (string.IsNullOrEmpty(FilterText)
                     || track.Title.ToLower().Contains(FilterText.ToLower()) || track.Artist.ToLower().Contains(FilterText.ToLower()))
                 {
                     FilteredTracks.Add(track);
